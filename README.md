@@ -1,4 +1,5 @@
 # Description
+
 Pharo Install - A tool for installing Pharo Smalltalk packages
 
 # Features
@@ -9,7 +10,20 @@ Pharo Install - A tool for installing Pharo Smalltalk packages
   - It works with curl or wget
   - Tested on Pharo >= 5.0 under Windows 8.1 (MinGW)
 
+# Usage notes
+
+  - install option defaults to the currently defined "stable" image version.
+  - dev option installs the current "alpha" image version.
+  - min option installs the current stable "minimal" image version.
+  - mindev option installs the current development "minimal" image version.
+
 # Usage examples
+
+List SmalltalkHub packages
+
+```bash
+$ pi list
+```
 
 Install BioSmalltalk stable
 
@@ -21,6 +35,12 @@ Install BioSmalltalk development
 
 ```bash
 $ pi install biosmalltalk dev
+```
+
+Install multiple packages at once:
+
+```bash
+$ pi install Diacritics ISO3166 StringExtensions
 ```
 
 # License
