@@ -3,11 +3,11 @@ Pharo Install - A tool for installing Pharo Smalltalk packages
 
 # Features
 
--Listing supports only SmalltalkHub for now. 
--Requires libxml2 (xmllint command)
--Installs (only) Metacello Configurations from Catalog (command line handler: get) or SmalltalkHub (command line handler: config)
--It works with curl or wget
--Tested on Pharo >= 5.0 under Windows 8.1
+  - Listing supports only SmalltalkHub for now. 
+  - Requires libxml2 (xmllint command).
+  - Installs (only) Metacello Configurations from Catalog (command line handler: get) or SmalltalkHub (command line handler: config)
+  - It works with curl or wget
+  - Tested on Pharo >= 5.0 under Windows 8.1 (MinGW)
 
 # Usage examples
 
