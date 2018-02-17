@@ -1,6 +1,20 @@
 # Description
 
-Pharo Install - A tool for installing Pharo Smalltalk packages
+Pharo Install - A tool for installing Pharo Smalltalk packages.
+
+PI is a MIT-pip-like library for Pharo Smalltalk.
+
+# Installation
+
+curl users:
+```bash
+curl -O https://raw.githubusercontent.com/hernanmd/pi/master/pi
+```
+
+wget users:
+```bash
+wget --no-check-certificate https://raw.githubusercontent.com/hernanmd/pi/master/pi
+```
 
 # Features
 
