@@ -19,17 +19,20 @@ wget --no-check-certificate https://raw.githubusercontent.com/hernanmd/pi/master
 # Features
 
   - Listing supports only SmalltalkHub for now. 
-  - Installs (only) Metacello Configurations from Catalog (command line handler: get) or SmalltalkHub (command line handler: config)
+  - Installs 
+  - - Metacello Configurations from Catalog (command line handler: get)
+  - - SmalltalkHub (command line handler: config)
   - It works with curl or wget
 
 # Usage notes
 
   - The "install" option defaults to the current Pharo "stable" version. 
   - PI can query SmalltalkHub or GitHub. 
+  - - Listing packages from GitHub is currently (work in progress) limited to 100 results.
   - PI can install packages from SmalltalkHub (working on GitHub repositories).
   - Package search is case-sensitive.
   - For GitHub repositories: 
-  - - If it has "pharo" as topic, then it will be listed.
+  - - If it has "pharo" as topic, it will be listed.
   - - If jq is not available, it will be downloaded to the directory where pi was executed.
   - For SmalltalkHub repositories: 
   - - Requires libxml2 (xmllint command).
@@ -91,6 +94,7 @@ $ ./pi listsh
 # ToDo
 
   - Timestamp output
+  - Implement access to GitHub paginated results (https://developer.github.com/v3/guides/traversing-with-pagination/)
   - "search" option
   - Implement GitHub package installation
 
