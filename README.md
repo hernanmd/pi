@@ -30,6 +30,7 @@ mv pi /usr/local/bin
   - - Metacello Configurations from Catalog (command line handler: get)
   - - SmalltalkHub (command line handler: config)
   - It works with curl or wget.
+  - Supports case-insensitive searching for package names or developer user name.
 
 # Usage notes
 
@@ -47,6 +48,8 @@ mv pi /usr/local/bin
 
 # Usage examples
 
+## Listing
+
 List SmalltalkHub packages:
 
 ```bash
@@ -58,6 +61,16 @@ List GitHub packages:
 ```bash
 $ pi listgh
 ```
+
+## Searching
+
+Search both in SmalltalkHub and GitHub repositories:
+
+```bash
+$ pi search collection
+```
+
+## Installing
 
 Install BioSmalltalk stable:
 
@@ -98,11 +111,25 @@ $ pi listsh
 ...
 ```
 
+## Searching 
+
+```bash
+$ pi search collection
+SmalltalkHub: PetitPillar/CyrilFerlicot
+SmalltalkHub: Pillar/Pier
+SmalltalkHub: Pillar2TxText/CamilleTeruel
+SmalltalkHub: PillarBook/mikefilonov
+SmalltalkHub: PillarHub/mikefilonov
+SmalltalkHub: PillarHub-Inbox/mikefilonov
+SmalltalkHub: PillarWithoutMustache/ThibaultAr
+GitHub: "pillar-markup/pillar"
+GitHub: "pillar-markup/Pillar-Archetype"
+```
+
 # ToDo
 
-  - Timestamp output
+  - Timestamp output ?
   - Implement access to GitHub paginated results (https://developer.github.com/v3/guides/traversing-with-pagination/)
-  - "search" option
   - Implement GitHub package installation
   - Uninstall packages
 
