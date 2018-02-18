@@ -67,7 +67,8 @@ $ pi listgh
 Search both in SmalltalkHub and GitHub repositories:
 
 ```bash
-$ pi search collection
+$ pi search pillar
+$ pi search hernan
 ```
 
 ## Installing
@@ -114,7 +115,7 @@ $ pi listsh
 ## Searching 
 
 ```bash
-$ pi search collection
+$ pi search pillar
 SmalltalkHub: PetitPillar/CyrilFerlicot
 SmalltalkHub: Pillar/Pier
 SmalltalkHub: Pillar2TxText/CamilleTeruel
