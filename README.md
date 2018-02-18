@@ -13,7 +13,7 @@ curl -O https://raw.githubusercontent.com/hernanmd/pi/master/pi
 
 wget users:
 ```bash
-wget --no-check-certificate https://raw.githubusercontent.com/hernanmd/pi/master/pi
+wget --no-cache --no-check-certificate https://raw.githubusercontent.com/hernanmd/pi/master/pi
 ```
 
 Copy the executable script to a location included in the PATH environment variable:
