@@ -62,7 +62,7 @@ $ pi listgh
 Install BioSmalltalk stable:
 
 ```bash
-$ pi install biosmalltalk
+$ pi install BioSmalltalk
 ```
 
 Install multiple packages at once:
