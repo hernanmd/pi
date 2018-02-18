@@ -84,9 +84,10 @@ function setDownloadApp () {
 }
 
 function checkLibXML () {
-	echo_line "Checking for xmllint..."
+	echo -n "Checking for xmllint..."
 	if ! cmdExists xmllint; then
 		echo_nline "not found (install libxml2 or msys-libxml2 as required)"
+		echo "Example: apt-get install libxml2-utils"
 		exit 1
 	else
 		echo_nline "found"
@@ -320,11 +321,11 @@ case $1 in
 		SILENT_MODE=0
 		printHelp
 		;;		
-	countSH | COUNTSH )
+	countsh | COUNTSH )
 		SILENT_MODE=0
 		checkLibXML
 		fetchStHubPkgNames
-		echo -e "$PKGS" | wc -l
+		echo -ne "$PKGS" | wc -l
 		echo " packages found"
 		;;
 	install | INSTALL )
