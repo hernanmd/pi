@@ -111,6 +111,7 @@ The options include:
 		listGH			List packages found in GitHub
 		listSH			List packages found in SmalltalkHub
 		countSH			Report how many packages were found in SmalltalkHub
+		countGH			Report how many packages were found in SmalltalkHub
 		image			Fetch the latest stable Pharo (VM + Image).
 		examples		Show usage examples
 		version 		Show program version
@@ -124,17 +125,14 @@ This software is licensed under the MIT License.
 
 function examples () {
 	echo "
-List all packages:
-$0 list
-
 List GitHub packages:
 $0 listGH
 
 List SmalltalkHub packages:
 $0 listSH
 
-List catalog configurations:
-$0 list catalog
+Download Pharo image and VM:
+$0 image
 
 Install multiple packages:
 $0 install Diacritics ISO3166 StringExtensions"
