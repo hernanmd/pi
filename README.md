@@ -2,7 +2,7 @@
 
 Pharo Install - A tool for installing Pharo Smalltalk packages.
 
-PI is a MIT-pip-like library for Pharo Smalltalk.
+PI is a MIT-pip-like command line application installer for Pharo Smalltalk. Copy & pasting install scripts is an easy method, but it’s also time consuming because of the manual interaction. PI turns copy & paste Smalltalk install scripts into bash one-liners which works on Unix/Linux, MacOS and Windows (MinGW/MSYS). PI automatically tries to download necessary dependencies for parsing both SmalltalkHub and GitHub package lists, and also downloads the latest stable Pharo image and virtual machine if none is found in the current directory. It also supports installing multiple packages at once.
 
 # Installation
 
@@ -16,20 +16,27 @@ wget users:
 wget --no-check-certificate https://raw.githubusercontent.com/hernanmd/pi/master/pi
 ```
 
+Copy the executable script to a location included in the PATH environment variable:
+
+```bash
+chmod 755 pi
+mv pi /usr/local/bin
+```
+
 # Features
 
-  - Listing supports only SmalltalkHub for now. 
-  - Installs 
+  - Listing packages supports GitHub and SmalltalkHub repositories. 
+  - Installing packages is supported for: 
   - - Metacello Configurations from Catalog (command line handler: get)
   - - SmalltalkHub (command line handler: config)
-  - It works with curl or wget
+  - It works with curl or wget.
 
 # Usage notes
 
   - The "install" option defaults to the current Pharo "stable" version. 
   - PI can query SmalltalkHub or GitHub. 
   - - Listing packages from GitHub is currently (work in progress) limited to 100 results.
-  - PI can install packages from SmalltalkHub (working on GitHub repositories).
+  - PI can install packages from SmalltalkHub (GitHub repositories is one the way).
   - Package search is case-sensitive.
   - For GitHub repositories: 
   - - If it has "pharo" as topic, it will be listed.
@@ -69,7 +76,7 @@ $ pi install Diacritics ISO3166 StringExtensions
 ## Listing from GitHub
 
 ```bash
-$ ./pi listgh
+$ pi listgh
 "SquareBracketAssociates/UpdatedPharoByExample"
 "OpenSmalltalk/opensmalltalk-vm"
 "pharo-project/pharo"
@@ -83,7 +90,7 @@ $ ./pi listgh
 ## Listing from SmalltalkHub
 
 ```bash
-$ ./pi listsh
+$ pi listsh
 15Puzzle/OlesDobosevych
 2048Game/PierreChanson
 3DaysVM/ClementBera
@@ -97,6 +104,7 @@ $ ./pi listsh
   - Implement access to GitHub paginated results (https://developer.github.com/v3/guides/traversing-with-pagination/)
   - "search" option
   - Implement GitHub package installation
+  - Uninstall packages
 
 # License
 
