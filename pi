@@ -16,7 +16,7 @@
 ## Pharo Download Settings
 #################################
 PHARO_VERSION=61
-PI_VERSION=0.1
+PI_VERSION=0.2
 IMAGENAME="Pharo.image"
 STHUB_URL="http://smalltalkhub.com/"
 LIST_FILE="index.html"
