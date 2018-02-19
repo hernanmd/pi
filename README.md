@@ -27,16 +27,17 @@ mv pi /usr/local/bin
 
   - Listing packages supports GitHub and SmalltalkHub repositories. 
   - Installing packages is supported for: 
-  - - Metacello Configurations from Catalog (command line handler: get)
-  - - SmalltalkHub (command line handler: config)
+    - Metacello Configurations from Catalog (command line handler: get)
+    - SmalltalkHub (command line handler: config)
   - It works with curl or wget.
   - Supports case-insensitive searching for package names or developer user name.
 
 # Usage notes
 
   - The "install" option defaults to the current Pharo "stable" version. 
+  - Assume only one image in a directory. Future version will add support for multiple images.
   - PI can query SmalltalkHub or GitHub. 
-  - - Listing packages from GitHub is currently (work in progress) limited to 100 results.
+    - Listing packages from GitHub is currently (work in progress) limited to 100 results.
   - PI can install packages from SmalltalkHub (GitHub repositories is one the way).
   - Package search is case-sensitive.
   - For GitHub repositories: 
