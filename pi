@@ -16,13 +16,13 @@
 ## Pharo Download Settings
 #################################
 PHARO_VERSION=61
-PI_VERSION=0.2
-IMAGENAME="Pharo.image"
-STHUB_URL="http://smalltalkhub.com/"
-LIST_FILE="index.html"
+piVersion=0.3
+imageName="Pharo.image"
+stHubUrl="http://smalltalkhub.com/"
+stHubPkgIndexFile="index.html"
 # Work in verbose (1) or silent mode (0)
-SILENT_MODE=0
-PLATFORM="Unknown"
+silentMode=0
+os="Unknown"
 
 #################################
 ## Helper Functions
@@ -30,12 +30,12 @@ PLATFORM="Unknown"
 
 # Echo parameter text without carriage return/new line
 function echo_line () {
-	[ "$SILENT_MODE" == 0 ] && echo -n $1
+	[ "$silentMode" == 0 ] && echo -n $1
 }
 
 # Echo parameter text with carriage return/new line
 function echo_nline () {
-	[ "$SILENT_MODE" == 0 ] && echo $1
+	[ "$silentMode" == 0 ] && echo $1
 }
 
 # Returns 0 if command was found in the current system, 1 otherwise
@@ -57,16 +57,39 @@ function xpath() {
 	xmllint --nonet --html --shell $2 <<< "cat $1" | sed '/^\/ >/d;/^\ /d'
 }
 
-# Currently not used
-function findPlatform () {
-	# Find our platform
-	echo_line "Current platform is: "
-	if [ -f /etc/issue ]; then 
-		PLATFORM=$(cat /etc/issue)
+function findDistributionID () {
+	# Find our distribution or OS
+	echo_line "Current OS is: "
+	if [ -f /etc/os-release ]; then
+		# freedesktop.org and systemd
+		. /etc/os-release
+		os=$NAME
+		ver=$VERSION_ID
+	elif type lsb_release >/dev/null 2>&1; then
+		# linuxbase.org
+		os=$(lsb_release -si)
+		ver=$(lsb_release -sr)
+	elif [ -f /etc/lsb-release ]; then
+		# For some versions of Debian/Ubuntu without lsb_release command
+		. /etc/lsb-release
+		os=$DISTRIB_ID
+		ver=$DISTRIB_RELEASE
+	elif [ -f /etc/debian_version ]; then
+		# Older Debian/Ubuntu/etc.
+		os="Debian"
+		ver=$(cat /etc/debian_version)
+	elif [ -f /etc/SuSe-release ]; then
+		# Older SuSE/etc.
+		os="SuSE"
+	elif [ -f /etc/redhat-release ]; then
+		# Older Red Hat, CentOS, etc.
+		os="RedHat"
 	else
-		PLATFORM=$(uname -a)
-		#lsb_release -i
-	fi
+		# Fall back to uname, e.g. "Linux <version>", also works for BSD, etc.
+		os=$(uname -s)
+		ver=$(uname -r)
+	fi	
+	echo_nline "Found $os"
 }
 
 function setDownloadApp () {
@@ -74,12 +97,12 @@ function setDownloadApp () {
 	if cmdExists wget ; then
 		echo_nline "wget found..."
 		D_APP="wget --no-check-certificate"
-		D_LIST_PARAMS="-O ${LIST_FILE}"
+		D_LIST_PARAMS="-O ${stHubPkgIndexFile}"
 		D_PHARO_PARAMS="-O-"
 	elif cmdExists curl ; then
 			echo_nline "curl found..."
 			D_APP="curl"
-			D_LIST_PARAMS="-o "$LIST_FILE
+			D_LIST_PARAMS="-o "$stHubPkgIndexFile
 			D_PHARO_PARAMS=""
 		else
 			echo_nline "I require wget or curl, but it's not installed. (brew install wget?) Aborting."
@@ -99,13 +122,14 @@ function checkLibXML () {
 }
 
 function versionString () {
-	SILENT_MODE=0
-	echo_line "pi - Pharo Install [version $PI_VERSION]"
+	silentMode=0
+	echo_nline "pi - Pharo Install [version $piVersion]"
 }
 
 function printHelp () {
-	SILENT_MODE=0
-	echo_line "pi - Pharo Install [version $PI_VERSION]
+	silentMode=0
+cat << EOF
+pi - Pharo Install [version $piVersion]
 
 PI is a tool for installing Pharo Smalltalk packages.
 
@@ -114,7 +138,7 @@ The options include:
 		listsh			List packages found in SmalltalkHub
 		countsh			Report how many packages were found in SmalltalkHub
 		countgh			Report how many packages were found in GitHub
-		search <pgname>	Search for pkgname in SmalltalkHub and GitHub repositories
+		search <pgname>		Search for pkgname in SmalltalkHub and GitHub repositories
 		searchgh <pkgname>	Search for pkgname in GitHub repository
 		searchsh <pkgname>	Search for pkgname in SmalltalkHub repository
 		image			Fetch the latest stable Pharo (VM + Image).
@@ -125,7 +149,7 @@ The options include:
 Pharo Install project home page: https://github.com/hernanmd/pi
 To report bugs or get some help check: https://github.com/hernanmd/pi/issues
 This software is licensed under the MIT License.
-"
+EOF
 }
 
 function examples () {
@@ -181,19 +205,24 @@ function yum_install () {
 		libSM.i686
 }
 
+# Prefer provider packages if distribution was found
 function install_pharo () {
-	SILENT_MODE=1
-	if [[ $PLATFORM  == "elementary*" ]];
-	then
-		echo_nline "Found Elementary OS"
-		ppa_install
-	fi
-	if [[ $PLATFORM == "CentOS*" ]];
-	then
-		echo_nline "Found CentOS"
-		echo $PLATFORM
-		yum_install
-	fi
+	silentMode=1
+	findDistributionID
+	case $os in
+		"elementary" )
+			ppa_install
+			;;	
+		"CentOS*" | "RedHat*" )
+			yum_install
+			;;
+		"Ubuntu*")
+			ppa_install
+			;;
+		* )
+			dlPharo
+			;;
+	esac
 }
 
 #################################
@@ -202,7 +231,7 @@ function install_pharo () {
 
 function dlStHubPkgNames () {
 	setDownloadApp
-	local LIST_URL=$STHUB_URL"list"
+	local LIST_URL=$stHubUrl"list"
 	$D_APP $D_LIST_PARAMS $LIST_URL
 }
 
@@ -246,26 +275,26 @@ function fetchGitHubPkgNames () {
 
 function fetchStHubPkgNames () {
 	echo_line "Checking package list file..."
-	if [ ! -f $LIST_FILE ]; then
+	if [ ! -f $stHubPkgIndexFile ]; then
 		echo_nline "not found"
 		echo_line "Downloading packages list..."
 		dlStHubPkgNames
 	else
-		echo_nline "found $LIST_FILE"
+		echo_nline "found $stHubPkgIndexFile"
 	fi
-	PKGS=$(xpath "//a[@class=\"project\"]/text()" $LIST_FILE)
+	PKGS=$(xpath "//a[@class=\"project\"]/text()" $stHubPkgIndexFile)
 }
 
 # Report how many packages were found in SmalltalkHub
 function countsh_packages () {
-	SILENT_MODE=1
+	silentMode=1
 	fetchStHubPkgNames
 	echo -ne "$PKGS" | wc -l
 }
 
 # Report how many packages were found in GitHub
 function countgh_packages () {
-	SILENT_MODE=1
+	silentMode=1
 	fetchGitHubPkgNames
 	echo -ne "$PKGS" | wc -l
 }
@@ -273,7 +302,7 @@ function countgh_packages () {
 # Install from Catalog
 function pkgCatalogInstall () {
 	PKGNAME=$1
-	./pharo $IMAGENAME get $PKGNAME 
+	./pharo $imageName get $PKGNAME 
 	return $?
 }
 
@@ -292,10 +321,10 @@ function pkgSHInstall () {
 	else
 		echo "Selected package: $FOUND"
 		IFS=/ read p USER <<< "$FOUND"
-		REPOURL=$STHUB_URL"mc/"$USER/$PKGNAME
+		REPOURL=$stHubUrl"mc/"$USER/$PKGNAME
 		echo "Repository: $REPOURL"
 	fi
-	./pharo $IMAGENAME config $REPOURL "ConfigurationOf"$PKGNAME --printVersion
+	./pharo $imageName config $REPOURL "ConfigurationOf"$PKGNAME --printVersion
 	return $?
 }
 
@@ -324,7 +353,7 @@ function install_packages () {
 
 # Search for package passed as argument in the SmalltalkHub repository
 function searchsh_packages () {
-	SILENT_MODE=1
+	silentMode=1
 	checkLibXML		
 	fetchStHubPkgNames
 	printf -- '%s\n' "$PKGS[@]" | grep -i "$1" | sed 's/^/SmalltalkHub\: /'
@@ -332,14 +361,14 @@ function searchsh_packages () {
 
 # Search for package passed as argument in the GitHub repository
 function searchgh_packages () {
-	SILENT_MODE=1
+	silentMode=1
 	fetchGitHubPkgNames
 	printf -- '%s\n' "$PKGS[@]" | grep -i "$1" | sed 's/^/GitHub\: /'
 }
 
 # Search for package passed as argument in all supported repositories
 function search_packages () {
-	SILENT_MODE=1
+	silentMode=1
 	searchsh_packages $1
 	searchgh_packages $1
 }
@@ -349,16 +378,16 @@ function search_packages () {
 #################################
 
 function dlPharo () {
-	SILENT_MODE=1
+	silentMode=1
 	echo_nline "Checking Pharo installation already present..."
-	if [ ! -f $IMAGENAME ]; then
+	if [ ! -f $imageName ]; then
 		echo_line "not found"
 		setDownloadApp	
 		echo_line "Downloading Pharo (stable version)..."
 #		exec $D_APP $D_PHARO_PARAMS get.pharo.org/$PHARO_VERSION+vm | bash
 		exec $D_APP $D_PHARO_PARAMS get.pharo.org | bash
 	else
-		echo_line "found $IMAGENAME in the current directory"
+		echo_line "found $imageName in the current directory"
 	fi
 
 	if [ ! -f pharo ]; then
@@ -373,12 +402,12 @@ function dlPharo () {
 
 case $1 in
 	listgh | listGH | LISTGH )
-		SILENT_MODE=1
+		silentMode=0
 		fetchGitHubPkgNames
 		echo "$PKGS"
 		;;
 	listsh | listSH | LISTSH ) 
-		SILENT_MODE=1
+		silentMode=1
 		checkLibXML		
 		fetchStHubPkgNames
 		echo "$PKGS"
@@ -387,7 +416,7 @@ case $1 in
 		printHelp
 		;;		
 	countsh | COUNTSH )
-		SILENT_MODE=1
+		silentMode=1
 		checkLibXML
 		countsh_packages
 		;;
@@ -399,7 +428,6 @@ case $1 in
 		install_packages "${@:2}"
 		;;
 	image | IMAGE )
-		findPlatform
 		install_pharo
 		;;
 	searchsh )
