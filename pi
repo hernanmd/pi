@@ -96,14 +96,14 @@ function setDownloadApp () {
 	echo_line "Checking for wget or curl..."
 	if cmdExists wget ; then
 		echo_nline "wget found..."
-		D_APP="wget --no-check-certificate"
-		D_LIST_PARAMS="-O ${stHubPkgIndexFile}"
-		D_PHARO_PARAMS="-O-"
+		dApp="wget --no-check-certificate"
+		dListParams="-O ${stHubPkgIndexFile}"
+		dPharoParams="-O-"
 	elif cmdExists curl ; then
 			echo_nline "curl found..."
-			D_APP="curl"
-			D_LIST_PARAMS="-o "$stHubPkgIndexFile
-			D_PHARO_PARAMS=""
+			dApp="curl"
+			dListParams="-o "$stHubPkgIndexFile
+			dPharoParams=""
 		else
 			echo_nline "I require wget or curl, but it's not installed. (brew install wget?) Aborting."
 			exit 1
@@ -231,18 +231,18 @@ function install_pharo () {
 
 function dlStHubPkgNames () {
 	setDownloadApp
-	local LIST_URL=$stHubUrl"list"
-	$D_APP $D_LIST_PARAMS $LIST_URL
+	local listUrl=$stHubUrl"list"
+	$dApp $dListParams $listUrl
 }
 
 function fetchGitHubPkgNames () {
 	setDownloadApp
-	local GH_TOPICS="https://api.github.com/search/repositories?per_page=100&q=topic:pharo"
+	local ghPharoTopics="https://api.github.com/search/repositories?per_page=100&q=topic:pharo"
 	# local GH_HEADER="Accept: application/vnd.github.mercy-preview+json"
-	local GH_PLFILE="pharo.js"
+	local ghPharoIndexFile="pharo.js"
 	# Download JSON file if not present
-	if [ ! -f $GH_PLFILE ]; then
-		$D_APP $GH_TOPICS -O $GH_PLFILE
+	if [ ! -f $ghPharoIndexFile ]; then
+		$dApp $ghPharoTopics -O $ghPharoIndexFile
 	fi
 	if ! cmdExists jq; then
 		# wget http://stedolan.github.io/jq/download/linux32/jq (32-bit system)
@@ -252,25 +252,25 @@ function fetchGitHubPkgNames () {
 				echo_line "Solaris seems not supported by jq. See https://stedolan.github.io/jq/ for details" 
 				;;
 			darwin*)  
-				$D_APP https://github.com/stedolan/jq/releases/download/jq-1.5/jq-osx-amd64
+				$dApp https://github.com/stedolan/jq/releases/download/jq-1.5/jq-osx-amd64
 				chmod +x ./jq
 				;; 
 			linux*)   
-				$D_APP http://stedolan.github.io/jq/download/linux64/jq
+				$dApp http://stedolan.github.io/jq/download/linux64/jq
 				chmod +x ./jq
 				;;
 			bsd*)     
 				echo_line "BSD seems not supported by jq. See https://stedolan.github.io/jq/ for details" 
 				;;
 			msys*)    
-				$D_APP -O jq.exe https://github.com/stedolan/jq/releases/download/jq-1.5/jq-win64.exe 
+				$dApp -O jq.exe https://github.com/stedolan/jq/releases/download/jq-1.5/jq-win64.exe 
 				;;
 			*) 
 				echo "unknown: $OSTYPE" 
 				;;
 		esac
 	fi
-	PKGS=$(./jq '.items[].full_name' $GH_PLFILE)	
+	PKGS=$(./jq '.items[].full_name' $ghPharoIndexFile)	
 }
 
 function fetchStHubPkgNames () {
@@ -301,30 +301,30 @@ function countgh_packages () {
 
 # Install from Catalog
 function pkgCatalogInstall () {
-	PKGNAME=$1
-	./pharo $imageName get $PKGNAME 
+	pkgName=$1
+	./pharo $imageName get $pkgName 
 	return $?
 }
 
 # Install from STHub
 # Currently uses exact match for package names
 function pkgSHInstall () {
-	PKGNAME=$1
+	pkgName=$1
 	fetchStHubPkgNames
-	FOUND=$(echo "$PKGS" | grep -w $PKGNAME)
-	PKGCOUNT=$(echo "$FOUND" | wc -l)
-	if [ "$PKGCOUNT" -gt 1 ]; then
-		echo "Found $PKGCOUNT packages with the name $PKGNAME. Listing follows..."
-		cat -n <<< "$FOUND"	
+	pkgFound=$(echo "$PKGS" | grep -w $pkgName)
+	pkgCount=$(echo "$pkgFound" | wc -l)
+	if [ "$pkgCount" -gt 1 ]; then
+		echo "Found $pkgCount packages with the name $pkgName. Listing follows..."
+		cat -n <<< "$pkgFound"	
 		return 1
-		# select_package "$FOUND"
+		# select_package "$pkgFound"
 	else
-		echo "Selected package: $FOUND"
-		IFS=/ read p USER <<< "$FOUND"
-		REPOURL=$stHubUrl"mc/"$USER/$PKGNAME
-		echo "Repository: $REPOURL"
+		echo "Selected package: $pkgFound"
+		IFS=/ read p USER <<< "$pkgFound"
+		repoUrl=$stHubUrl"mc/"$USER/$pkgName
+		echo "Repository: $repoUrl"
 	fi
-	./pharo $imageName config $REPOURL "ConfigurationOf"$PKGNAME --printVersion
+	./pharo $imageName config $repoUrl "ConfigurationOf"$pkgName --printVersion
 	return $?
 }
 
@@ -384,8 +384,8 @@ function dlPharo () {
 		echo_line "not found"
 		setDownloadApp	
 		echo_line "Downloading Pharo (stable version)..."
-#		exec $D_APP $D_PHARO_PARAMS get.pharo.org/$PHARO_VERSION+vm | bash
-		exec $D_APP $D_PHARO_PARAMS get.pharo.org | bash
+#		exec $dApp $dPharoParams get.pharo.org/$PHARO_VERSION+vm | bash
+		exec $dApp $dPharoParams get.pharo.org | bash
 	else
 		echo_line "found $imageName in the current directory"
 	fi
