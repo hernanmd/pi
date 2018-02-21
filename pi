@@ -13,15 +13,18 @@
 # Tested on Windows 8.1 and GNU/Linux
 
 #################################
-## Pharo Download Settings
+## Pharo Installer Settings
 #################################
 PHARO_VERSION=61
-piVersion=0.3
+piVersion=0.3.1
 imageName="Pharo.image"
 stHubUrl="http://smalltalkhub.com/"
 stHubPkgIndexFile="index.html"
 # Work in verbose (1) or silent mode (0)
 silentMode=0
+# Default Configuration/Baseline version (stable, development, bleedingEdge)
+pkgVersion="stable"
+# Detected Operating System
 os="Unknown"
 
 #################################
@@ -146,6 +149,9 @@ The options include:
 		version 		Show program version
 		install <pkgname>	Install pkgname to the image found in the current working directory. Download the image if not found.
 
+		--dev			Set Configuration/Baseline to install development versions.
+		--bleedingEdge		Set Configuration/Baseline to install bleedingEdge version.
+		
 Pharo Install project home page: https://github.com/hernanmd/pi
 To report bugs or get some help check: https://github.com/hernanmd/pi/issues
 This software is licensed under the MIT License.
@@ -220,6 +226,7 @@ function install_pharo () {
 			ppa_install
 			;;
 		* )
+			echo "Installing Pharo from get.pharo.org"
 			dlPharo
 			;;
 	esac
@@ -306,9 +313,25 @@ function pkgCatalogInstall () {
 	return $?
 }
 
+# Detect which Configuration version to install.
+# This setting is global: Applied to all Configuration names passed as parameters.
+function setPkgVersionSetting () {
+	for param in "$@"; do
+		case $param in	
+			"--dev")
+				pkgVersion="development"
+				;;
+			"--bleedingEdge")
+				pkgVersion="bleedingEdge"
+				;;
+		esac
+	done
+}
+
 # Install from STHub
 # Currently uses exact match for package names
 function pkgSHInstall () {
+	setPkgVersionSetting
 	pkgName=$1
 	fetchStHubPkgNames
 	pkgFound=$(echo "$PKGS" | grep -w $pkgName)
@@ -325,7 +348,7 @@ function pkgSHInstall () {
 		echo "Repository: $repoUrl"
 	fi
 	echo "Install command: ./pharo $imageName config $repoUrl "ConfigurationOf"$pkgName --printVersion"
-	./pharo $imageName config $repoUrl "ConfigurationOf"$pkgName --install=stable --printVersion
+	./pharo $imageName config $repoUrl "ConfigurationOf"$pkgName --install=$pkgVersion --printVersion
 	return $?
 }
 
@@ -379,14 +402,14 @@ function search_packages () {
 #################################
 
 function dlPharo () {
-	silentMode=1
+	silentMode=0
 	echo_nline "Checking Pharo installation already present..."
 	if [ ! -f $imageName ]; then
-		echo_line "not found"
+		echo_nline "not found"
 		setDownloadApp	
 		echo_line "Downloading Pharo (stable version)..."
 #		exec $dApp $dPharoParams get.pharo.org/$PHARO_VERSION+vm | bash
-		exec $dApp $dPharoParams get.pharo.org | bash
+		exec $dApp $dPharoParams https://get.pharo.org | bash
 	else
 		echo_line "found $imageName in the current directory"
 	fi
@@ -447,7 +470,7 @@ case $1 in
 		examples && exit 0
 		;;
 	* ) 
-	echo $"Usage: $0 {list|listGH|listSH|countGH|countSH|image|examples|install <pkgname>}"
+	echo $"Usage: $0 {list | listGH | listSH | countGH | countSH | image | examples | [--dev|--bleedingEdge] install <pkgname>}"
 	exit 1
 esac
 
