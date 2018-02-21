@@ -425,7 +425,7 @@ case $1 in
 		countgh_packages
 		;;		
 	install | INSTALL )
-		dlPharo
+		install_pharo
 		install_packages "${@:2}"
 		;;
 	image | IMAGE )
