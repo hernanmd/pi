@@ -308,23 +308,25 @@ function pkgCatalogInstall () {
 
 # Install from STHub
 # Currently uses exact match for package names
+./pharo Pharo.image config http://smalltalkhub.com/mc/hernan/BioSmalltalk ConfigurationOfBioSmalltalk --printVersion
 function pkgSHInstall () {
 	pkgName=$1
 	fetchStHubPkgNames
 	pkgFound=$(echo "$PKGS" | grep -w $pkgName)
 	pkgCount=$(echo "$pkgFound" | wc -l)
+	echo "Found $pkgCount package(s) with the name $pkgName."
 	if [ "$pkgCount" -gt 1 ]; then
-		echo "Found $pkgCount packages with the name $pkgName. Listing follows..."
+		echo "Listing follows..."
 		cat -n <<< "$pkgFound"	
 		return 1
-		# select_package "$pkgFound"
 	else
 		echo "Selected package: $pkgFound"
 		IFS=/ read p USER <<< "$pkgFound"
 		repoUrl=$stHubUrl"mc/"$USER/$pkgName
 		echo "Repository: $repoUrl"
 	fi
-	./pharo $imageName config $repoUrl "ConfigurationOf"$pkgName --printVersion
+	echo "Install command: ./pharo $imageName config $repoUrl "ConfigurationOf"$pkgName --printVersion"
+	./pharo $imageName config $repoUrl "ConfigurationOf"$pkgName --install=stable --printVersion
 	return $?
 }
 
@@ -332,10 +334,10 @@ function pkgSHInstall () {
 function install_packages () {
 	until [ -z "$1" ]; do
 		echo -n "Trying to install from Pharo Catalog..."
-		if ! pkgCatalogInstall $1; then
+		if ! (pkgCatalogInstall $1); then
 			echo "not found"
 			echo "Trying to install from SmalltalkHub..."
-			if ! pkgSHInstall $1; then
+			if ! (pkgSHInstall $1); then
 				echo "not found"
 			else
 				echo "done"
