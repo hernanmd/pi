@@ -308,7 +308,6 @@ function pkgCatalogInstall () {
 
 # Install from STHub
 # Currently uses exact match for package names
-./pharo Pharo.image config http://smalltalkhub.com/mc/hernan/BioSmalltalk ConfigurationOfBioSmalltalk --printVersion
 function pkgSHInstall () {
 	pkgName=$1
 	fetchStHubPkgNames
