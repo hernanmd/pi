@@ -2,7 +2,9 @@
 
 Pharo Install - A tool for installing Pharo Smalltalk packages.
 
-PI is a MIT-pip-like command line application installer for Pharo Smalltalk. Copy & pasting install scripts is an easy method, but it’s also time consuming because of the manual interaction. PI turns copy & paste Smalltalk install scripts into bash one-liners which works on Unix/Linux, MacOS and Windows (MinGW/MSYS). PI automatically tries to download necessary dependencies for parsing both SmalltalkHub and GitHub package lists, and also downloads the latest stable Pharo image and virtual machine if none is found in the current directory. It also supports installing multiple packages at once.
+PI is a MIT-pip-like command line application installer for Pharo Smalltalk. Copy & pasting install scripts is an easy method, but it’s also time consuming because of the manual interaction. 
+
+PI turns copy & paste Smalltalk (Metacello Configurations) install scripts into bash one-liners which works on Unix/Linux, MacOS and Windows (MinGW/MSYS). PI automatically tries to download necessary dependencies for parsing both SmalltalkHub and GitHub repositories lists, and also downloads the latest stable Pharo image and virtual machine if none is found in the current directory. It also supports installing multiple packages at once.
 
 # Installation
 
@@ -133,6 +135,7 @@ GitHub: "pillar-markup/Pillar-Archetype"
   - Timestamp output ?
   - Implement access to GitHub paginated results (https://developer.github.com/v3/guides/traversing-with-pagination/)
   - Implement GitHub package installation
+  - Install individual packages instead of only Metacello Configurations.
   - Uninstall packages
 
 # License
