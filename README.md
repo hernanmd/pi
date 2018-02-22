@@ -54,42 +54,19 @@ mv pi /usr/local/bin
 
 # Usage examples
 
+## Installing
+
+![Installing examples](images/ex_install.png)
+
 ## Listing
 
-List SmalltalkHub packages:
-
-```bash
-$ pi listsh
-```
-
-List GitHub packages:
-
-```bash
-$ pi listgh
-```
+![Listing examples](images/ex_list.png)
 
 ## Searching
 
 Search both in SmalltalkHub and GitHub repositories:
 
-```bash
-$ pi search pillar
-$ pi search hernan
-```
-
-## Installing
-
-Install BioSmalltalk stable:
-
-```bash
-$ pi install BioSmalltalk
-```
-
-Install multiple packages at once:
-
-```bash
-$ pi install Diacritics ISO3166 StringExtensions
-```
+![Search examples](images/ex_search.png)
 
 # Sample outputs
 
