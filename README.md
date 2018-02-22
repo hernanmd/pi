@@ -39,7 +39,7 @@ mv pi /usr/local/bin
 
 # Usage notes
 
-  - The "install" option defaults to the current Pharo "stable" version. 
+  - The "image" option defaults to the current Pharo "stable" version. 
   - Assume only one image in a directory. Future version will add support for multiple images.
   - PI can query SmalltalkHub or GitHub. 
     - Listing packages from GitHub is currently (work in progress) limited to 100 results.
@@ -70,45 +70,9 @@ Search both in SmalltalkHub and GitHub repositories:
 
 # Sample outputs
 
-## Listing from GitHub
+![Listing output from GitHub](images/list_1.png)
 
-```bash
-$ pi listgh
-"SquareBracketAssociates/UpdatedPharoByExample"
-"OpenSmalltalk/opensmalltalk-vm"
-"pharo-project/pharo"
-"pharo-vcs/iceberg"
-"SquareBracketAssociates/EnterprisePharo"
-"SquareBracketAssociates/NumericalMethods"
-"PolyMathOrg/PolyMath"
-...
-```
-
-## Listing from SmalltalkHub
-
-```bash
-$ pi listsh
-15Puzzle/OlesDobosevych
-2048Game/PierreChanson
-3DaysVM/ClementBera
-528-TicTakToe/johnmcconnell
-...
-```
-
-## Searching 
-
-```bash
-$ pi search pillar
-SmalltalkHub: PetitPillar/CyrilFerlicot
-SmalltalkHub: Pillar/Pier
-SmalltalkHub: Pillar2TxText/CamilleTeruel
-SmalltalkHub: PillarBook/mikefilonov
-SmalltalkHub: PillarHub/mikefilonov
-SmalltalkHub: PillarHub-Inbox/mikefilonov
-SmalltalkHub: PillarWithoutMustache/ThibaultAr
-GitHub: "pillar-markup/pillar"
-GitHub: "pillar-markup/Pillar-Archetype"
-```
+![Listing output from SmalltalkHub](images/list_2.png)
 
 # Contribute
 
