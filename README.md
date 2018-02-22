@@ -1,3 +1,7 @@
+
+[![MIT License][license-badge]][LICENSE]
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](http://makeapullrequest.com)
+
 # Description
 
 Pharo Install - A tool for installing Pharo Smalltalk packages.
@@ -43,10 +47,10 @@ mv pi /usr/local/bin
   - PI can install packages from SmalltalkHub (GitHub repositories is one the way).
   - Package search is case-sensitive.
   - For GitHub repositories: 
-  - - If it has "pharo" as topic, it will be listed.
-  - - If jq is not available, it will be downloaded to the directory where pi was executed.
+    - If it has "pharo" as topic, it will be listed.
+    - If jq is not available, it will be downloaded to the directory where pi was executed.
   - For SmalltalkHub repositories: 
-  - - Requires libxml2 (xmllint command).
+    - Requires libxml2 (xmllint command).
   
 
 # Usage examples
@@ -132,6 +136,9 @@ GitHub: "pillar-markup/Pillar-Archetype"
 
 # Contribute
 
+**Working on your first Pull Request?** You can learn how from this *free* series [How to Contribute to an Open Source Project on 
+GitHub](https://egghead.io/series/how-to-contribute-to-an-open-source-project-on-github)
+    
 If you have discovered a bug or have a feature suggestion, feel free to create an issue on Github.
 
 If you'd like to make some changes yourself, see the following:    
