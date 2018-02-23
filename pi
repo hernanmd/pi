@@ -16,7 +16,7 @@
 ## Pharo Installer Settings
 #################################
 PHARO_VERSION=61
-piVersion=0.3.1
+piVersion=0.3.2
 imageName="Pharo.image"
 stHubUrl="http://smalltalkhub.com/"
 stHubPkgIndexFile="index.html"
@@ -43,7 +43,7 @@ function echo_nline () {
 
 # Returns 0 if command was found in the current system, 1 otherwise
 function cmdExists () {
-    type "$1" &> /dev/null ;
+    type "$1" &> /dev/null || [ -f ./$1 ];
 	return $?
 }
 
@@ -51,13 +51,22 @@ function trim_both () {
 	echo $(echo -e "${1}" | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')
 }
 
-# Search argument XPATH expression in HTML file
-function xpath() {
-	if [ $# -ne 2 ]; then
-		echo "Usage: xpath xpath file"
-		return 1
+function setDownloadApp () {
+	echo_line "Checking for wget or curl..."
+	if cmdExists wget ; then
+		echo_nline "wget found..."
+		dApp="wget --no-check-certificate"
+		dListParams="-O ${stHubPkgIndexFile}"
+		dPharoParams="-O-"
+	elif cmdExists curl ; then
+			echo_nline "curl found..."
+			dApp="curl"
+			dListParams="-o "$stHubPkgIndexFile
+			dPharoParams=""
+		else
+			echo_nline "I require wget or curl, but it's not installed. (brew install wget?) Aborting."
+			exit 1
 	fi
-	xmllint --nonet --html --shell $2 <<< "cat $1" | sed '/^\/ >/d;/^\ /d'
 }
 
 function findDistributionID () {
@@ -95,23 +104,9 @@ function findDistributionID () {
 	echo_nline "Found $os"
 }
 
-function setDownloadApp () {
-	echo_line "Checking for wget or curl..."
-	if cmdExists wget ; then
-		echo_nline "wget found..."
-		dApp="wget --no-check-certificate"
-		dListParams="-O ${stHubPkgIndexFile}"
-		dPharoParams="-O-"
-	elif cmdExists curl ; then
-			echo_nline "curl found..."
-			dApp="curl"
-			dListParams="-o "$stHubPkgIndexFile
-			dPharoParams=""
-		else
-			echo_nline "I require wget or curl, but it's not installed. (brew install wget?) Aborting."
-			exit 1
-	fi
-}
+#################################################
+# libXML / xmllint functions 
+#################################################
 
 function checkLibXML () {
 	echo_nline "Checking for xmllint..."
@@ -123,6 +118,95 @@ function checkLibXML () {
 		echo_nline "found"
 	fi
 }
+
+function downloadLibXML () {
+	local libXMLWinName="libxml2-2.7.8.win32"
+	local libXMLWin32=$libXMLWinName".zip"
+	local libXMLWin32URL="ftp://ftp.zlatkovic.com/libxml"
+	local libXMLWin64="libxml2-2.9.3-win32-x86.7z"
+	local libXMLWin64URL="ftp://ftp.zlatkovic.com/libxml/64bit/"
+	
+	local libXMLSolarisURL="http://get.opencsw.org/now"
+	
+	local libXMLMac1="combo-2007-10-07.dmg.gz"
+	local libXMLMac2="combo-20031108.dmg.gz"
+	local libXMLMacURL="https://www.explain.com.au/download/"
+	
+	setDownloadApp
+	if ! cmdExists xmllint; then
+		echo_nline "Trying to install libxml2..."
+		case "$OSTYPE" in
+			solaris*) 
+				pkgadd -d $libXMLSolarisURL
+				/opt/csw/bin/pkgutil -U
+				/opt/csw/bin/pkgutil -y -i libxml2_2 
+				/usr/sbin/pkgchk -L CSWlibxml2-2 # list files
+				;;
+			darwin*)  
+				# Using Leopard? xmllint and libxml2 version 2.6.16 are built-in! xsltproc and libxslt version 1.1.12 are also included.
+				# Using Tiger? xmllint and libxml2 version 2.6.16 are built-in! xsltproc and libxslt version 1.1.11 are also included.
+				# Using Panther? xmllint and libxml2 version 2.5.4 are built-in! Even better, 10.3.9 has libxml2-2.6.16 and libxslt-1.1.9 built-in!
+				$dApp $libXMLMacURL/$libXMLMac1
+				$dApp $libXMLMacURL/$libXMLMac2
+				# From https://www.explain.com.au/oss/libxml2xslt.html
+				sudo mkdir -p /usr/local/bin
+				cd /usr/local/bin
+				sudo ln -s /Library/Frameworks/libxml.framework/Resources/Scripts/*
+				sudo ln -s /Library/Frameworks/libxslt.framework/Resources/Scripts/*
+
+				sudo mkdir -p /usr/local/include
+				cd /usr/local/include
+				sudo ln -s /Library/Frameworks/libxml.framework/Headers/*
+				sudo ln -s /Library/Frameworks/libxslt.framework/Headers/*
+				sudo ln -s /Library/Frameworks/libexslt.framework/Headers/*
+
+				mkdir -p /usr/local/lib
+				cd /usr/local/lib
+				sudo ln -s /Library/Frameworks/libxml.framework/libxml libxml2.dylib
+				sudo ln -s /Library/Frameworks/libxslt.framework/libxslt libxslt.dylib
+				sudo ln -s /Library/Frameworks/libexslt.framework/libxslt libexslt.dylib
+
+				sudo mkdir -p /usr/local/man/man1
+				sudo mkdir -p /usr/local/man/man3
+				echo 'export PATH=/usr/local/bin:$PATH' >> ~/.bashrc
+				echo 'export MANPATH=/usr/local/man:$MANPATH' >> ~/.bashrc
+				source ~/.bashrc				
+				;; 
+			linux*)   
+				echo "Should be implemented"
+				;;
+			bsd*)     
+				echo_line "BSD seems not supported by libxml2. See http://www.xmlsoft.org for details" 
+				;;
+			msys*)
+				# Remove any previous download of ZIP file
+				
+				$dApp $libXMLWin32URL/$libXMLWin32
+				unzip -u $libXMLWin32
+				# Copy to current directory
+				cp -v $libXMLWinName/bin/* .
+				;;
+			*) 
+				echo "unknown: $OSTYPE" 
+				;;
+		esac
+		echo_nline "done"
+	fi
+}
+
+# Search argument XPATH expression in HTML file
+function xpath() {
+	if [ $# -ne 2 ]; then
+		echo "Usage: xpath xpath file"
+		return 1
+	fi
+	downloadLibXML
+	xmllint --nonet --html --shell $2 <<< "cat $1" | sed '/^\/ >/d;/^\ /d'
+}
+
+#########################################
+# PI Options
+#########################################
 
 function versionString () {
 	silentMode=0
@@ -281,13 +365,13 @@ function fetchGitHubPkgNames () {
 }
 
 function fetchStHubPkgNames () {
-	echo_line "Checking package list file..."
+	echo_nline "Checking package list file..."
 	if [ ! -f $stHubPkgIndexFile ]; then
-		echo_nline "not found"
-		echo_line "Downloading packages list..."
+		echo_line "not found"
+		echo_nline "Downloading packages list..."
 		dlStHubPkgNames
 	else
-		echo_nline "found $stHubPkgIndexFile"
+		echo_line "found $stHubPkgIndexFile"
 	fi
 	PKGS=$(xpath "//a[@class=\"project\"]/text()" $stHubPkgIndexFile)
 }
@@ -331,7 +415,6 @@ function setPkgVersionSetting () {
 # Install from STHub
 # Currently uses exact match for package names
 function pkgSHInstall () {
-	setPkgVersionSetting
 	pkgName=$1
 	fetchStHubPkgNames
 	pkgFound=$(echo "$PKGS" | grep -w $pkgName)
@@ -355,17 +438,17 @@ function pkgSHInstall () {
 # Read argument packages and install from their repositories
 function install_packages () {
 	until [ -z "$1" ]; do
-		echo -n "Trying to install from Pharo Catalog..."
+		echo_nline "Trying to install from Pharo Catalog..."
 		if ! (pkgCatalogInstall $1); then
-			echo "not found"
-			echo "Trying to install from SmalltalkHub..."
+			echo_nline "not found"
+			echo_nline "Trying to install from SmalltalkHub..."
 			if ! (pkgSHInstall $1); then
-				echo "not found"
+				echo_line "not found"
 			else
-				echo "done"
+				echo_line "done"
 			fi
 		else
-			echo "done"
+			echo_line "done"
 		fi
 		shift
 	done		
@@ -405,17 +488,17 @@ function dlPharo () {
 	silentMode=0
 	echo_nline "Checking Pharo installation already present..."
 	if [ ! -f $imageName ]; then
-		echo_nline "not found"
+		echo_line "not found"
 		setDownloadApp	
-		echo_line "Downloading Pharo (stable version)..."
+		echo_nline "Downloading Pharo (stable version)..."
 #		exec $dApp $dPharoParams get.pharo.org/$PHARO_VERSION+vm | bash
 		exec $dApp $dPharoParams https://get.pharo.org | bash
 	else
-		echo_line "found $imageName in the current directory"
+		echo_nline "found $imageName in the current directory"
 	fi
 
 	if [ ! -f pharo ]; then
-		echo_line "Try again. Pharo was not downloaded correctly, exiting"
+		echo_nline "Try again. Pharo was not downloaded correctly, exiting"
 		exit 1
 	fi
 }
@@ -468,6 +551,11 @@ case $1 in
 		;;
 	examples | EXAMPLES ) 
 		examples && exit 0
+		;;
+	"--dev" | "--bleedingEdge")
+		setPkgVersionSetting
+		install_pharo
+		install_packages "${@:3}"		
 		;;
 	* ) 
 	echo $"Usage: $0 {list | listGH | listSH | countGH | countSH | image | examples | [--dev|--bleedingEdge] install <pkgname>}"
