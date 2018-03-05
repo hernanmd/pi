@@ -367,7 +367,7 @@ function fetchGitHubPkgNames () {
 function fetchStHubPkgNames () {
 	echo_nline "Checking package list file..."
 	if [ ! -f $stHubPkgIndexFile ]; then
-		echo_line "not found"
+		echo_nline "not found"
 		echo_nline "Downloading packages list..."
 		dlStHubPkgNames
 	else
@@ -400,6 +400,7 @@ function pkgCatalogInstall () {
 # Detect which Configuration version to install.
 # This setting is global: Applied to all Configuration names passed as parameters.
 function setPkgVersionSetting () {
+	echo_nline "Setting package version..."
 	for param in "$@"; do
 		case $param in	
 			"--dev")
@@ -410,6 +411,7 @@ function setPkgVersionSetting () {
 				;;
 		esac
 	done
+	echo_nline "Selected package version: $pkgVersion"
 }
 
 # Install from STHub
@@ -430,7 +432,7 @@ function pkgSHInstall () {
 		repoUrl=$stHubUrl"mc/"$USER/$pkgName
 		echo "Repository: $repoUrl"
 	fi
-	echo "Install command: ./pharo $imageName config $repoUrl "ConfigurationOf"$pkgName --printVersion"
+	echo "Install command: ./pharo $imageName config $repoUrl "ConfigurationOf"$pkgName --install=$pkgVersion --printVersion"
 	./pharo $imageName config $repoUrl "ConfigurationOf"$pkgName --install=$pkgVersion --printVersion
 	return $?
 }
@@ -488,7 +490,7 @@ function dlPharo () {
 	silentMode=0
 	echo_nline "Checking Pharo installation already present..."
 	if [ ! -f $imageName ]; then
-		echo_line "not found"
+		echo_nline "not found"
 		setDownloadApp	
 		echo_nline "Downloading Pharo (stable version)..."
 #		exec $dApp $dPharoParams get.pharo.org/$PHARO_VERSION+vm | bash
@@ -553,9 +555,9 @@ case $1 in
 		examples && exit 0
 		;;
 	"--dev" | "--bleedingEdge")
-		setPkgVersionSetting
-		install_pharo
-		install_packages "${@:3}"		
+		setPkgVersionSetting "${@}"
+		#install_pharo
+		#install_packages "${@:3}"		
 		;;
 	* ) 
 	echo $"Usage: $0 {list | listGH | listSH | countGH | countSH | image | examples | [--dev|--bleedingEdge] install <pkgname>}"
