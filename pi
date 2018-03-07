@@ -201,7 +201,11 @@ function xpath() {
 		return 1
 	fi
 	downloadLibXML
-	xmllint --nonet --html --shell $2 <<< "cat $1" | sed '/^\/ >/d;/^\ /d'
+	# GitBash doesn't provide /usr/local/bin and cannot copy xmllint.exe to any PATH directory without permission denied
+	if ! cmdExists xmllint; then
+		./xmllint --nonet --html --shell $2 <<< "cat $1" | sed '/^\/ >/d;/^\ /d'
+	else
+		xmllint --nonet --html --shell $2 <<< "cat $1" | sed '/^\/ >/d;/^\ /d'
 }
 
 #########################################
