@@ -206,6 +206,7 @@ function xpath() {
 		./xmllint --nonet --html --shell $2 <<< "cat $1" | sed '/^\/ >/d;/^\ /d'
 	else
 		xmllint --nonet --html --shell $2 <<< "cat $1" | sed '/^\/ >/d;/^\ /d'
+	fi
 }
 
 #########################################
