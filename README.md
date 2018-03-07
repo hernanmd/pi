@@ -49,8 +49,7 @@ mv pi /usr/local/bin
     - If it has "pharo" as topic, it will be listed.
     - If jq is not available, it will be downloaded to the directory where pi was executed.
   - For SmalltalkHub repositories: 
-    - Requires libxml2 (xmllint command).
-  
+    - If xmllint is not available, it will be downloaded to the directory where pi was executed.  
 
 # Usage examples
 
