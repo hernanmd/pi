@@ -15,10 +15,11 @@
 #################################
 ## Pharo Installer Settings
 #################################
-PHARO_VERSION=61
-piVersion=0.3.2
+pharoVersion=61
+piVersion=0.3.3
 imageName="Pharo.image"
 stHubUrl="http://smalltalkhub.com/"
+zeroConfUrl="https://get.pharo.org"
 stHubPkgIndexFile="index.html"
 # Work in verbose (1) or silent mode (0)
 silentMode=0
@@ -55,7 +56,7 @@ function setDownloadApp () {
 	echo_line "Checking for wget or curl..."
 	if cmdExists wget ; then
 		echo_nline "wget found..."
-		dApp="wget --no-check-certificate"
+		dApp="wget"
 		dListParams="-O ${stHubPkgIndexFile}"
 		dPharoParams="-O-"
 	elif cmdExists curl ; then
@@ -66,6 +67,36 @@ function setDownloadApp () {
 		else
 			echo_nline "I require wget or curl, but it's not installed. (brew install wget?) Aborting."
 			exit 1
+	fi
+}
+
+function is64Bit () {
+	[ "$(uname -m)" == "x86_64" ];
+	return $?
+}
+
+function downloadWin7z () {
+	local zip7Win64Exec="7z1801-x64.exe"
+	local zip7Win64URL="https://www.7-zip.org/a/$zip7Win64Exec"
+
+	local zip7Win32Exec="7z1801.exe"
+	local zip7Win32URL="https://www.7-zip.org/a/$zip7Win32Exec"
+	
+	echo_nline "Downloading 7-Zip..."
+	if is64Bit; then
+		if [ ! -f $zip7Win64Exec ]; then
+			$dApp $zip7Win64URL
+		fi
+		if [ ! -f /c/Program\ Files\ \(x86\)/7-Zip/7z.exe ]; then 
+			# Install 7z		
+			exec ./$zip7Win64Exec
+		fi
+	else
+		if [ ! -f $zip7Win32Exec ]; then
+			$dApp $zip7Win32URL
+		fi
+		# Install 7z		
+		exec ./$zip7Win32Exec
 	fi
 }
 
@@ -108,69 +139,90 @@ function findDistributionID () {
 # libXML / xmllint functions 
 #################################################
 
-function checkLibXML () {
-	echo_nline "Checking for xmllint..."
-	if ! cmdExists xmllint; then
-		echo_nline "not found (install libxml2 or msys-libxml2 as required)"
-		echo_line "Example: apt-get install libxml2-utils"
-		exit 1
+function installLibXMLMac () {
+	local libXMLMac1="combo-2007-10-07.dmg.gz"
+	local libXMLMac2="combo-20031108.dmg.gz"
+	local libXMLMacURL="https://www.explain.com.au/download/"
+	# Using Leopard? xmllint and libxml2 version 2.6.16 are built-in! xsltproc and libxslt version 1.1.12 are also included.
+	# Using Tiger? xmllint and libxml2 version 2.6.16 are built-in! xsltproc and libxslt version 1.1.11 are also included.
+	# Using Panther? xmllint and libxml2 version 2.5.4 are built-in! Even better, 10.3.9 has libxml2-2.6.16 and libxslt-1.1.9 built-in!
+	$dApp $libXMLMacURL/$libXMLMac1
+	$dApp $libXMLMacURL/$libXMLMac2
+	# From https://www.explain.com.au/oss/libxml2xslt.html
+	sudo mkdir -p /usr/local/bin
+	cd /usr/local/bin
+	sudo ln -s /Library/Frameworks/libxml.framework/Resources/Scripts/*
+	sudo ln -s /Library/Frameworks/libxslt.framework/Resources/Scripts/*
+
+	sudo mkdir -p /usr/local/include
+	cd /usr/local/include
+	sudo ln -s /Library/Frameworks/libxml.framework/Headers/*
+	sudo ln -s /Library/Frameworks/libxslt.framework/Headers/*
+	sudo ln -s /Library/Frameworks/libexslt.framework/Headers/*
+
+	mkdir -p /usr/local/lib
+	cd /usr/local/lib
+	sudo ln -s /Library/Frameworks/libxml.framework/libxml libxml2.dylib
+	sudo ln -s /Library/Frameworks/libxslt.framework/libxslt libxslt.dylib
+	sudo ln -s /Library/Frameworks/libexslt.framework/libxslt libexslt.dylib
+
+	sudo mkdir -p /usr/local/man/man1
+	sudo mkdir -p /usr/local/man/man3
+	echo 'export PATH=/usr/local/bin:$PATH' >> ~/.bashrc
+	echo 'export MANPATH=/usr/local/man:$MANPATH' >> ~/.bashrc
+	source ~/.bashrc		
+}
+
+function installLibXMLSolaris () {
+	local libXMLSolarisURL="http://get.opencsw.org/now"
+	pkgadd -d $libXMLSolarisURL
+	/opt/csw/bin/pkgutil -U
+	/opt/csw/bin/pkgutil -y -i libxml2_2 
+	/usr/sbin/pkgchk -L CSWlibxml2-2 # list files
+}
+
+function installLibXMLMSYS () {
+	local libXMLWin32="libxml2-2.7.8.win32.zip"
+	local libXMLWin32URL="ftp://ftp.zlatkovic.com/libxml"
+	local libXMLWin64="libxml2-2.9.3-win32-x86_64.7z"
+	local libXMLWin64URL="ftp://ftp.zlatkovic.com/libxml/64bit/"
+
+	echo_nline "Checking LibXML..."
+	# Remove any previous download of ZIP file
+	if is64Bit; then
+		# Check if library installer already was downloaded
+		if [ ! -f $libXMLWin64 ]; then
+			$dApp $libXMLWin64URL/$libXMLWin64
+		fi
+		# Download and install 7z to uncompress
+		if [ ! -f "/c/Program\ Files\ \(x86\)/7-Zip" ]; then
+			downloadWin7z
+		fi
+		echo_nline "Uncompressing libXML"
+		/c/Program\ Files\ \(x86\)/7-Zip/7z.exe x $libXMLWin64
+		# Copy to current directory		
+		cp -v $libXMLWin64/bin/* .			
 	else
-		echo_nline "found"
+		# Check if library installer already was downloaded
+		if [ ! -f $libXMLWin32 ]; then	
+			$dApp $libXMLWin32URL/$libXMLWin32
+		fi
+		unzip -u $libXMLWin32
+		# Copy to current directory
+		cp -v $libXMLWin32/bin/* .		
 	fi
 }
 
 function downloadLibXML () {
-	local libXMLWinName="libxml2-2.7.8.win32"
-	local libXMLWin32=$libXMLWinName".zip"
-	local libXMLWin32URL="ftp://ftp.zlatkovic.com/libxml"
-	local libXMLWin64="libxml2-2.9.3-win32-x86.7z"
-	local libXMLWin64URL="ftp://ftp.zlatkovic.com/libxml/64bit/"
-	
-	local libXMLSolarisURL="http://get.opencsw.org/now"
-	
-	local libXMLMac1="combo-2007-10-07.dmg.gz"
-	local libXMLMac2="combo-20031108.dmg.gz"
-	local libXMLMacURL="https://www.explain.com.au/download/"
-	
 	setDownloadApp
 	if ! cmdExists xmllint; then
 		echo_nline "Trying to install libxml2..."
 		case "$OSTYPE" in
 			solaris*) 
-				pkgadd -d $libXMLSolarisURL
-				/opt/csw/bin/pkgutil -U
-				/opt/csw/bin/pkgutil -y -i libxml2_2 
-				/usr/sbin/pkgchk -L CSWlibxml2-2 # list files
+				installLibXMLSolaris
 				;;
 			darwin*)  
-				# Using Leopard? xmllint and libxml2 version 2.6.16 are built-in! xsltproc and libxslt version 1.1.12 are also included.
-				# Using Tiger? xmllint and libxml2 version 2.6.16 are built-in! xsltproc and libxslt version 1.1.11 are also included.
-				# Using Panther? xmllint and libxml2 version 2.5.4 are built-in! Even better, 10.3.9 has libxml2-2.6.16 and libxslt-1.1.9 built-in!
-				$dApp $libXMLMacURL/$libXMLMac1
-				$dApp $libXMLMacURL/$libXMLMac2
-				# From https://www.explain.com.au/oss/libxml2xslt.html
-				sudo mkdir -p /usr/local/bin
-				cd /usr/local/bin
-				sudo ln -s /Library/Frameworks/libxml.framework/Resources/Scripts/*
-				sudo ln -s /Library/Frameworks/libxslt.framework/Resources/Scripts/*
-
-				sudo mkdir -p /usr/local/include
-				cd /usr/local/include
-				sudo ln -s /Library/Frameworks/libxml.framework/Headers/*
-				sudo ln -s /Library/Frameworks/libxslt.framework/Headers/*
-				sudo ln -s /Library/Frameworks/libexslt.framework/Headers/*
-
-				mkdir -p /usr/local/lib
-				cd /usr/local/lib
-				sudo ln -s /Library/Frameworks/libxml.framework/libxml libxml2.dylib
-				sudo ln -s /Library/Frameworks/libxslt.framework/libxslt libxslt.dylib
-				sudo ln -s /Library/Frameworks/libexslt.framework/libxslt libexslt.dylib
-
-				sudo mkdir -p /usr/local/man/man1
-				sudo mkdir -p /usr/local/man/man3
-				echo 'export PATH=/usr/local/bin:$PATH' >> ~/.bashrc
-				echo 'export MANPATH=/usr/local/man:$MANPATH' >> ~/.bashrc
-				source ~/.bashrc				
+				installLibXMLMac
 				;; 
 			linux*)   
 				echo "Should be implemented"
@@ -179,12 +231,7 @@ function downloadLibXML () {
 				echo_line "BSD seems not supported by libxml2. See http://www.xmlsoft.org for details" 
 				;;
 			msys*)
-				# Remove any previous download of ZIP file
-				
-				$dApp $libXMLWin32URL/$libXMLWin32
-				unzip -u $libXMLWin32
-				# Copy to current directory
-				cp -v $libXMLWinName/bin/* .
+				installLibXMLMSYS
 				;;
 			*) 
 				echo "unknown: $OSTYPE" 
@@ -202,7 +249,7 @@ function xpath() {
 	fi
 	downloadLibXML
 	# GitBash doesn't provide /usr/local/bin and cannot copy xmllint.exe to any PATH directory without permission denied
-	if ! cmdExists xmllint; then
+	if cmdExists xmllint; then
 		./xmllint --nonet --html --shell $2 <<< "cat $1" | sed '/^\/ >/d;/^\ /d'
 	else
 		xmllint --nonet --html --shell $2 <<< "cat $1" | sed '/^\/ >/d;/^\ /d'
@@ -315,7 +362,7 @@ function install_pharo () {
 			ppa_install
 			;;
 		* )
-			echo "Installing Pharo from get.pharo.org"
+			echo_nline "Installing Pharo from get.pharo.org"
 			dlPharo
 			;;
 	esac
@@ -333,13 +380,18 @@ function dlStHubPkgNames () {
 
 function fetchGitHubPkgNames () {
 	setDownloadApp
+
+	## https://github.com/derak/github-api-bash/blob/master/github_org_email_hooks.sh ????
+	## Issue 
+	# local ghPharoHeader="https://api.github.com/search/repositories?per_page=100&q=topic:pharo"
+	# $dApp $dlGhHeader $ghPharoHeader 2>&1 | grep -i "^\ *link"
+	
 	local ghPharoTopics="https://api.github.com/search/repositories?per_page=100&q=topic:pharo"
 	# local GH_HEADER="Accept: application/vnd.github.mercy-preview+json"
 	local ghPharoIndexFile="pharo.js"
 	# Download JSON file if not present
-	if [ ! -f $ghPharoIndexFile ]; then
-		$dApp $ghPharoTopics -O $ghPharoIndexFile
-	fi
+	[ -f $ghPharoIndexFile ] || $dApp $ghPharoTopics -O $ghPharoIndexFile
+
 	if ! cmdExists jq; then
 		# wget http://stedolan.github.io/jq/download/linux32/jq (32-bit system)
 		echo_nline "Trying to download jq..."
@@ -366,7 +418,12 @@ function fetchGitHubPkgNames () {
 				;;
 		esac
 	fi
-	PKGS=$(./jq '.items[].full_name' $ghPharoIndexFile)	
+	# https://github.com/hernanmd/pi/issues/7
+	if cmdExists jq; then
+		pkgs=$(./jq '.items[].full_name' $ghPharoIndexFile)	
+	else
+		pkgs=$(jq '.items[].full_name' $ghPharoIndexFile)	
+	fi
 }
 
 function fetchStHubPkgNames () {
@@ -378,21 +435,22 @@ function fetchStHubPkgNames () {
 	else
 		echo_line "found $stHubPkgIndexFile"
 	fi
-	PKGS=$(xpath "//a[@class=\"project\"]/text()" $stHubPkgIndexFile)
+	downloadLibXML
+	pkgs=$(xpath "//a[@class=\"project\"]/text()" $stHubPkgIndexFile)
 }
 
 # Report how many packages were found in SmalltalkHub
 function countsh_packages () {
 	silentMode=1
 	fetchStHubPkgNames
-	echo -ne "$PKGS" | wc -l
+	echo -ne "$pkgs" | wc -l
 }
 
 # Report how many packages were found in GitHub
 function countgh_packages () {
 	silentMode=1
 	fetchGitHubPkgNames
-	echo -ne "$PKGS" | wc -l
+	echo -ne "$pkgs" | wc -l
 }
 
 # Install from Catalog
@@ -424,7 +482,7 @@ function setPkgVersionSetting () {
 function pkgSHInstall () {
 	pkgName=$1
 	fetchStHubPkgNames
-	pkgFound=$(echo "$PKGS" | grep -w $pkgName)
+	pkgFound=$(echo "$pkgs" | grep -w $pkgName)
 	pkgCount=$(echo "$pkgFound" | wc -l)
 	echo "Found $pkgCount package(s) with the name $pkgName."
 	if [ "$pkgCount" -gt 1 ]; then
@@ -442,6 +500,43 @@ function pkgSHInstall () {
 	return $?
 }
 
+# Install from GitHub
+# Currently uses exact match for package names
+function pkgGHInstall () {
+	pkgName=$1
+	fetchGitHubPkgNames
+	pkgFound=$(echo "$PKGS" | grep -w $pkgName)
+	pkgCount=$(echo "$pkgFound" | wc -l)
+
+	echo "Found $pkgCount package(s) with the name $pkgName."
+	if [ "$pkgCount" -gt 1 ]; then
+		echo "Listing follows..."
+		cat -n <<< "$pkgFound"	
+		return 1
+	else
+		echo "Selected package: $pkgFound"
+		IFS=/ read p user <<< "$pkgFound"
+		
+		echo "Packages = $PKGS"
+		echo "User = $user"
+		echo "Pk = $pkgFound"
+		# Download README.md file
+		# $dApp $dListParams "https://github.com/$user/$pkgName/blob/master/README.md"
+		[ -f "README.md" ] || 
+		# Extract installation expression from tag
+		#local instStExpr=$(grep "^\[//]\:\ #\ (pist)" README.md | sed 's/.*smalltalk//;s/\(.*\).../\1/')
+		#local instDevExpr=$(grep "^\[//]\:\ #\ (pidev)" README.md | sed 's/.*smalltalk//;s/\(.*\).../\1/')
+		if [ -z $instStExpr ]; then
+			echo "Installation expression not found."
+			return $?
+		fi		
+	fi
+	echo "Install command: ./pharo $imageName eval $instExpr"
+	./pharo $imageName eval $instExpr
+	return $?
+}
+
+
 # Read argument packages and install from their repositories
 function install_packages () {
 	until [ -z "$1" ]; do
@@ -450,12 +545,18 @@ function install_packages () {
 			echo_nline "not found"
 			echo_nline "Trying to install from SmalltalkHub..."
 			if ! (pkgSHInstall $1); then
-				echo_line "not found"
+				echo_nline "not found"
+				echo_nline "Trying to install from GitHub..."
+				if ! (pkgGHInstall $1); then
+					echo_line "not found"
+				else
+					echo_nline "done"
+				fi
 			else
-				echo_line "done"
+				echo_nline "done"
 			fi
 		else
-			echo_line "done"
+			echo_nline "done"
 		fi
 		shift
 	done		
@@ -468,16 +569,15 @@ function install_packages () {
 # Search for package passed as argument in the SmalltalkHub repository
 function searchsh_packages () {
 	silentMode=1
-	checkLibXML		
 	fetchStHubPkgNames
-	printf -- '%s\n' "$PKGS[@]" | grep -i "$1" | sed 's/^/SmalltalkHub\: /'
+	printf -- '%s\n' "$pkgs[@]" | grep -i "$1" | sed 's/^/SmalltalkHub\: /'
 }
 
 # Search for package passed as argument in the GitHub repository
 function searchgh_packages () {
 	silentMode=1
 	fetchGitHubPkgNames
-	printf -- '%s\n' "$PKGS[@]" | grep -i "$1" | sed 's/^/GitHub\: /'
+	printf -- '%s\n' "$pkgs[@]" | grep -i "$1" | sed 's/^/GitHub\: /'
 }
 
 # Search for package passed as argument in all supported repositories
@@ -490,7 +590,6 @@ function search_packages () {
 #################################
 ## Pharo Installation Section
 #################################
-
 function dlPharo () {
 	silentMode=0
 	echo_nline "Checking Pharo installation already present..."
@@ -498,8 +597,8 @@ function dlPharo () {
 		echo_nline "not found"
 		setDownloadApp	
 		echo_nline "Downloading Pharo (stable version)..."
-#		exec $dApp $dPharoParams get.pharo.org/$PHARO_VERSION+vm | bash
-		exec $dApp $dPharoParams https://get.pharo.org | bash
+#		exec $dApp $dPharoParams get.pharo.org/$pharoVersion+vm | bash
+		exec $dApp $dPharoParams $zeroConfUrl | bash
 	else
 		echo_nline "found $imageName in the current directory"
 	fi
@@ -518,20 +617,18 @@ case $1 in
 	listgh | listGH | LISTGH )
 		silentMode=0
 		fetchGitHubPkgNames
-		echo "$PKGS"
+		echo "$pkgs"
 		;;
 	listsh | listSH | LISTSH ) 
-		silentMode=1
-		checkLibXML		
+		silentMode=0
 		fetchStHubPkgNames
-		echo "$PKGS"
+		echo "$pkgs"
 		;;
 	help | h ) 
 		printHelp
 		;;		
 	countsh | COUNTSH )
 		silentMode=1
-		checkLibXML
 		countsh_packages
 		;;
 	countgh | COUNTSH )

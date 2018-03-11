@@ -17,7 +17,7 @@ curl users:
 curl -O https://raw.githubusercontent.com/hernanmd/pi/master/pi
 ```
 
-wget users:
+[wget](https://eternallybored.org/misc/wget/ "wget web site") users:
 ```bash
 wget --no-cache --no-check-certificate https://raw.githubusercontent.com/hernanmd/pi/master/pi
 ```
@@ -48,7 +48,7 @@ mv pi /usr/local/bin
   - Package search is case-sensitive.
   - For GitHub repositories: 
     - If it has "pharo" as topic, it will be listed.
-    - If jq is not available, it will be downloaded to the directory where pi was executed.
+    - If jq (a command line JSON processor) is not available, it will be downloaded to the directory where pi was executed.
   - For SmalltalkHub repositories: 
     - If xmllint is not available, it will be downloaded to the directory where pi was executed.  
 
@@ -74,6 +74,35 @@ Search both in SmalltalkHub and GitHub repositories:
 
 ![Listing output from SmalltalkHub](images/list_2.png)
 
+# Troubleshooting
+
+If you experiment problems with pi, check first the versions of the following dependencies (copy & paste results when submitting an issue). PI is being developed in the following environment:
+
+```bash
+$ bash --version
+GNU bash, version 4.4.19(1)-release (x86_64-pc-msys)
+Copyright (C) 2016 Free Software Foundation, Inc.
+```
+
+```bash
+$ git --version
+git version 2.16.2.windows.1
+```
+
+```bash
+$ wget --version
+GNU Wget 1.19.4 built on mingw32.
+
+-cares +digest +gpgme +https +ipv6 +iri +large-file +metalink -nls
++ntlm +opie -psl +ssl/openssl
+```
+
+```bash
+$ openssl version
+OpenSSL 1.0.2n  7 Dec 2017
+```
+
+
 # Contribute
 
 **Working on your first Pull Request?** You can learn how from this *free* series [How to Contribute to an Open Source Project on 
@@ -89,6 +118,17 @@ If you'd like to make some changes yourself, see the following:
   - Add <your GitHub username> to add yourself as author below.
   - Finally, submit a pull request with your changes!
   - This project follows the [all-contributors specification](https://github.com/kentcdodds/all-contributors). Contributions of any kind are welcome!
+
+# ChangeLog
+
+## 0.3.3
+
+  - Removed unnecessary function checkLibXML()
+  - Removed --no-check-certificate for the Pharo zeroconf website
+  - Added specific platform function for installing libXML
+  - Added function installLibXMLMSYS to install 32-bit and 64-bit versions depending on platform architecture 
+  - All variable names now are lowercased
+  - Started to implement function to install packages from GitHub
 
 # ToDo
 
