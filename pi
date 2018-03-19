@@ -1,12 +1,12 @@
 #!/bin/bash
 #
-# pi - Pharo Install - A MIT-pip-like library for Pharo Smalltalk 
+# pi - Pharo Install - A MIT-pip-like library for Pharo Smalltalk
 #
-# Listing supports SmalltalkHub and GitHub. 
+# Listing supports SmalltalkHub and GitHub.
 # 	SmalltalkHub listing requires libxml2 (xmllint command)
 #	GitHub listing requires jq command (it will be downloaded if not present)
 # Installs currently supported for:
-# 	Metacello Configurations from Catalog (command line handler: get) 
+# 	Metacello Configurations from Catalog (command line handler: get)
 # 	SmalltalkHub (command line handler: config)
 #
 # It works with curl or wget
@@ -81,21 +81,21 @@ function downloadWin7z () {
 
 	local zip7Win32Exec="7z1801.exe"
 	local zip7Win32URL="https://www.7-zip.org/a/$zip7Win32Exec"
-	
+
 	echo_nline "Downloading 7-Zip..."
 	if is64Bit; then
 		if [ ! -f $zip7Win64Exec ]; then
 			$dApp $zip7Win64URL
 		fi
-		if [ ! -f /c/Program\ Files\ \(x86\)/7-Zip/7z.exe ]; then 
-			# Install 7z		
+		if [ ! -f /c/Program\ Files\ \(x86\)/7-Zip/7z.exe ]; then
+			# Install 7z
 			exec ./$zip7Win64Exec
 		fi
 	else
 		if [ ! -f $zip7Win32Exec ]; then
 			$dApp $zip7Win32URL
 		fi
-		# Install 7z		
+		# Install 7z
 		exec ./$zip7Win32Exec
 	fi
 }
@@ -131,12 +131,12 @@ function findDistributionID () {
 		# Fall back to uname, e.g. "Linux <version>", also works for BSD, etc.
 		os=$(uname -s)
 		ver=$(uname -r)
-	fi	
+	fi
 	echo_nline "Found $os"
 }
 
 #################################################
-# libXML / xmllint functions 
+# libXML / xmllint functions
 #################################################
 
 function installLibXMLMac () {
@@ -170,14 +170,14 @@ function installLibXMLMac () {
 	sudo mkdir -p /usr/local/man/man3
 	echo 'export PATH=/usr/local/bin:$PATH' >> ~/.bashrc
 	echo 'export MANPATH=/usr/local/man:$MANPATH' >> ~/.bashrc
-	source ~/.bashrc		
+	source ~/.bashrc
 }
 
 function installLibXMLSolaris () {
 	local libXMLSolarisURL="http://get.opencsw.org/now"
 	pkgadd -d $libXMLSolarisURL
 	/opt/csw/bin/pkgutil -U
-	/opt/csw/bin/pkgutil -y -i libxml2_2 
+	/opt/csw/bin/pkgutil -y -i libxml2_2
 	/usr/sbin/pkgchk -L CSWlibxml2-2 # list files
 }
 
@@ -200,16 +200,16 @@ function installLibXMLMSYS () {
 		fi
 		echo_nline "Uncompressing libXML"
 		/c/Program\ Files\ \(x86\)/7-Zip/7z.exe x $libXMLWin64
-		# Copy to current directory		
-		cp -v $libXMLWin64/bin/* .			
+		# Copy to current directory
+		cp -v $libXMLWin64/bin/* .
 	else
 		# Check if library installer already was downloaded
-		if [ ! -f $libXMLWin32 ]; then	
+		if [ ! -f $libXMLWin32 ]; then
 			$dApp $libXMLWin32URL/$libXMLWin32
 		fi
 		unzip -u $libXMLWin32
 		# Copy to current directory
-		cp -v $libXMLWin32/bin/* .		
+		cp -v $libXMLWin32/bin/* .
 	fi
 }
 
@@ -218,23 +218,23 @@ function downloadLibXML () {
 	if ! cmdExists xmllint; then
 		echo_nline "Trying to install libxml2..."
 		case "$OSTYPE" in
-			solaris*) 
+			solaris*)
 				installLibXMLSolaris
 				;;
-			darwin*)  
+			darwin*)
 				installLibXMLMac
-				;; 
-			linux*)   
+				;;
+			linux*)
 				echo "Should be implemented"
 				;;
-			bsd*)     
-				echo_line "BSD seems not supported by libxml2. See http://www.xmlsoft.org for details" 
+			bsd*)
+				echo_line "BSD seems not supported by libxml2. See http://www.xmlsoft.org for details"
 				;;
 			msys*)
 				installLibXMLMSYS
 				;;
-			*) 
-				echo "unknown: $OSTYPE" 
+			*)
+				echo "unknown: $OSTYPE"
 				;;
 		esac
 		echo_nline "done"
@@ -287,7 +287,7 @@ The options include:
 
 		--dev			Set Configuration/Baseline to install development versions.
 		--bleedingEdge		Set Configuration/Baseline to install bleedingEdge version.
-		
+
 Pharo Install project home page: https://github.com/hernanmd/pi
 To report bugs or get some help check: https://github.com/hernanmd/pi/issues
 This software is licensed under the MIT License.
@@ -354,7 +354,7 @@ function install_pharo () {
 	case $os in
 		"elementary" )
 			ppa_install
-			;;	
+			;;
 		"CentOS*" | "RedHat*" )
 			yum_install
 			;;
@@ -382,10 +382,10 @@ function fetchGitHubPkgNames () {
 	setDownloadApp
 
 	## https://github.com/derak/github-api-bash/blob/master/github_org_email_hooks.sh ????
-	## Issue 
+	## Issue
 	# local ghPharoHeader="https://api.github.com/search/repositories?per_page=100&q=topic:pharo"
 	# $dApp $dlGhHeader $ghPharoHeader 2>&1 | grep -i "^\ *link"
-	
+
 	local ghPharoTopics="https://api.github.com/search/repositories?per_page=100&q=topic:pharo"
 	# local GH_HEADER="Accept: application/vnd.github.mercy-preview+json"
 	local ghPharoIndexFile="pharo.js"
@@ -396,33 +396,33 @@ function fetchGitHubPkgNames () {
 		# wget http://stedolan.github.io/jq/download/linux32/jq (32-bit system)
 		echo_nline "Trying to download jq..."
 		case "$OSTYPE" in
-			solaris*) 
-				echo_line "Solaris seems not supported by jq. See https://stedolan.github.io/jq/ for details" 
+			solaris*)
+				echo_line "Solaris seems not supported by jq. See https://stedolan.github.io/jq/ for details"
 				;;
-			darwin*)  
+			darwin*)
 				$dApp https://github.com/stedolan/jq/releases/download/jq-1.5/jq-osx-amd64
 				chmod +x ./jq
-				;; 
-			linux*)   
+				;;
+			linux*)
 				$dApp http://stedolan.github.io/jq/download/linux64/jq
 				chmod +x ./jq
 				;;
-			bsd*)     
-				echo_line "BSD seems not supported by jq. See https://stedolan.github.io/jq/ for details" 
+			bsd*)
+				echo_line "BSD seems not supported by jq. See https://stedolan.github.io/jq/ for details"
 				;;
-			msys*)    
-				$dApp -O jq.exe https://github.com/stedolan/jq/releases/download/jq-1.5/jq-win64.exe 
+			msys*)
+				$dApp -O jq.exe https://github.com/stedolan/jq/releases/download/jq-1.5/jq-win64.exe
 				;;
-			*) 
-				echo "unknown: $OSTYPE" 
+			*)
+				echo "unknown: $OSTYPE"
 				;;
 		esac
 	fi
 	# https://github.com/hernanmd/pi/issues/7
 	if cmdExists jq; then
-		pkgs=$(./jq '.items[].full_name' $ghPharoIndexFile)	
+		pkgs=$(jq '.items[].full_name' $ghPharoIndexFile)
 	else
-		pkgs=$(jq '.items[].full_name' $ghPharoIndexFile)	
+		pkgs=$(./jq '.items[].full_name' $ghPharoIndexFile)
 	fi
 }
 
@@ -456,7 +456,7 @@ function countgh_packages () {
 # Install from Catalog
 function pkgCatalogInstall () {
 	pkgName=$1
-	./pharo $imageName get $pkgName 
+	./pharo $imageName get $pkgName
 	return $?
 }
 
@@ -465,7 +465,7 @@ function pkgCatalogInstall () {
 function setPkgVersionSetting () {
 	echo_nline "Setting package version..."
 	for param in "$@"; do
-		case $param in	
+		case $param in
 			"--dev")
 				pkgVersion="development"
 				;;
@@ -487,7 +487,7 @@ function pkgSHInstall () {
 	echo "Found $pkgCount package(s) with the name $pkgName."
 	if [ "$pkgCount" -gt 1 ]; then
 		echo "Listing follows..."
-		cat -n <<< "$pkgFound"	
+		cat -n <<< "$pkgFound"
 		return 1
 	else
 		echo "Selected package: $pkgFound"
@@ -511,25 +511,25 @@ function pkgGHInstall () {
 	echo "Found $pkgCount package(s) with the name $pkgName."
 	if [ "$pkgCount" -gt 1 ]; then
 		echo "Listing follows..."
-		cat -n <<< "$pkgFound"	
+		cat -n <<< "$pkgFound"
 		return 1
 	else
 		echo "Selected package: $pkgFound"
 		IFS=/ read p user <<< "$pkgFound"
-		
+
 		echo "Packages = $PKGS"
 		echo "User = $user"
 		echo "Pk = $pkgFound"
 		# Download README.md file
 		# $dApp $dListParams "https://github.com/$user/$pkgName/blob/master/README.md"
-		[ -f "README.md" ] || 
+		[ -f "README.md" ] ||
 		# Extract installation expression from tag
 		#local instStExpr=$(grep "^\[//]\:\ #\ (pist)" README.md | sed 's/.*smalltalk//;s/\(.*\).../\1/')
 		#local instDevExpr=$(grep "^\[//]\:\ #\ (pidev)" README.md | sed 's/.*smalltalk//;s/\(.*\).../\1/')
 		if [ -z $instStExpr ]; then
 			echo "Installation expression not found."
 			return $?
-		fi		
+		fi
 	fi
 	echo "Install command: ./pharo $imageName eval $instExpr"
 	./pharo $imageName eval $instExpr
@@ -559,7 +559,7 @@ function install_packages () {
 			echo_nline "done"
 		fi
 		shift
-	done		
+	done
 }
 
 ###################################
@@ -595,7 +595,7 @@ function dlPharo () {
 	echo_nline "Checking Pharo installation already present..."
 	if [ ! -f $imageName ]; then
 		echo_nline "not found"
-		setDownloadApp	
+		setDownloadApp
 		echo_nline "Downloading Pharo (stable version)..."
 #		exec $dApp $dPharoParams get.pharo.org/$pharoVersion+vm | bash
 		exec $dApp $dPharoParams $zeroConfUrl | bash
@@ -619,21 +619,21 @@ case $1 in
 		fetchGitHubPkgNames
 		echo "$pkgs"
 		;;
-	listsh | listSH | LISTSH ) 
+	listsh | listSH | LISTSH )
 		silentMode=0
 		fetchStHubPkgNames
 		echo "$pkgs"
 		;;
-	help | h ) 
+	help | h )
 		printHelp
-		;;		
+		;;
 	countsh | COUNTSH )
 		silentMode=1
 		countsh_packages
 		;;
 	countgh | COUNTSH )
 		countgh_packages
-		;;		
+		;;
 	install | INSTALL )
 		install_pharo
 		install_packages "${@:2}"
@@ -649,20 +649,19 @@ case $1 in
 		;;
 	search )
 		search_packages "${@:2}"
-		;;		
+		;;
 	version )
 		versionString
 		;;
-	examples | EXAMPLES ) 
+	examples | EXAMPLES )
 		examples && exit 0
 		;;
 	"--dev" | "--bleedingEdge")
 		setPkgVersionSetting "${@}"
 		#install_pharo
-		#install_packages "${@:3}"		
+		#install_packages "${@:3}"
 		;;
-	* ) 
+	* )
 	echo $"Usage: $0 {list | listGH | listSH | countGH | countSH | image | examples | [--dev|--bleedingEdge] install <pkgname>}"
 	exit 1
 esac
-
