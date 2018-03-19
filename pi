@@ -215,7 +215,7 @@ function installLibXMLMSYS () {
 
 function downloadLibXML () {
 	setDownloadApp
-	if ! cmdExists xmllint; then
+	if ! cmdExists xmllint && [ ! -x ./xmllint ]; then
 		echo_nline "Trying to install libxml2..."
 		case "$OSTYPE" in
 			solaris*)
@@ -250,9 +250,9 @@ function xpath() {
 	downloadLibXML
 	# GitBash doesn't provide /usr/local/bin and cannot copy xmllint.exe to any PATH directory without permission denied
 	if cmdExists xmllint; then
-		./xmllint --nonet --html --shell $2 <<< "cat $1" | sed '/^\/ >/d;/^\ /d'
-	else
 		xmllint --nonet --html --shell $2 <<< "cat $1" | sed '/^\/ >/d;/^\ /d'
+	else
+		./xmllint --nonet --html --shell $2 <<< "cat $1" | sed '/^\/ >/d;/^\ /d'
 	fi
 }
 
@@ -392,7 +392,7 @@ function fetchGitHubPkgNames () {
 	# Download JSON file if not present
 	[ -f $ghPharoIndexFile ] || $dApp $ghPharoTopics -O $ghPharoIndexFile
 
-	if ! cmdExists jq; then
+	if ! cmdExists jq && [ ! -x ./jq ]; then
 		# wget http://stedolan.github.io/jq/download/linux32/jq (32-bit system)
 		echo_nline "Trying to download jq..."
 		case "$OSTYPE" in
