@@ -121,6 +121,11 @@ If you'd like to make some changes yourself, see the following:
 
 # ChangeLog
 
+## 0.3.4
+
+  - Download GitHub package list paginating results (still needs fix & testing)
+  - Minor enhacements
+
 ## 0.3.3
 
   - Removed unnecessary function checkLibXML()
