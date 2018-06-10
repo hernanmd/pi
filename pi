@@ -18,7 +18,7 @@
 ## Pharo Installer Settings
 #################################
 pharoVersion=61
-piVersion=0.3.3
+piVersion=0.3.6
 imageName="Pharo.image"
 stHubUrl="http://smalltalkhub.com/"
 zeroConfUrl="https://get.pharo.org"
@@ -60,15 +60,15 @@ function trim_both () {
 }
 
 function setDownloadApp () {
-	echo_line "Checking for wget or curl..."
+	# echo_line "Checking for wget or curl..."
 	if cmdExists wget ; then
-		echo_nline "wget found..."
-		dApp="wget"
+		# echo_nline "wget found..."
+		dApp="wget -q "
 		dListParams="-O ${stHubPkgIndexFile}"
 		dPharoParams="-O-"
 	elif cmdExists curl ; then
-			echo_nline "curl found..."
-			dApp="curl"
+			# echo_nline "curl found..."
+			dApp="curl -s "
 			dListParams="-o "$stHubPkgIndexFile
 			dPharoParams=""
 		else
@@ -221,7 +221,6 @@ function installLibXMLMSYS () {
 }
 
 function downloadLibXML () {
-	setDownloadApp
 	if ! cmdExists xmllint && [ ! -x ./xmllint ]; then
 		echo_nline "Installing libxml2..."
 		case "$OSTYPE" in
@@ -272,13 +271,21 @@ function versionString () {
 	echo_nline "pi - Pharo Install [version $piVersion]"
 }
 
+function printBasicHelp () {
+	echo "Usage: $0 {list | listGH | listSH | countGH | countSH | image | examples | [--dev | --bleedingEdge] install <pkgname>}"
+}
+
 function printHelp () {
 	silentMode=0
 cat << EOF
 pi - Pharo Install [version $piVersion]
 
-PI is a tool for installing Pharo Smalltalk packages.
+PI is a tool for installing Pharo Smalltalk packages (http://www.pharo.org)
+EOF
 
+	printBasicHelp
+
+cat << EOF
 The options include:
 		listgh			List packages found in GitHub
 		listsh			List packages found in SmalltalkHub
@@ -380,7 +387,6 @@ function install_pharo () {
 #################################
 
 function dlStHubPkgNames () {
-	setDownloadApp
 	local listUrl=$stHubUrl"list"
 	$dApp $dListParams $listUrl
 }
@@ -439,16 +445,17 @@ function parseGitHubPkgCount () {
 
 function downloadGitHubPkgNames () {
     local pIndex=$1
+    local perPage=$2
     # echo "Download JSON file"
-    local ghPharoTopics="https://api.github.com/search/repositories?per_page=100&page=$pIndex&q=topic:pharo"
-    [ -f $pIndex".js" ] || $dApp $ghPharoTopics -O $pIndex".js"
+    local ghPharoTopics="https://api.github.com/search/repositories?per_page=$perPage&page=$pIndex&q=topic:pharo"
+    $dApp $ghPharoTopics -O $pIndex".js"
     # echo "Done"
 }
 
 function readGitHubPkgNames () {
     # Remove quotes from pkgs string
     cpkgs=$(sed -e 's/^"//' -e 's/"$//' <<< "$pkgs")
-    # Split package names into array    
+    # Split package names into array
     while read -rd" "; do ghPkgNames+=("$pkg"); done <<< $cpkgs
     ghPkgNames=($(echo $cpkgs | tr ' ' "\n" ))
     ghCurPkgsCount=$(($ghCurPkgsCount+${#ghPkgNames[@]}))
@@ -456,29 +463,34 @@ function readGitHubPkgNames () {
 }
 
 function fetchGitHubPkgNames () {
-	setDownloadApp
         local pageIndex=1
+	local perPage=100
         downloadJQ
 
  	# Download JSON file if not present
-        downloadGitHubPkgNames $pageIndex
+        downloadGitHubPkgNames $pageIndex $perPage
         # Parse JSON file
         parseGitHubPkgNames $pageIndex".js"
         readGitHubPkgNames
         parseGitHubPkgCount $pageIndex".js"
         while [ $ghCurPkgsCount -lt $ghPkgCount ]; do
             printf '%s\n' "${ghPkgNames[@]}"
+            # Clean temporary JSON file
+            rm $pageIndex".js"
             # Set new download page URL
             pageIndex=$(($pageIndex+1))
             # Download new results
-            downloadGitHubPkgNames $pageIndex
+            downloadGitHubPkgNames $pageIndex $perPage
             # Parse JSON result into String
             parseGitHubPkgNames $pageIndex".js"
             readGitHubPkgNames
         done
+        # Clean temp JSON file
+        rm $pageIndex."js"
+	# Print remaining package names
         if [ $ghCurPkgsCount -eq $ghPkgCount ]; then
             printf '%s\n' "${ghPkgNames[@]}"
-        fi    
+        fi
 }
 
 function fetchStHubPkgNames () {
@@ -503,9 +515,12 @@ function countsh_packages () {
 
 # Report how many packages were found in GitHub
 function countgh_packages () {
+	local pageIndex=1
+	local perPage=1
 	silentMode=1
-	fetchGitHubPkgNames
-	echo -ne "$pkgs" | wc -l
+	downloadGitHubPkgNames $pageIndex Â$perPage
+	parseGitHubPkgCount $pageIndex".js"
+	echo "$ghPkgCount"
 }
 
 # Install from Catalog
@@ -650,7 +665,6 @@ function dlPharo () {
 	echo_nline "Checking Pharo installation already present..."
 	if [ ! -f $imageName ]; then
 		echo_nline "not found"
-		setDownloadApp
 		echo_nline "Downloading Pharo (stable version)..."
 #		exec $dApp $dPharoParams get.pharo.org/$pharoVersion+vm | bash
 		exec $dApp $dPharoParams $zeroConfUrl | bash
@@ -668,6 +682,7 @@ function dlPharo () {
 ## Main Section
 #################################
 
+setDownloadApp
 case $1 in
 	listgh | listGH | LISTGH )
 		silentMode=0
@@ -682,11 +697,11 @@ case $1 in
 	help | h )
 		printHelp
 		;;
-	countsh | COUNTSH )
+	countsh | countSH | COUNTSH )
 		silentMode=1
 		countsh_packages
 		;;
-	countgh | COUNTSH )
+	countgh | countGH | COUNTGH )
 		countgh_packages
 		;;
 	install | INSTALL )
@@ -717,6 +732,6 @@ case $1 in
 		#install_packages "${@:3}"
 		;;
 	* )
-	echo $"Usage: $0 {list | listGH | listSH | countGH | countSH | image | examples | [--dev|--bleedingEdge] install <pkgname>}"
+	printBasicHelp
 	exit 1
 esac

@@ -121,6 +121,19 @@ If you'd like to make some changes yourself, see the following:
 
 # ChangeLog
 
+## 0.3.6
+
+  - Remove the caching "feature" for Pharo GihHub packages.
+  - For obtaining the count of GitHub packages download just one item which is enough.
+  - Set download application once.
+  - Make download applications silent.
+  - Remove temprary JSON files from GitHub
+  - Added help usage details
+
+## 0.3.5
+
+  - List Pharo GitHub package names.
+
 ## 0.3.4
 
   - Download GitHub package list paginating results (still needs fix & testing)
