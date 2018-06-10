@@ -43,8 +43,7 @@ mv pi /usr/local/bin
   - The "image" option defaults to the current Pharo "stable" version. 
   - Assume only one image in a directory. Future version will add support for multiple images.
   - PI can query SmalltalkHub or GitHub. 
-    - Listing packages from GitHub is currently (work in progress) limited to 100 results.
-  - PI can install packages from SmalltalkHub (GitHub repositories is one the way).
+  - PI can install packages from SmalltalkHub (GitHub repositories is currently working progress).
   - Package search is case-sensitive.
   - For GitHub repositories: 
     - If it has "pharo" as topic, it will be listed.
