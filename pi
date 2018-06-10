@@ -12,7 +12,7 @@
 # It works with curl or wget
 # Tested on Windows 8.1, MacOS, GNU/Linux
 
-set -x
+#set -x
 
 #################################
 ## Pharo Installer Settings
@@ -33,6 +33,7 @@ os="Unknown"
 declare -a ghPkgNames
 declare -a pkgs
 ghPkgCount=0
+ghCurPkgsCount=0
 
 #################################
 ## Helper Functions
@@ -438,18 +439,20 @@ function parseGitHubPkgCount () {
 
 function downloadGitHubPkgNames () {
     local pIndex=$1
-    echo "Download JSON file"
+    # echo "Download JSON file"
     local ghPharoTopics="https://api.github.com/search/repositories?per_page=100&page=$pIndex&q=topic:pharo"
-    #[ -f $ghPharoIndexFile ] || 
-    $dApp $ghPharoTopics -O $pIndex".js"
-    echo "Done"
+    [ -f $pIndex".js" ] || $dApp $ghPharoTopics -O $pIndex".js"
+    # echo "Done"
 }
 
 function readGitHubPkgNames () {
+    # Remove quotes from pkgs string
+    cpkgs=$(sed -e 's/^"//' -e 's/"$//' <<< "$pkgs")
     # Split package names into array    
-    while read -rd" "; do ghPkgNames+=("$pkg"); done <<< $pkgs
-    ghPkgNames=($(echo $pkgs | tr ' ' "\n"))    
-    echo "# of packages found : "${#ghPkgNames[@]}
+    while read -rd" "; do ghPkgNames+=("$pkg"); done <<< $cpkgs
+    ghPkgNames=($(echo $cpkgs | tr ' ' "\n" ))
+    ghCurPkgsCount=$(($ghCurPkgsCount+${#ghPkgNames[@]}))
+    # echo "# of packages found : "${#ghPkgNames[@]}
 }
 
 function fetchGitHubPkgNames () {
@@ -463,7 +466,8 @@ function fetchGitHubPkgNames () {
         parseGitHubPkgNames $pageIndex".js"
         readGitHubPkgNames
         parseGitHubPkgCount $pageIndex".js"
-        while [ ${#ghPkgNames[@]} -lt $ghPkgCount ]; do
+        while [ $ghCurPkgsCount -lt $ghPkgCount ]; do
+            printf '%s\n' "${ghPkgNames[@]}"
             # Set new download page URL
             pageIndex=$(($pageIndex+1))
             # Download new results
@@ -472,6 +476,9 @@ function fetchGitHubPkgNames () {
             parseGitHubPkgNames $pageIndex".js"
             readGitHubPkgNames
         done
+        if [ $ghCurPkgsCount -eq $ghPkgCount ]; then
+            printf '%s\n' "${ghPkgNames[@]}"
+        fi    
 }
 
 function fetchStHubPkgNames () {
@@ -665,7 +672,7 @@ case $1 in
 	listgh | listGH | LISTGH )
 		silentMode=0
 		fetchGitHubPkgNames
-		echo "$pkgNames"
+		echo "$ghPkgNames"
 		;;
 	listsh | listSH | LISTSH )
 		silentMode=0
