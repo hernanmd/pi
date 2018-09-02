@@ -18,7 +18,7 @@
 ## Pharo Installer Settings
 #################################
 pharoVersion=61
-piVersion=0.3.6
+piVersion=0.3.7
 imageName="Pharo.image"
 stHubUrl="http://smalltalkhub.com/"
 zeroConfUrl="https://get.pharo.org"
@@ -63,7 +63,7 @@ function setDownloadApp () {
 	# echo_line "Checking for wget or curl..."
 	if cmdExists wget ; then
 		# echo_nline "wget found..."
-		dApp="wget -q "
+		dApp="wget -q --no-check-certificate "
 		dListParams="-O ${stHubPkgIndexFile}"
 		dPharoParams="-O-"
 	elif cmdExists curl ; then
