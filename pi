@@ -17,7 +17,7 @@
 #################################
 ## Pharo Installer Settings
 #################################
-pharoVersion=61
+# pharoVersion=61
 piVersion=0.3.7
 imageName="Pharo.image"
 stHubUrl="http://smalltalkhub.com/"
@@ -41,22 +41,22 @@ ghCurPkgsCount=0
 
 # Echo parameter text without carriage return/new line
 echo_line () {
-	[ "$silentMode" == 0 ] && echo -n $1
+	[ "$silentMode" == 0 ] && echo -n "$1"
 }
 
 # Echo parameter text with carriage return/new line
 echo_nline () {
-	[ "$silentMode" == 0 ] && echo $1
+	[ "$silentMode" == 0 ] && echo "$1"
 }
 
 # Returns 0 if command was found in the current system, 1 otherwise
 cmdExists () {
-    type "$1" &> /dev/null || [ -f $1 ];
+    type "$1" &> /dev/null || [ -f "$1" ];
 	return $?
 }
 
 trim_both () {
-	echo $(echo -e "${1}" | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')
+	echo -e "${1}" | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//'
 }
 
 setDownloadApp () {
@@ -69,7 +69,7 @@ setDownloadApp () {
 	elif cmdExists curl ; then
 			# echo_nline "curl found..."
 			dApp="curl -s "
-			dListParams="-o "$stHubPkgIndexFile
+			dListParams="-o $stHubPkgIndexFile"
 			dPharoParams=""
 		else
 			echo_nline "I require wget or curl, but it's not installed. (brew install wget?) Aborting."
@@ -91,8 +91,8 @@ downloadWin7z () {
 
 	echo_nline "Downloading 7-Zip..."
 	if is64Bit; then
-		if [ ! -f $zip7Win64Exec ]; then
-			$dApp $zip7Win64URL
+		if [ ! -f "$zip7Win64Exec" ]; then
+			$dApp "$zip7Win64URL"
 		fi
 		if [ ! -f /c/Program\ Files\ \(x86\)/7-Zip/7z.exe ]; then
 			# Install 7z
@@ -100,7 +100,7 @@ downloadWin7z () {
 		fi
 	else
 		if [ ! -f $zip7Win32Exec ]; then
-			$dApp $zip7Win32URL
+			$dApp "$zip7Win32URL"
 		fi
 		# Install 7z
 		exec ./$zip7Win32Exec
@@ -113,8 +113,8 @@ findDistributionID () {
 	if [ -f /etc/os-release ]; then
 		# freedesktop.org and systemd
 		. /etc/os-release
-		os=$NAME
-		ver=$VERSION_ID
+		os="$NAME"
+		ver="$VERSION_ID"
 	elif type lsb_release >/dev/null 2>&1; then
 		# linuxbase.org
 		os=$(lsb_release -si)
@@ -122,8 +122,8 @@ findDistributionID () {
 	elif [ -f /etc/lsb-release ]; then
 		# For some versions of Debian/Ubuntu without lsb_release command
 		. /etc/lsb-release
-		os=$DISTRIB_ID
-		ver=$DISTRIB_RELEASE
+		os="$DISTRIB_ID"
+		ver="$DISTRIB_RELEASE"
 	elif [ -f /etc/debian_version ]; then
 		# Older Debian/Ubuntu/etc.
 		os="Debian"
@@ -153,36 +153,36 @@ installLibXMLMac () {
 	# Using Leopard? xmllint and libxml2 version 2.6.16 are built-in! xsltproc and libxslt version 1.1.12 are also included.
 	# Using Tiger? xmllint and libxml2 version 2.6.16 are built-in! xsltproc and libxslt version 1.1.11 are also included.
 	# Using Panther? xmllint and libxml2 version 2.5.4 are built-in! Even better, 10.3.9 has libxml2-2.6.16 and libxslt-1.1.9 built-in!
-	$dApp $libXMLMacURL/$libXMLMac1
-	$dApp $libXMLMacURL/$libXMLMac2
+	$dApp "$libXMLMacURL/$libXMLMac1"
+	$dApp "$libXMLMacURL/$libXMLMac2"
 	# From https://www.explain.com.au/oss/libxml2xslt.html
 	sudo mkdir -p /usr/local/bin
-	cd /usr/local/bin
+	cd /usr/local/bin || exit
 	sudo ln -s /Library/Frameworks/libxml.framework/Resources/Scripts/*
 	sudo ln -s /Library/Frameworks/libxslt.framework/Resources/Scripts/*
 
 	sudo mkdir -p /usr/local/include
-	cd /usr/local/include
+	cd /usr/local/include || exit
 	sudo ln -s /Library/Frameworks/libxml.framework/Headers/*
 	sudo ln -s /Library/Frameworks/libxslt.framework/Headers/*
 	sudo ln -s /Library/Frameworks/libexslt.framework/Headers/*
 
 	mkdir -p /usr/local/lib
-	cd /usr/local/lib
+	cd /usr/local/lib || exit
 	sudo ln -s /Library/Frameworks/libxml.framework/libxml libxml2.dylib
 	sudo ln -s /Library/Frameworks/libxslt.framework/libxslt libxslt.dylib
 	sudo ln -s /Library/Frameworks/libexslt.framework/libxslt libexslt.dylib
 
 	sudo mkdir -p /usr/local/man/man1
 	sudo mkdir -p /usr/local/man/man3
-	echo 'export PATH=/usr/local/bin:$PATH' >> ~/.bashrc
-	echo 'export MANPATH=/usr/local/man:$MANPATH' >> ~/.bashrc
-	source ~/.bashrc
+	echo "export PATH=/usr/local/bin:$PATH" >> "$HOME"/.bashrc
+	echo "export MANPATH=/usr/local/man:$MANPATH" >> "$HOME"/.bashrc
+	source "$HOME"/.bashrc
 }
 
 installLibXMLSolaris () {
 	local libXMLSolarisURL="http://get.opencsw.org/now"
-	pkgadd -d $libXMLSolarisURL
+	pkgadd -d "$libXMLSolarisURL"
 	/opt/csw/bin/pkgutil -U
 	/opt/csw/bin/pkgutil -y -i libxml2_2
 	/usr/sbin/pkgchk -L CSWlibxml2-2 # list files
@@ -198,25 +198,25 @@ installLibXMLMSYS () {
 	# Remove any previous download of ZIP file
 	if is64Bit; then
 		# Check if library installer already was downloaded
-		if [ ! -f $libXMLWin64 ]; then
-			$dApp $libXMLWin64URL/$libXMLWin64
+		if [ ! -f "$libXMLWin64" ]; then
+			$dApp "$libXMLWin64URL/$libXMLWin64"
 		fi
 		# Download and install 7z to uncompress
 		if [ ! -f "/c/Program\ Files\ \(x86\)/7-Zip" ]; then
 			downloadWin7z
 		fi
 		echo_nline "Uncompressing libXML"
-		/c/Program\ Files\ \(x86\)/7-Zip/7z.exe x $libXMLWin64
+		/c/Program\ Files\ \(x86\)/7-Zip/7z.exe x "$libXMLWin64"
 		# Copy to current directory
-		cp -v $libXMLWin64/bin/* .
+		cp -v "$libXMLWin64"/bin/* .
 	else
 		# Check if library installer already was downloaded
-		if [ ! -f $libXMLWin32 ]; then
-			$dApp $libXMLWin32URL/$libXMLWin32
+		if [ ! -f "$libXMLWin32" ]; then
+			$dApp "$libXMLWin32URL/$libXMLWin32"
 		fi
-		unzip -u $libXMLWin32
+		unzip -u "$libXMLWin32"
 		# Copy to current directory
-		cp -v $libXMLWin32/bin/* .
+		cp -v "$libXMLWin32"/bin/* .
 	fi
 }
 
@@ -256,9 +256,9 @@ xpath() {
 	downloadLibXML
 	# GitBash doesn't provide /usr/local/bin and cannot copy xmllint.exe to any PATH directory without permission denied
 	if cmdExists xmllint; then
-		xmllint --nonet --html --shell $2 <<< "cat $1" | sed '/^\/ >/d;/^\ /d'
+		xmllint --nonet --html --shell "$2" <<< "cat $1" | sed '/^\/ >/d;/^\ /d'
 	else
-		./xmllint --nonet --html --shell $2 <<< "cat $1" | sed '/^\/ >/d;/^\ /d'
+		./xmllint --nonet --html --shell "$2" <<< "cat $1" | sed '/^\/ >/d;/^\ /d'
 	fi
 }
 
@@ -365,7 +365,7 @@ yum_install () {
 install_pharo () {
 	silentMode=1
 	findDistributionID
-	case $os in
+	case "$os" in
 		"elementary" )
 			ppa_install
 			;;
@@ -387,19 +387,18 @@ install_pharo () {
 #################################
 
 dlStHubPkgNames () {
-	local listUrl=$stHubUrl"list"
-	$dApp $dListParams $listUrl
+	local listUrl="$stHubUrl"list
+	$dApp "$dListParams" "$listUrl"
 }
 
-downloadJQ {
-
+downloadJQ () {
 	if ! cmdExists jq && [ ! -x ./jq ]; then
 		# wget http://stedolan.github.io/jq/download/linux32/jq (32-bit system)
 		echo_nline "Downloading jq..."
 		case "$OSTYPE" in
 			solaris*)
 				echo_line "Solaris seems not supported by jq. See https://stedolan.github.io/jq/ for details"
-                                exit 1
+				exit 1
 				;;
 			darwin*)
 				$dApp https://github.com/stedolan/jq/releases/download/jq-1.5/jq-osx-amd64
@@ -444,17 +443,17 @@ parseGitHubPkgCount () {
 }
 
 downloadGitHubPkgNames () {
-    local pIndex=$1
-    local perPage=$2
+    local pIndex="$1"
+    local perPage="$2"
     # echo "Download JSON file"
     local ghPharoTopics="https://api.github.com/search/repositories?per_page=$perPage&page=$pIndex&q=topic:pharo"
-    $dApp $ghPharoTopics -O $pIndex".js"
+    $dApp "$ghPharoTopics" -O "$pIndex".js
     # echo "Done"
 }
 
 readGitHubPkgNames () {
     # Remove quotes from pkgs string
-    cpkgs=$(sed -e 's/^"//' -e 's/"$//' <<< "$pkgs")
+    local cpkgs=$(sed -e 's/^"//' -e 's/"$//' <<< "$pkgs")
     # Split package names into array
     while read -rd" "; do ghPkgNames+=("$pkg"); done <<< $cpkgs
     ghPkgNames=($(echo $cpkgs | tr ' ' "\n" ))
@@ -463,39 +462,39 @@ readGitHubPkgNames () {
 }
 
 fetchGitHubPkgNames () {
-        local pageIndex=1
+	local pageIndex=1
 	local perPage=100
-        downloadJQ
+	downloadJQ
 
  	# Download JSON file if not present
-        downloadGitHubPkgNames $pageIndex $perPage
-        # Parse JSON file
-        parseGitHubPkgNames $pageIndex".js"
-        readGitHubPkgNames
-        parseGitHubPkgCount $pageIndex".js"
-        while [ $ghCurPkgsCount -lt $ghPkgCount ]; do
-            printf '%s\n' "${ghPkgNames[@]}"
-            # Clean temporary JSON file
-            rm $pageIndex".js"
-            # Set new download page URL
-            pageIndex=$(($pageIndex+1))
-            # Download new results
-            downloadGitHubPkgNames $pageIndex $perPage
-            # Parse JSON result into String
-            parseGitHubPkgNames $pageIndex".js"
-            readGitHubPkgNames
-        done
-        # Clean temp JSON file
-        rm $pageIndex."js"
-	# Print remaining package names
-        if [ $ghCurPkgsCount -eq $ghPkgCount ]; then
-            printf '%s\n' "${ghPkgNames[@]}"
-        fi
+	downloadGitHubPkgNames "$pageIndex" "$perPage"
+	# Parse JSON file
+	parseGitHubPkgNames "$pageIndex".js
+	readGitHubPkgNames
+	parseGitHubPkgCount "$pageIndex"js
+	while [ "$ghCurPkgsCount" -lt "$ghPkgCount" ]; do
+		printf '%s\n' "${ghPkgNames[@]}"
+		# Clean temporary JSON file
+		rm "$pageIndex".js
+		# Set new download page URL
+		pageIndex=$(("$pageIndex"+1))
+		# Download new results
+		downloadGitHubPkgNames "$pageIndex" "$perPage"
+		# Parse JSON result into String
+		parseGitHubPkgNames "$pageIndex".js
+		readGitHubPkgNames
+	done
+	# Clean temp JSON file
+	rm "$pageIndex".js
+# Print remaining package names
+	if [ "$ghCurPkgsCount" -eq "$ghPkgCount" ]; then
+		printf '%s\n' "${ghPkgNames[@]}"
+	fi
 }
 
 fetchStHubPkgNames () {
 	echo_nline "Checking package list file..."
-	if [ ! -f $stHubPkgIndexFile ]; then
+	if [ ! -f "$stHubPkgIndexFile" ]; then
 		echo_nline "not found"
 		echo_nline "Downloading packages list..."
 		dlStHubPkgNames
@@ -518,15 +517,15 @@ countgh_packages () {
 	local pageIndex=1
 	local perPage=1
 	silentMode=1
-	downloadGitHubPkgNames $pageIndex Â$perPage
-	parseGitHubPkgCount $pageIndex".js"
+	downloadGitHubPkgNames "$pageIndex" "$perPage"
+	parseGitHubPkgCount "$pageIndex".js
 	echo "$ghPkgCount"
 }
 
 # Install from Catalog
 pkgCatalogInstall () {
-	pkgName=$1
-	./pharo $imageName get $pkgName
+	pkgName="$1"
+	./pharo "$imageName" get "$pkgName"
 	return $?
 }
 
@@ -535,7 +534,7 @@ pkgCatalogInstall () {
 setPkgVersionSetting () {
 	echo_nline "Setting package version..."
 	for param in "$@"; do
-		case $param in
+		case "$param" in
 			"--dev")
 				pkgVersion="development"
 				;;
@@ -550,7 +549,7 @@ setPkgVersionSetting () {
 # Install from STHub
 # Currently uses exact match for package names
 pkgSHInstall () {
-	pkgName=$1
+	pkgName="$1"
 	fetchStHubPkgNames
 	pkgFound=$(echo "$pkgs" | grep -w $pkgName)
 	pkgCount=$(echo "$pkgFound" | wc -l)
@@ -562,18 +561,18 @@ pkgSHInstall () {
 	else
 		echo "Selected package: $pkgFound"
 		IFS=/ read p USER <<< "$pkgFound"
-		repoUrl=$stHubUrl"mc/"$USER/$pkgName
+		repoUrl="$stHubUrl"mc/"$USER/$pkgName"
 		echo "Repository: $repoUrl"
 	fi
 	echo "Install command: ./pharo $imageName config $repoUrl "ConfigurationOf"$pkgName --install=$pkgVersion --printVersion"
-	./pharo $imageName config $repoUrl "ConfigurationOf"$pkgName --install=$pkgVersion --printVersion
+	./pharo "$imageName" config "$repoUrl" ConfigurationOf"$pkgName" --install="$pkgVersion" --printVersion
 	return $?
 }
 
 # Install from GitHub
 # Currently uses exact match for package names
 pkgGHInstall () {
-	pkgName=$1
+	pkgName="$1"
 	fetchGitHubPkgNames
 	pkgFound=$(echo "$PKGS" | grep -w $pkgName)
 	pkgCount=$(echo "$pkgFound" | wc -l)
@@ -596,13 +595,13 @@ pkgGHInstall () {
 		# Extract installation expression from tag
 		#local instStExpr=$(grep "^\[//]\:\ #\ (pist)" README.md | sed 's/.*smalltalk//;s/\(.*\).../\1/')
 		#local instDevExpr=$(grep "^\[//]\:\ #\ (pidev)" README.md | sed 's/.*smalltalk//;s/\(.*\).../\1/')
-		if [ -z $instStExpr ]; then
+		if [ -z "$instStExpr" ]; then
 			echo "Installation expression not found."
 			return $?
 		fi
 	fi
 	echo "Install command: ./pharo $imageName eval $instExpr"
-	./pharo $imageName eval $instExpr
+	./pharo "$imageName" eval "$instExpr"
 	return $?
 }
 
@@ -611,13 +610,13 @@ pkgGHInstall () {
 install_packages () {
 	until [ -z "$1" ]; do
 		echo_nline "Trying to install from Pharo Catalog..."
-		if ! (pkgCatalogInstall $1); then
+		if ! (pkgCatalogInstall "$1"); then
 			echo_nline "not found"
 			echo_nline "Trying to install from SmalltalkHub..."
-			if ! (pkgSHInstall $1); then
+			if ! (pkgSHInstall "$1"); then
 				echo_nline "not found"
 				echo_nline "Trying to install from GitHub..."
-				if ! (pkgGHInstall $1); then
+				if ! (pkgGHInstall "$1"); then
 					echo_line "not found"
 				else
 					echo_nline "done"
@@ -653,8 +652,8 @@ searchgh_packages () {
 # Search for package passed as argument in all supported repositories
 search_packages () {
 	silentMode=1
-	searchsh_packages $1
-	searchgh_packages $1
+	searchsh_packages "$1"
+	searchgh_packages "$1"
 }
 
 #################################
@@ -663,11 +662,11 @@ search_packages () {
 dlPharo () {
 	silentMode=0
 	echo_nline "Checking Pharo installation already present..."
-	if [ ! -f $imageName ]; then
+	if [ ! -f "$imageName" ]; then
 		echo_nline "not found"
 		echo_nline "Downloading Pharo (stable version)..."
 #		exec $dApp $dPharoParams get.pharo.org/$pharoVersion+vm | bash
-		exec $dApp $dPharoParams $zeroConfUrl | bash
+		exec "$dApp" "$dPharoParams" "$zeroConfUrl" | bash
 	else
 		echo_nline "found $imageName in the current directory"
 	fi
@@ -683,7 +682,7 @@ dlPharo () {
 #################################
 
 setDownloadApp
-case $1 in
+case "$1" in
 	listgh | listGH | LISTGH )
 		silentMode=0
 		fetchGitHubPkgNames
