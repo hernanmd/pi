@@ -40,26 +40,26 @@ ghCurPkgsCount=0
 #################################
 
 # Echo parameter text without carriage return/new line
-function echo_line () {
+echo_line () {
 	[ "$silentMode" == 0 ] && echo -n $1
 }
 
 # Echo parameter text with carriage return/new line
-function echo_nline () {
+echo_nline () {
 	[ "$silentMode" == 0 ] && echo $1
 }
 
 # Returns 0 if command was found in the current system, 1 otherwise
-function cmdExists () {
+cmdExists () {
     type "$1" &> /dev/null || [ -f $1 ];
 	return $?
 }
 
-function trim_both () {
+trim_both () {
 	echo $(echo -e "${1}" | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')
 }
 
-function setDownloadApp () {
+setDownloadApp () {
 	# echo_line "Checking for wget or curl..."
 	if cmdExists wget ; then
 		# echo_nline "wget found..."
@@ -77,12 +77,12 @@ function setDownloadApp () {
 	fi
 }
 
-function is64Bit () {
+is64Bit () {
 	[ "$(uname -m)" == "x86_64" ];
 	return $?
 }
 
-function downloadWin7z () {
+downloadWin7z () {
 	local zip7Win64Exec="7z1801-x64.exe"
 	local zip7Win64URL="https://www.7-zip.org/a/$zip7Win64Exec"
 
@@ -107,7 +107,7 @@ function downloadWin7z () {
 	fi
 }
 
-function findDistributionID () {
+findDistributionID () {
 	# Find our distribution or OS
 	echo_line "Current OS is: "
 	if [ -f /etc/os-release ]; then
@@ -146,7 +146,7 @@ function findDistributionID () {
 # libXML / xmllint functions
 #################################################
 
-function installLibXMLMac () {
+installLibXMLMac () {
 	local libXMLMac1="combo-2007-10-07.dmg.gz"
 	local libXMLMac2="combo-20031108.dmg.gz"
 	local libXMLMacURL="https://www.explain.com.au/download/"
@@ -180,7 +180,7 @@ function installLibXMLMac () {
 	source ~/.bashrc
 }
 
-function installLibXMLSolaris () {
+installLibXMLSolaris () {
 	local libXMLSolarisURL="http://get.opencsw.org/now"
 	pkgadd -d $libXMLSolarisURL
 	/opt/csw/bin/pkgutil -U
@@ -188,7 +188,7 @@ function installLibXMLSolaris () {
 	/usr/sbin/pkgchk -L CSWlibxml2-2 # list files
 }
 
-function installLibXMLMSYS () {
+installLibXMLMSYS () {
 	local libXMLWin32="libxml2-2.7.8.win32.zip"
 	local libXMLWin32URL="ftp://ftp.zlatkovic.com/libxml"
 	local libXMLWin64="libxml2-2.9.3-win32-x86_64.7z"
@@ -220,7 +220,7 @@ function installLibXMLMSYS () {
 	fi
 }
 
-function downloadLibXML () {
+downloadLibXML () {
 	if ! cmdExists xmllint && [ ! -x ./xmllint ]; then
 		echo_nline "Installing libxml2..."
 		case "$OSTYPE" in
@@ -248,7 +248,7 @@ function downloadLibXML () {
 }
 
 # Search argument XPATH expression in HTML file
-function xpath() {
+xpath() {
 	if [ $# -ne 2 ]; then
 		echo "Usage: xpath xpath file"
 		return 1
@@ -266,16 +266,16 @@ function xpath() {
 # PI Options
 #########################################
 
-function versionString () {
+versionString () {
 	silentMode=0
 	echo_nline "pi - Pharo Install [version $piVersion]"
 }
 
-function printBasicHelp () {
+printBasicHelp () {
 	echo "Usage: $0 {list | listGH | listSH | countGH | countSH | image | examples | [--dev | --bleedingEdge] install <pkgname>}"
 }
 
-function printHelp () {
+printHelp () {
 	silentMode=0
 cat << EOF
 pi - Pharo Install [version $piVersion]
@@ -308,7 +308,7 @@ This software is licensed under the MIT License.
 EOF
 }
 
-function examples () {
+examples () {
 	echo "
 List GitHub packages:
 $0 listgh
@@ -333,21 +333,21 @@ $0 install Diacritics ISO3166 StringExtensions"
 # Currently not used
 
 # For Debian, Slackware and Ubuntu
-function apt_install () {
+apt_install () {
 	sudo dpkg --add-architecture i386
 	sudo apt-get update
 	sudo apt-get install libc6:i386 libssl1.0.0:i386 libfreetype6:i386
 }
 
 # For ElementaryOS
-function ppa_install () {
+ppa_install () {
 	add-apt-repository ppa:pharo/stable
 	apt-get update
 	apt-get install pharo-vm-desktop
 }
 
 # For CentOS/RedHat
-function yum_install () {
+yum_install () {
 	yum install ld-linux.so.2 \
 		glibc-devel.i686 \
 		glibc-static.i686 \
@@ -362,7 +362,7 @@ function yum_install () {
 }
 
 # Prefer provider packages if distribution was found
-function install_pharo () {
+install_pharo () {
 	silentMode=1
 	findDistributionID
 	case $os in
@@ -386,12 +386,12 @@ function install_pharo () {
 ## Packages Installation Functions
 #################################
 
-function dlStHubPkgNames () {
+dlStHubPkgNames () {
 	local listUrl=$stHubUrl"list"
 	$dApp $dListParams $listUrl
 }
 
-function downloadJQ {
+downloadJQ {
 
 	if ! cmdExists jq && [ ! -x ./jq ]; then
 		# wget http://stedolan.github.io/jq/download/linux32/jq (32-bit system)
@@ -426,7 +426,7 @@ function downloadJQ {
 }
 
 # Parse and store package names from GitHub API
-function parseGitHubPkgNames () {
+parseGitHubPkgNames () {
     if type jq &> /dev/null; then
         pkgs=$(jq '.items[].full_name' $1)
     else
@@ -435,7 +435,7 @@ function parseGitHubPkgNames () {
 }
 
 # Parse package count from GitHub API
-function parseGitHubPkgCount () {
+parseGitHubPkgCount () {
     if type jq &> /dev/null; then
         ghPkgCount=$(jq '.total_count' $1)
     else
@@ -443,7 +443,7 @@ function parseGitHubPkgCount () {
     fi
 }
 
-function downloadGitHubPkgNames () {
+downloadGitHubPkgNames () {
     local pIndex=$1
     local perPage=$2
     # echo "Download JSON file"
@@ -452,7 +452,7 @@ function downloadGitHubPkgNames () {
     # echo "Done"
 }
 
-function readGitHubPkgNames () {
+readGitHubPkgNames () {
     # Remove quotes from pkgs string
     cpkgs=$(sed -e 's/^"//' -e 's/"$//' <<< "$pkgs")
     # Split package names into array
@@ -462,7 +462,7 @@ function readGitHubPkgNames () {
     # echo "# of packages found : "${#ghPkgNames[@]}
 }
 
-function fetchGitHubPkgNames () {
+fetchGitHubPkgNames () {
         local pageIndex=1
 	local perPage=100
         downloadJQ
@@ -493,7 +493,7 @@ function fetchGitHubPkgNames () {
         fi
 }
 
-function fetchStHubPkgNames () {
+fetchStHubPkgNames () {
 	echo_nline "Checking package list file..."
 	if [ ! -f $stHubPkgIndexFile ]; then
 		echo_nline "not found"
@@ -507,14 +507,14 @@ function fetchStHubPkgNames () {
 }
 
 # Report how many packages were found in SmalltalkHub
-function countsh_packages () {
+countsh_packages () {
 	silentMode=1
 	fetchStHubPkgNames
 	echo -ne "$pkgs" | wc -l
 }
 
 # Report how many packages were found in GitHub
-function countgh_packages () {
+countgh_packages () {
 	local pageIndex=1
 	local perPage=1
 	silentMode=1
@@ -524,7 +524,7 @@ function countgh_packages () {
 }
 
 # Install from Catalog
-function pkgCatalogInstall () {
+pkgCatalogInstall () {
 	pkgName=$1
 	./pharo $imageName get $pkgName
 	return $?
@@ -532,7 +532,7 @@ function pkgCatalogInstall () {
 
 # Detect which Configuration version to install.
 # This setting is global: Applied to all Configuration names passed as parameters.
-function setPkgVersionSetting () {
+setPkgVersionSetting () {
 	echo_nline "Setting package version..."
 	for param in "$@"; do
 		case $param in
@@ -549,7 +549,7 @@ function setPkgVersionSetting () {
 
 # Install from STHub
 # Currently uses exact match for package names
-function pkgSHInstall () {
+pkgSHInstall () {
 	pkgName=$1
 	fetchStHubPkgNames
 	pkgFound=$(echo "$pkgs" | grep -w $pkgName)
@@ -572,7 +572,7 @@ function pkgSHInstall () {
 
 # Install from GitHub
 # Currently uses exact match for package names
-function pkgGHInstall () {
+pkgGHInstall () {
 	pkgName=$1
 	fetchGitHubPkgNames
 	pkgFound=$(echo "$PKGS" | grep -w $pkgName)
@@ -608,7 +608,7 @@ function pkgGHInstall () {
 
 
 # Read argument packages and install from their repositories
-function install_packages () {
+install_packages () {
 	until [ -z "$1" ]; do
 		echo_nline "Trying to install from Pharo Catalog..."
 		if ! (pkgCatalogInstall $1); then
@@ -637,21 +637,21 @@ function install_packages () {
 ###################################
 
 # Search for package passed as argument in the SmalltalkHub repository
-function searchsh_packages () {
+searchsh_packages () {
 	silentMode=1
 	fetchStHubPkgNames
 	printf -- '%s\n' "$pkgs[@]" | grep -i "$1" | sed 's/^/SmalltalkHub\: /'
 }
 
 # Search for package passed as argument in the GitHub repository
-function searchgh_packages () {
+searchgh_packages () {
 	silentMode=1
 	fetchGitHubPkgNames
 	printf -- '%s\n' "$pkgs[@]" | grep -i "$1" | sed 's/^/GitHub\: /'
 }
 
 # Search for package passed as argument in all supported repositories
-function search_packages () {
+search_packages () {
 	silentMode=1
 	searchsh_packages $1
 	searchgh_packages $1
@@ -660,7 +660,7 @@ function search_packages () {
 #################################
 ## Pharo Installation Section
 #################################
-function dlPharo () {
+dlPharo () {
 	silentMode=0
 	echo_nline "Checking Pharo installation already present..."
 	if [ ! -f $imageName ]; then
