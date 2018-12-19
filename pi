@@ -18,7 +18,7 @@
 ## Pharo Installer Settings
 #################################
 # pharoVersion=61
-piVersion=0.3.7
+piVersion=0.3.8
 imageName="Pharo.image"
 stHubUrl="http://smalltalkhub.com/"
 zeroConfUrl="https://get.pharo.org"
@@ -64,7 +64,7 @@ setDownloadApp () {
 	if cmdExists wget ; then
 		# echo_nline "wget found..."
 		dApp="wget -q --no-check-certificate "
-		dListParams="-O ${stHubPkgIndexFile}"
+		dListParams="-O $stHubPkgIndexFile"
 		dPharoParams="-O-"
 	elif cmdExists curl ; then
 			# echo_nline "curl found..."
@@ -272,7 +272,7 @@ versionString () {
 }
 
 printBasicHelp () {
-	echo "Usage: $0 {list | listGH | listSH | countGH | countSH | image | examples | [--dev | --bleedingEdge] install <pkgname>}"
+	echo "Usage: $0 {listGH | listSH | countGH | countSH | image | examples | [--dev | --bleedingEdge] install <pkgname>}"
 }
 
 printHelp () {
@@ -382,13 +382,12 @@ install_pharo () {
 	esac
 }
 
-#################################
+##################################
 ## Packages Installation Functions
-#################################
+##################################
 
 dlStHubPkgNames () {
-	local listUrl="$stHubUrl"list
-	$dApp "$dListParams" "$listUrl"
+	$dApp "$dListParams" "$stHubUrl"list
 }
 
 downloadJQ () {
@@ -415,7 +414,6 @@ downloadJQ () {
 				;;
 			msys*)
 				$dApp -O jq.exe https://github.com/stedolan/jq/releases/download/jq-1.5/jq-win64.exe
-				mv jq-win64.exe jq.exe
 				;;
 			*)
 				echo "unknown: $OSTYPE"
@@ -469,40 +467,40 @@ fetchGitHubPkgNames () {
  	# Download JSON file if not present
 	downloadGitHubPkgNames "$pageIndex" "$perPage"
 	# Parse JSON file
-	parseGitHubPkgNames "$pageIndex".js
+	parseGitHubPkgNames "$pageIndex.js"
 	readGitHubPkgNames
-	parseGitHubPkgCount "$pageIndex"js
+	parseGitHubPkgCount "$pageIndex.js"
 	while [ "$ghCurPkgsCount" -lt "$ghPkgCount" ]; do
 		printf '%s\n' "${ghPkgNames[@]}"
 		# Clean temporary JSON file
-		rm "$pageIndex".js
+		rm "$pageIndex.js"
 		# Set new download page URL
 		pageIndex=$(("$pageIndex"+1))
 		# Download new results
 		downloadGitHubPkgNames "$pageIndex" "$perPage"
 		# Parse JSON result into String
-		parseGitHubPkgNames "$pageIndex".js
+		parseGitHubPkgNames "$pageIndex.js"
 		readGitHubPkgNames
 	done
 	# Clean temp JSON file
-	rm "$pageIndex".js
-# Print remaining package names
+	rm "$pageIndex.js"
+	# Print remaining package names
 	if [ "$ghCurPkgsCount" -eq "$ghPkgCount" ]; then
 		printf '%s\n' "${ghPkgNames[@]}"
 	fi
 }
 
 fetchStHubPkgNames () {
-	echo_nline "Checking package list file..."
+	echo_nline "Checking SmalltalkHub package list file..."
 	if [ ! -f "$stHubPkgIndexFile" ]; then
 		echo_nline "not found"
-		echo_nline "Downloading packages list..."
+		echo_nline "Downloading SmalltalkHub packages list..."
 		dlStHubPkgNames
 	else
 		echo_line "found $stHubPkgIndexFile"
 	fi
 	downloadLibXML
-	pkgs=$(xpath "//a[@class=\"project\"]/text()" $stHubPkgIndexFile)
+	pkgs=$(xpath "//a[@class=\"project\"]/text()" "$stHubPkgIndexFile")
 }
 
 # Report how many packages were found in SmalltalkHub
@@ -574,7 +572,7 @@ pkgSHInstall () {
 pkgGHInstall () {
 	pkgName="$1"
 	fetchGitHubPkgNames
-	pkgFound=$(echo "$PKGS" | grep -w $pkgName)
+	pkgFound=$(echo "$PKGS" | grep -w "$pkgName")
 	pkgCount=$(echo "$pkgFound" | wc -l)
 
 	echo "Found $pkgCount package(s) with the name $pkgName."

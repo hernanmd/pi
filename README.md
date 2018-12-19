@@ -6,9 +6,13 @@
 
 Pharo Install - A tool for installing [Pharo Smalltalk](https://www.pharo.org) packages.
 
-PI is a MIT-pip-like command line application installer for Pharo Smalltalk. Copy & pasting install scripts is an easy method, but it’s also time consuming because of the manual interaction. 
+PI is a MIT-pip-like command line application installer for Pharo Smalltalk. Copy & pasting install scripts found in forums 
+or the web is an easy method, but it’s also time consuming because of the manual interaction, and hard to make the process 
+reproducible.
 
-PI turns copy & paste Smalltalk (Metacello Configurations) install scripts into bash one-liners which works on Unix/Linux, MacOS and Windows (MinGW/MSYS). PI automatically tries to download necessary dependencies for parsing both [SmalltalkHub](https://www.smalltalkhub.com) and GitHub repositories lists, and also downloads the latest stable Pharo image and virtual machine if none is found in the current directory. It also supports installing multiple packages at once.
+PI turns copy & paste Smalltalk (Metacello Configurations) install scripts into bash one-liners which works on Unix/Linux, 
+MacOS and Windows (MinGW64/MSYS). PI automatically tries to download necessary dependencies for parsing both
+[SmalltalkHub](https://www.smalltalkhub.com) and GitHub repositories lists, and also downloads the latest stable Pharo image and virtual machine if none is found in the current directory. It also supports installing multiple packages at once.
 
 # Installation
 
@@ -24,6 +28,8 @@ wget --no-cache --no-check-certificate https://raw.githubusercontent.com/hernanm
 
 Copy the executable script to a location included in the PATH environment variable:
 
+> Note: If your system does not have /usr/local/bin, please mkdir before executing the following commands
+
 ```bash
 chmod 755 pi
 mv pi /usr/local/bin
@@ -32,7 +38,7 @@ mv pi /usr/local/bin
 # Features
 
   - Listing packages supports GitHub and SmalltalkHub repositories. 
-  - Installing packages is supported for: 
+  - Installing packages is supported for:
     - Metacello Configurations from Catalog (command line handler: get)
     - SmalltalkHub (command line handler: config)
   - It works with curl or wget.
@@ -40,16 +46,16 @@ mv pi /usr/local/bin
 
 # Usage notes
 
-  - The "image" option defaults to the current Pharo "stable" version. 
+  - The "image" option defaults to the current Pharo "stable" version.
   - Assume only one image in a directory. Future version will add support for multiple images.
-  - PI can query SmalltalkHub or GitHub. 
+  - PI can query SmalltalkHub or GitHub.
   - PI can install packages from SmalltalkHub (GitHub repositories is currently working progress).
   - Package search is case-sensitive.
-  - For GitHub repositories: 
+  - For GitHub repositories:
     - If it has "pharo" as topic, it will be listed.
     - If jq (a command line JSON processor) is not available, it will be downloaded to the directory where pi was executed.
-  - For SmalltalkHub repositories: 
-    - If xmllint is not available, it will be downloaded to the directory where pi was executed.  
+  - For SmalltalkHub repositories:
+    - If xmllint is not available, it will be downloaded to the directory where pi was executed.
 
 # Usage examples
 
@@ -106,19 +112,27 @@ OpenSSL 1.0.2n  7 Dec 2017
 
 **Working on your first Pull Request?** You can learn how from this *free* series [How to Contribute to an Open Source Project on 
 GitHub](https://egghead.io/series/how-to-contribute-to-an-open-source-project-on-github)
-    
+
 If you have discovered a bug or have a feature suggestion, feel free to create an issue on Github.
 
-If you'd like to make some changes yourself, see the following:    
+If you'd like to make some changes yourself, see the following:
 
   - Fork this repository to your own GitHub account and then clone it to your local device
   - Edit the pi file with your favorite text editor.
-  - Test PI.    
+  - Test PI.
   - Add <your GitHub username> to add yourself as author below.
   - Finally, submit a pull request with your changes!
   - This project follows the [all-contributors specification](https://github.com/kentcdodds/all-contributors). Contributions of any kind are welcome!
 
 # ChangeLog
+
+## 0.3.8
+
+  - Fixed minor bug while downloading JQ on MSYS
+
+## 0.3.7
+
+  - Refactorings and style corrections
 
 ## 0.3.6
 
