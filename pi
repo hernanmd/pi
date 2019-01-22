@@ -14,9 +14,12 @@
 
 #set -x
 
+source piParseCmdOptions.sh
+source piUtils.sh
+
 #################################
 ## Main Section
 #################################
 
 setDownloadApp
-parseCmdLine $1
+parseCmdLine ${@}

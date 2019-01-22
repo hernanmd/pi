@@ -3,6 +3,8 @@
 # pi - Pharo Install - A MIT-pip-like library for Pharo Smalltalk
 #
 
+source piUtils.sh
+
 # Parse and store package names from GitHub API
 parseGitHubPkgNames () {
     if type jq &> /dev/null; then
@@ -33,10 +35,13 @@ downloadGitHubPkgNames () {
 readGitHubPkgNames () {
     # Remove quotes from pkgs string
     local cpkgs=$(sed -e 's/^"//' -e 's/"$//' <<< "$pkgs")
+	declare -a fetchedPkgNames
     # Split package names into array
-    while read -rd" "; do ghPkgNames+=("$pkg"); done <<< $cpkgs
-    ghPkgNames=($(echo $cpkgs | tr ' ' "\n" ))
-    ghCurPkgsCount=$(($ghCurPkgsCount+${#ghPkgNames[@]}))
+    while read -rd" "; do fetchedPkgNames+=("$pkg"); done <<< $cpkgs
+    fetchedPkgNames=($(echo $cpkgs | tr ' ' "\n" ))
+	ghPkgNames=( "${ghPkgNames[@]}" "${fetchedPkgNames[@]}" )
+	# Update package count
+    ghCurPkgsCount=${#ghPkgNames[@]}
     # echo "# of packages found : "${#ghPkgNames[@]}
 }
 
@@ -76,8 +81,6 @@ fetchGitHubPkgNames () {
 	fi
 }
 
-
-
 # Report how many packages were found in GitHub
 countgh_packages () {
 	local pageIndex=1
@@ -85,7 +88,7 @@ countgh_packages () {
 	silentMode=1
 	downloadGitHubPkgNames "$pageIndex" "$perPage"
 	parseGitHubPkgCount "$pageIndex.js"
-	echo "$ghPkgCount"
+	echo "# Packages found in GitHub: $ghPkgCount"
 }
 
 # Install from GitHub

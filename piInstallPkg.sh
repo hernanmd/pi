@@ -7,6 +7,8 @@
 ## Packages Installation Functions
 ##################################
 
+source piCatalog.sh
+
 # Detect which Configuration version to install.
 # This setting is global: Applied to all Configuration names passed as parameters.
 setPkgVersionSetting () {

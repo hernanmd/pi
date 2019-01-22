@@ -41,6 +41,7 @@ mv pi /usr/local/bin
   - Installing packages is supported for:
     - Metacello Configurations from Catalog (command line handler: get)
     - SmalltalkHub (command line handler: config)
+    - GitHub (experimental)	
   - It works with curl or wget.
   - Supports case-insensitive searching for package names or developer user name.
 
@@ -48,9 +49,9 @@ mv pi /usr/local/bin
 
   - The "image" option defaults to the current Pharo "stable" version.
   - Assume only one image in a directory. Future version will add support for multiple images.
-  - PI can query SmalltalkHub or GitHub.
+  - PI can query SmalltalkHub or GitHub for package names or usernames.
   - PI can install packages from SmalltalkHub (GitHub repositories is currently working progress).
-  - Package search is case-sensitive.
+  - Package and username search is case-sensitive.
   - For GitHub repositories:
     - If it has "pharo" as topic, it will be listed.
     - If jq (a command line JSON processor) is not available, it will be downloaded to the directory where pi was executed.
@@ -85,26 +86,34 @@ If you experiment problems with pi, check first the versions of the following de
 
 ```bash
 $ bash --version
-GNU bash, version 4.4.19(1)-release (x86_64-pc-msys)
+GNU bash, version 4.4.23(1)-release (x86_64-pc-msys)
 Copyright (C) 2016 Free Software Foundation, Inc.
 ```
 
 ```bash
 $ git --version
-git version 2.16.2.windows.1
+git version 2.19.1
 ```
 
 ```bash
 $ wget --version
-GNU Wget 1.19.4 built on mingw32.
+GNU Wget 1.19.5 built on msys.
 
--cares +digest +gpgme +https +ipv6 +iri +large-file +metalink -nls
-+ntlm +opie -psl +ssl/openssl
+-cares +digest +gpgme +https +ipv6 +iri +large-file +metalink +nls
++ntlm +opie +psl +ssl/openssl
+```
+
+```bash
+$ curl --version
+curl 7.62.0 (x86_64-w64-mingw32) libcurl/7.62.0 OpenSSL/1.1.1a (WinSSL) zlib/1.2.11 brotli/1.0.7 libidn2/2.0.5 libpsl/0.20.2 (+libidn2/2.0.5) nghttp2/1.35.0
+Release-Date: 2018-10-31
+Protocols: dict file ftp ftps gopher http https imap imaps ldap ldaps pop3 pop3s rtsp smtp smtps telnet tftp
+Features: AsynchDNS IDN IPv6 Largefile SSPI Kerberos SPNEGO NTLM SSL libz brotli TLS-SRP HTTP2 HTTPS-proxy MultiSSL PSL Metalink
 ```
 
 ```bash
 $ openssl version
-OpenSSL 1.0.2n  7 Dec 2017
+OpenSSL 1.1.1a  20 Nov 2018
 ```
 
 

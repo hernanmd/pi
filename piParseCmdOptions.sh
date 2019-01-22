@@ -3,6 +3,13 @@
 # pi - Pharo Install - A MIT-pip-like library for Pharo Smalltalk
 #
 
+source piHelp.sh
+source piSmalltalkHub.sh
+source piGitHub.sh
+source piSearch.sh
+source piInstallPkg.sh
+source piPharo.sh
+
 parseCmdLine () {
 	options="$1"
 	case "$1" in
@@ -15,9 +22,6 @@ parseCmdLine () {
 			silentMode=0
 			fetchStHubPkgNames
 			echo "$pkgs"
-			;;
-		help | h )
-			printHelp
 			;;
 		countsh | countSH | COUNTSH )
 			silentMode=1
@@ -42,6 +46,9 @@ parseCmdLine () {
 		search )
 			search_packages "${@:2}"
 			;;
+		help | h )
+			printHelp
+			;;			
 		version )
 			versionString
 			;;

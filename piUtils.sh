@@ -31,7 +31,7 @@ setDownloadApp () {
 	# echo_line "Checking for wget or curl..."
 	if cmdExists wget ; then
 		# echo_nline "wget found..."
-		dApp="wget -q --no-check-certificate "
+		dApp="wget --show-progress --progress=bar:force:noscroll -q --no-check-certificate "
 		dListParams="-O $stHubPkgIndexFile"
 		dPharoParams="-O-"
 	elif cmdExists curl ; then

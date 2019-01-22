@@ -3,14 +3,17 @@
 # pi - Pharo Install - A MIT-pip-like library for Pharo Smalltalk
 #
 
+source piXMLLint.sh
+source piUtils.sh
+
 dlStHubPkgNames () {
-	$dApp "$dListParams" "$stHubUrl"list
+	$dApp $dListParams "$stHubUrl"list
 }
 
 fetchStHubPkgNames () {
-	echo_nline "Checking SmalltalkHub package list file..."
+	echo_line "Checking SmalltalkHub package list file..."
 	if [ ! -f "$stHubPkgIndexFile" ]; then
-		echo_line "not found"
+		echo_nline "not found"
 		echo_nline "Downloading SmalltalkHub packages list..."
 		dlStHubPkgNames
 	else

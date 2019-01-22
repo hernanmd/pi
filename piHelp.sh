@@ -3,6 +3,8 @@
 # pi - Pharo Install - A MIT-pip-like library for Pharo Smalltalk
 #
 
+source piEnvVars.sh
+
 #########################################
 # PI Options
 #########################################
@@ -13,7 +15,8 @@ versionString () {
 }
 
 printBasicHelp () {
-	echo "Usage: $0 {listGH | listSH | countGH | countSH | image | examples | [--dev | --bleedingEdge] install <pkgname>}"
+	program_name="$0"
+	echo "Usage: $(basename $program_name) {listGH | listSH | countGH | countSH | image | examples | [--dev | --bleedingEdge] install <pkgname>}"
 }
 
 printHelp () {
@@ -22,6 +25,7 @@ cat << EOF
 pi - Pharo Install [version $piVersion]
 
 PI is a tool for installing Pharo Smalltalk packages (http://www.pharo.org)
+
 EOF
 
 	printBasicHelp
@@ -38,7 +42,7 @@ The options include:
 		image			Fetch the latest stable Pharo (VM + Image).
 		examples		Show usage examples
 		version 		Show program version
-		install <pkgname>	Install pkgname to the image found in the current working directory. Download the image if not found.
+		install <pkgname>	Install pkgname to the Image found in the current directory. Download Image if not found.
 
 		--dev			Set Configuration/Baseline to install development versions.
 		--bleedingEdge		Set Configuration/Baseline to install bleedingEdge version.
@@ -50,19 +54,20 @@ EOF
 }
 
 examples () {
+	program_name="$0"
 	echo "
 List GitHub packages:
-$0 listgh
+$(basename $program_name) listgh
 
 List SmalltalkHub packages:
-$0 listsh
+$(basename $program_name) listsh
 
 Search Both SmalltalkHub and GitHub packages:
-$0 search pillar
+$(basename $program_name) search pillar
 
 Download latest stable Pharo image and VM:
-$0 image
+$(basename $program_name) image
 
 Install multiple packages:
-$0 install Diacritics ISO3166 StringExtensions"
+$(basename $program_name) install Diacritics ISO3166 StringExtensions"
 }
