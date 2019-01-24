@@ -6,9 +6,7 @@
 
 Pharo Install - A tool for installing [Pharo Smalltalk](https://www.pharo.org) packages.
 
-PI is a MIT-pip-like command line application installer for Pharo Smalltalk. Copy & pasting install scripts found in forums 
-or the web is an easy method, but it’s also time consuming because of the manual interaction, and hard to make the process 
-reproducible.
+PI is a MIT-pip-like command line application installer for Pharo Smalltalk. PI helps you get Pharo and the libraries you need with minimal effort. Copying & pasting install scripts found in forums or the web is an easy method, but it’s also time consuming because of the manual interaction, and hard to make the process reproducible.
 
 PI turns copy & paste Smalltalk (Metacello Configurations) install scripts into bash one-liners which works on Unix/Linux, 
 MacOS and Windows (MinGW64/MSYS). PI automatically tries to download necessary dependencies for parsing both
@@ -37,25 +35,23 @@ mv pi /usr/local/bin
 
 # Features
 
-  - Listing packages supports GitHub and SmalltalkHub repositories. 
-  - Installing packages is supported for:
+  - Case-insensitive search for package names or developer user name.
+  - List packages from GitHub and SmalltalkHub repositories.
+  - Packages installation support for:
     - Metacello Configurations from Catalog (command line handler: get)
     - SmalltalkHub (command line handler: config)
+    - GitHub (given the installation script is provided in the README.md)
   - It works with curl or wget.
-  - Supports case-insensitive searching for package names or developer user name.
 
-# Usage notes
+# Usage
 
-  - The "image" option defaults to the current Pharo "stable" version.
-  - Assume only one image in a directory. Future version will add support for multiple images.
-  - PI can query SmalltalkHub or GitHub.
-  - PI can install packages from SmalltalkHub (GitHub repositories is currently working progress).
-  - Package search is case-sensitive.
-  - For GitHub repositories:
-    - If it has "pharo" as topic, it will be listed.
-    - If jq (a command line JSON processor) is not available, it will be downloaded to the directory where pi was executed.
-  - For SmalltalkHub repositories:
-    - If xmllint is not available, it will be downloaded to the directory where pi was executed.
+PI is composed of multiple commands, similar to git, apt-get or brew. When you run PI with no arguments help message is displayed, listing all available commands with their options.
+
+PI uses additional software which will be downloaded if not present. Specifically if jq (a command line JSON processor) is not available, it will be downloaded to the directory where pi was executed. Accessing to SmalltalkHub repositories metadata requires also xmllint, which will be downloaded to the directory where pi was executed.
+
+The "image" option defaults to the current Pharo "stable" version. PI assumes only one image in a directory, although future versions will contain support for multiple images.
+
+For GitHub repositories to be discovered by PI, they should contain "pharo" as topic. Additionally, PI can discover and install a package if you just simply add a Markdown comment tag ([//]: # (pi)) before the installation expression. 
 
 # Usage examples
 
