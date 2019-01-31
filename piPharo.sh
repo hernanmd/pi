@@ -7,9 +7,8 @@
 ## Pharo Installation Functions
 #################################
 
-# Currently not used
-
 # For Debian, Slackware and Ubuntu
+# This function is currently not used
 apt_install () {
 	sudo dpkg --add-architecture i386
 	sudo apt-get update
@@ -17,6 +16,7 @@ apt_install () {
 }
 
 # For ElementaryOS
+# This function is currently not used
 ppa_install () {
 	add-apt-repository ppa:pharo/stable
 	apt-get update
@@ -24,6 +24,7 @@ ppa_install () {
 }
 
 # For CentOS/RedHat
+# This function is currently not used
 yum_install () {
 	yum install ld-linux.so.2 \
 		glibc-devel.i686 \
@@ -64,10 +65,10 @@ install_pharo () {
 #################################
 dlPharo () {
 	silentMode=0
-	echo_nline "Checking Pharo installation already present..."
+	echo_line "Checking Pharo installation in the current directory..."
 	if [ ! -f "$imageName" ]; then
-		echo_line "not found"
-		echo_nline "Downloading Pharo (stable version)..."
+		echo_nline "not found"
+		echo_line "Downloading Pharo (stable version)..."
 #		exec $dApp $dPharoParams get.pharo.org/$pharoVersion+vm | bash
 		exec $dApp $dPharoParams $zeroConfUrl | bash
 	else

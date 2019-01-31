@@ -29,15 +29,15 @@ setPkgVersionSetting () {
 # Read argument packages and install from their repositories
 install_packages () {
 	until [ -z "$1" ]; do
-		echo_nline "Trying to install from Pharo Catalog..."
+		echo_line "Trying to install from Pharo Catalog..."
 		if ! (pkgCatalogInstall "$1"); then
-			echo_line "not found"
-			echo_nline "Trying to install from SmalltalkHub..."
+			echo_nline "not found"
+			echo_line "Trying to install from SmalltalkHub..."
 			if ! (pkgSHInstall "$1"); then
-				echo_line "not found"
-				echo_nline "Trying to install from GitHub..."
+				echo_nline "not found"
+				echo_line "Trying to install from GitHub..."
 				if ! (pkgGHInstall "$1"); then
-					echo_line "not found"
+					echo_nline "not found"
 				else
 					echo_nline "done"
 				fi
