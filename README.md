@@ -82,7 +82,7 @@ Search both in SmalltalkHub and GitHub repositories:
 
 # Troubleshooting
 
-If you experiment problems with pi, check first the versions of the following dependencies (copy & paste results when submitting an issue). PI is being developed in the following environment:
+If you experiment problems with pi, open an issue in the [Issue Tracker](https://github.com/hernanmd/pi/issues)), and provide the versions of the following dependencies by copying & pasting the results. PI is currently being developed in the following environment:
 
 ```bash
 $ bash --version
@@ -116,6 +116,16 @@ $ openssl version
 OpenSSL 1.1.1a  20 Nov 2018
 ```
 
+```bash
+$ ./jq --version
+jq-1.5
+```
+
+```bash
+$ xmllint --version
+C:\msys64\mingw64\bin\xmllint.exe: using libxml version 20909
+   compiled with: Threads Tree Output Push Reader Patterns Writer SAXv1 FTP HTTP DTDValid HTML Legacy C14N Catalog XPath XPointer XInclude Iconv ISO8859X Unicode Regexps Automata Expr Schemas Schematron Modules Debug Zlib Lzma
+```
 
 # Contribute
 
@@ -134,6 +144,12 @@ If you'd like to make some changes yourself, see the following:
   - This project follows the [all-contributors specification](https://github.com/kentcdodds/all-contributors). Contributions of any kind are welcome!
 
 # ChangeLog
+
+## 0.3.9
+
+  - downloadApp -> initApp 
+  - Added package cache directory feature for GitHub repositories.
+  - Logical reorganization of functions into an appropriate .sh file to be sourced.
 
 ## 0.3.8
 
@@ -181,7 +197,7 @@ If you'd like to make some changes yourself, see the following:
 
 This software is licensed under the MIT License.
 
-Copyright Hernán Morales, 2018.
+Copyright Hernán Morales, 2018-2019
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 

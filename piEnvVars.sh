@@ -6,11 +6,12 @@
 #################################
 ## Pharo Installer Settings
 #################################
-# pharoVersion=61
-piVersion=0.3.8
+
+piVersion=0.3.9
+cacheDir=$HOME/.pi-cache
 imageName="Pharo.image"
-stHubUrl="http://smalltalkhub.com/"
 zeroConfUrl="https://get.pharo.org"
+stHubUrl="http://smalltalkhub.com/"
 stHubPkgIndexFile="index.html"
 # Work in verbose (1) or silent mode (0)
 silentMode=0

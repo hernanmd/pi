@@ -28,7 +28,7 @@ downloadGitHubPkgNames () {
     local perPage="$2"
     # echo "Download JSON file"
     local ghPharoTopics="https://api.github.com/search/repositories?per_page=$perPage&page=$pIndex&q=topic:pharo"
-    $dApp "$ghPharoTopics" -O "$pIndex".js
+	[[ -f ${cacheDir}/"$pIndex".js ]] || $dApp "$ghPharoTopics" -O ${cacheDir}/"$pIndex".js
     # echo "Done"
 }
 
@@ -54,31 +54,18 @@ fetchGitHubPkgNames () {
  	# Download JSON file if not present
 	downloadGitHubPkgNames "$pageIndex" "$perPage"
 	# Parse JSON file
-	parseGitHubPkgNames "$pageIndex.js"
+	parseGitHubPkgNames ${cacheDir}/"$pageIndex.js"
 	readGitHubPkgNames
-	parseGitHubPkgCount "$pageIndex.js"
+	parseGitHubPkgCount ${cacheDir}/"$pageIndex.js"
 	while [ "$ghCurPkgsCount" -lt "$ghPkgCount" ]; do
-		if [ "$printPkgs" = "true" ]; then
-			printf '%s\n' "${ghPkgNames[@]}"
-		fi
-		# Clean temporary JSON file
-		rm "$pageIndex.js"
 		# Set new download page URL
 		pageIndex=$(("$pageIndex"+1))
 		# Download new results
 		downloadGitHubPkgNames "$pageIndex" "$perPage"
 		# Parse JSON result into String
-		parseGitHubPkgNames "$pageIndex.js"
+		parseGitHubPkgNames ${cacheDir}/"$pageIndex.js"
 		readGitHubPkgNames
 	done
-	# Clean temp JSON file
-	rm "$pageIndex.js"
-	# Print remaining package names
-	if [ "$ghCurPkgsCount" -eq "$ghPkgCount" ]; then
-		if [ "$printPkgs" = "true" ]; then
-			printf '%s\n' "${ghPkgNames[@]}"
-		fi
-	fi
 }
 
 # Report how many packages were found in GitHub
@@ -87,7 +74,7 @@ countgh_packages () {
 	local perPage=1
 	silentMode=1
 	downloadGitHubPkgNames "$pageIndex" "$perPage"
-	parseGitHubPkgCount "$pageIndex.js"
+	parseGitHubPkgCount ${cacheDir}/"$pageIndex.js"
 	echo "# Packages found in GitHub: $ghPkgCount"
 }
 

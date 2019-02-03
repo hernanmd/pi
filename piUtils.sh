@@ -27,8 +27,16 @@ trim_both () {
 	echo -e "${1}" | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//'
 }
 
-setDownloadApp () {
-	# echo_line "Checking for wget or curl..."
+# Remove cache directory contents
+removeCacheDir () {
+	rm ${cacheDir}/*
+}
+
+initApp () {
+	# Create cache directory if does not exist
+	[[ -d ${cacheDir} ]] || mkdir ${cacheDir}
+
+	# Set download application (wget or curl)
 	if cmdExists wget ; then
 		# echo_nline "wget found..."
 		dApp="wget --show-progress --progress=bar:force:noscroll -q --no-check-certificate "

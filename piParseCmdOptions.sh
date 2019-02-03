@@ -16,7 +16,7 @@ parseCmdLine () {
 		listgh | listGH | LISTGH )
 			silentMode=0
 			fetchGitHubPkgNames "true"
-			echo "$ghPkgNames"
+			printf '%s\n' "${ghPkgNames[@]}"
 			;;
 		listsh | listSH | LISTSH )
 			silentMode=0
@@ -46,6 +46,9 @@ parseCmdLine () {
 		search )
 			search_packages "${@:2}"
 			;;
+		clean )
+			removeCacheDir
+			;;
 		help | h )
 			printHelp
 			;;			
@@ -61,7 +64,7 @@ parseCmdLine () {
 			#install_packages "${@:3}"
 			;;
 		* )
-		printBasicHelp
+		printHelp
 		exit 1
 	esac
 }

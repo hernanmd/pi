@@ -13,6 +13,8 @@
 # Tested on Windows 8.1, MacOS, GNU/Linux
 
 #set -x
+# Fail fast and be aware of exit codes
+set -eo pipefail
 
 source piParseCmdOptions.sh
 source piUtils.sh
@@ -21,5 +23,5 @@ source piUtils.sh
 ## Main Section
 #################################
 
-setDownloadApp
+initApp
 parseCmdLine ${@}
