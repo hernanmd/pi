@@ -19,7 +19,12 @@ echo_nline () {
 
 # Returns 0 if command was found in the current system, 1 otherwise
 cmdExists () {
-    type "$1" &> /dev/null || [ -f "$1" ];
+	type "$1" &> /dev/null || [ -f "$1" ];
+	return $?
+}
+
+cacheNotEmpty () {
+	[[ ! -n "$(find "${cacheDir}" -maxdepth 0 -type d -empty 2>/dev/null)" ]]
 	return $?
 }
 
@@ -29,7 +34,7 @@ trim_both () {
 
 # Remove cache directory contents
 removeCacheDir () {
-	rm ${cacheDir}/*
+	[[ -d ${cacheDir} ]] && cacheNotEmpty && rm ${cacheDir}/*
 }
 
 initApp () {
