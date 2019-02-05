@@ -16,23 +16,11 @@ MacOS and Windows (MinGW64/MSYS). PI automatically tries to download necessary d
 
 # Installation
 
-curl users:
 ```bash
-curl -O https://raw.githubusercontent.com/hernanmd/pi/master/pi
-```
-
-[wget](https://eternallybored.org/misc/wget/ "wget web site") users:
-```bash
-wget --no-cache --no-check-certificate https://raw.githubusercontent.com/hernanmd/pi/master/pi
-```
-
-Copy the executable script to a location included in the PATH environment variable:
-
-> Note: If your system does not have /usr/local/bin, please mkdir before executing the following commands
-
-```bash
-chmod 755 pi
-mv pi /usr/local/bin
+git clone https://github.com/hernanmd/pi.git
+[[ -d /usr/local/bin ]] || mkdir /usr/local/bin
+mv pi/pi* /usr/local/bin
+chmod 755 /usr/local/bin/pi
 ```
 
 # Features
