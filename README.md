@@ -23,6 +23,12 @@ mv pi/pi* /usr/local/bin
 chmod 755 /usr/local/bin/pi
 ```
 
+## Experimental installation
+
+```bash
+sh -c "$(curl -fsSL https://raw.githubusercontent.com/hernanmd/pi/master/install.sh)"
+```
+
 # Features
 
   - Listing packages supports GitHub and SmalltalkHub repositories. 
