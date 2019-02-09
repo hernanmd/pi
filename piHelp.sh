@@ -11,7 +11,7 @@ source piEnvVars.sh
 
 versionString () {
 	silentMode=0
-	echo_nline "pi - Pharo Install [version $piVersion - date $piDate]"
+	echo_nline "pi - Pharo Install [version $piVersion - $piDate]"
 }
 
 printBasicHelp () {
@@ -25,8 +25,8 @@ printBasicHelp () {
 #		--bleedingEdge		Set Configuration/Baseline to install bleedingEdge version.
 printHelp () {
 	silentMode=0
+	versionString
 cat << EOF
-pi - Pharo Install [version $piVersion]
 
 PI is a tool for installing Pharo Smalltalk packages (http://www.pharo.org)
 
