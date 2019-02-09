@@ -44,7 +44,7 @@ sh -c "$(curl -fsSL https://raw.githubusercontent.com/hernanmd/pi/master/install
   - The "image" option defaults to the current Pharo "stable" version.
   - Assume only one image in a directory. Future version will add support for multiple images.
   - PI can query SmalltalkHub or GitHub for package names or usernames.
-  - PI can install packages from SmalltalkHub (GitHub repositories is currently working progress).
+  - PI can install packages from SmalltalkHub (GitHub repositories is currently work in progress).
   - Package and username search is case-sensitive.
   - For GitHub repositories:
     - If it has "pharo" as topic, it will be listed.
@@ -138,6 +138,11 @@ If you'd like to make some changes yourself, see the following:
   - This project follows the [all-contributors specification](https://github.com/kentcdodds/all-contributors). Contributions of any kind are welcome!
 
 # ChangeLog
+
+## 0.4.0
+
+  - Added initial bats tests
+  - Minor corrections and enhacements
 
 ## 0.3.9
 
