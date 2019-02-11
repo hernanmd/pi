@@ -30,7 +30,7 @@ main() {
 	# precedence over umasks except for filesystems mounted with option "noacl".
 	umask g-w,o-w
 
-	printf "${BLUE}Cloning pi...${NORMAL}\n"
+	printf "${YELLOW}Cloning pi...${NORMAL}\n"
 	type git >/dev/null 2>&1 || {
 	  echo "Error: git is not installed"
 	  exit 1
@@ -44,18 +44,16 @@ main() {
 		fi
 	fi
 	env git clone --depth=1 https://github.com/hernanmd/pi.git || {
-		printf "Error: git clone of pi repo failed\n"
+		printf "${RED}Error: git clone of pi repo failed.${NORMAL}\n"
 		exit 1
 	}
 
 	# Use /usr/local as default installation path if not set
 	install_path="${1:-/usr/local}"
-	PI_ROOT="${0%/*}"
-
 	install -v -d -m 755 "$install_path"/{bin,libexec/pi,share/man/man1}
-	install -m 755 "$PI_ROOT/bin"/* "$install_path/bin"
-	install -m 755 "$PI_ROOT/libexec/pi"* "$install_path/libexec/pi"
-	# install -m 644 "$PI_ROOT/man/pi.1" "$install_path/share/man/man1"
+	install -m 755 "pi/bin"/* "$install_path/bin"
+	install -m 755 "pi/libexec/pi"* "$install_path/libexec/pi"
+	# install -m 644 "pi/man/pi.1" "$install_path/share/man/man1"
 
 	printf "${GREEN}"
 	echo '            #     '
