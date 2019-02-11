@@ -30,9 +30,9 @@ main() {
 	# precedence over umasks except for filesystems mounted with option "noacl".
 	umask g-w,o-w
 
-	printf "${YELLOW}Cloning pi...${NORMAL}\n"
+	printf "${YELLOW}Installing pi...${NORMAL}\n"
 	type git >/dev/null 2>&1 || {
-	  echo "Error: git is not installed"
+	  printf "${RED}Error: git is not installed{$NORMAL}\n"
 	  exit 1
 	}
 	# The Windows (MSYS) Git is not compatible with normal use on cygwin
@@ -50,7 +50,7 @@ main() {
 
 	# Use /usr/local as default installation path if not set
 	install_path="${1:-/usr/local}"
-	install -v -d -m 755 "$install_path"/{bin,libexec/pi,share/man/man1}
+	mkdir -vp -m 755 "$install_path"/{bin,libexec/pi,share/man/man1}
 	install -m 755 "pi/bin"/* "$install_path/bin"
 	install -m 755 "pi/libexec/pi"* "$install_path/libexec/pi"
 	# install -m 644 "pi/man/pi.1" "$install_path/share/man/man1"
