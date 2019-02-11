@@ -2,12 +2,24 @@
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](http://makeapullrequest.com)
 [![Project Status: Active – The project has reached a stable, usable state and is being actively developed.](http://www.repostatus.org/badges/latest/active.svg)](http://www.repostatus.org/#active)
 
+# Table of Contents
+
+- [Description](#description)
+- [Installation](#installation)
+- [Features](#features)
+- [Usage](#usage)
+  - [Notes](#notes)
+  - [Examples](#examples)
+- [Troubleshooting](#troubleshooting)
+- [Contribute](#contribute)
+- [Change Log](#change-log)
+- [License](#license)
+
 # Description
 
-Pharo Install - A tool for installing [Pharo Smalltalk](https://www.pharo.org) packages.
+Pharo Install - A command-line tool for installing [Pharo Smalltalk](https://www.pharo.org) packages.
 
-PI is a MIT-pip-like command line application installer for Pharo Smalltalk. Copy & pasting install scripts found in forums 
-or the web is an easy method, but it’s also time consuming because of the manual interaction, and hard to make the process 
+PI is a MIT-pip-like application installer for Pharo Smalltalk. Copy & pasting install scripts found in forums or the web is an easy method, but it’s also time consuming because of the manual interaction, and hard to make the process
 reproducible.
 
 PI turns copy & paste Smalltalk (Metacello Configurations) install scripts into bash one-liners which works on Unix/Linux, 
@@ -17,29 +29,22 @@ MacOS and Windows (MinGW64/MSYS). PI automatically tries to download necessary d
 # Installation
 
 ```bash
-git clone https://github.com/hernanmd/pi.git
-[[ -d /usr/local/bin ]] || mkdir /usr/local/bin
-mv pi/pi* /usr/local/bin
-chmod 755 /usr/local/bin/pi
-```
-
-## Experimental installation
-
-```bash
 sh -c "$(curl -fsSL https://raw.githubusercontent.com/hernanmd/pi/master/install.sh)"
 ```
 
 # Features
 
-  - Listing packages supports GitHub and SmalltalkHub repositories. 
+  - Listing packages supports GitHub and SmalltalkHub repositories.
   - Installing packages is supported for:
     - Metacello Configurations from Catalog (command line handler: get)
     - SmalltalkHub (command line handler: config)
-    - GitHub (experimental)	
+    - GitHub (experimental)
   - It works with curl or wget.
   - Supports case-insensitive searching for package names or developer user name.
 
-# Usage notes
+# Usage
+
+## Notes
 
   - The "image" option defaults to the current Pharo "stable" version.
   - Assume only one image in a directory. Future version will add support for multiple images.
@@ -52,23 +57,23 @@ sh -c "$(curl -fsSL https://raw.githubusercontent.com/hernanmd/pi/master/install
   - For SmalltalkHub repositories:
     - If xmllint is not available, it will be downloaded to the directory where pi was executed.
 
-# Usage examples
+## Examples
 
-## Installing
+### Installing
 
 ![Installing examples](images/ex_install.png)
 
-## Listing
+### Listing
 
 ![Listing examples](images/ex_list.png)
 
-## Searching
+### Searching
 
 Search both in SmalltalkHub and GitHub repositories:
 
 ![Search examples](images/ex_search.png)
 
-# Sample outputs
+## Sample outputs
 
 ![Listing output from GitHub](images/list_1.png)
 
@@ -139,6 +144,12 @@ If you'd like to make some changes yourself, see the following:
 
 # ChangeLog
 
+## 0.4.1
+
+  - Added run tests script
+  - Use one-liner curl install.sh script
+  - Code re-organization
+
 ## 0.4.0
 
   - Added initial bats tests
@@ -187,10 +198,11 @@ If you'd like to make some changes yourself, see the following:
 
 # ToDo
 
-  - Timestamp output ?
-  - Implement GitHub package installation
+  - Add log4sh logging feature.
+  - Test GitHub package installation
   - Install individual packages instead of only Metacello Configurations.
-  - Uninstall packages
+  - Uninstall packages(?)
+  - i18n
 
 # License
 
