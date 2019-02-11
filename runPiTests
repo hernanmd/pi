@@ -1,0 +1,7 @@
+#!/bin/bash
+
+main () {
+	find tests -type f -name '*.bats' -print -exec bats {} \;
+}
+
+main

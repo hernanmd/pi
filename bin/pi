@@ -1,0 +1,18 @@
+#!/bin/bash
+#
+# pi - Pharo Install - A MIT-pip-like library for Pharo Smalltalk
+#
+
+#set -x
+# Fail fast and be aware of exit codes
+set -eo pipefail
+
+source ../libexec/piParseCmdOptions.sh
+source ../libexec/piUtils.sh
+
+#################################
+## Main Section
+#################################
+
+initApp
+parseCmdLine ${@}

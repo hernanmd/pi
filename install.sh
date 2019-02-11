@@ -1,6 +1,5 @@
 main() {
-	# Use colors, but only if connected to a terminal, and that terminal
-	# supports them.
+	# Use colors, but only if connected to a terminal, and that terminal supports them.
 	if which tput >/dev/null 2>&1; then
 		ncolors=$(tput colors)
 	fi
@@ -22,7 +21,7 @@ main() {
 
 	# Only enable exit-on-error after the non-critical colorization stuff,
 	# which may fail on systems lacking tput or terminfo
-	set -e  
+	set -e
 
 	# Prevent the cloned repository from having insecure permissions. Failing to do
 	# so causes compinit() calls to fail with "command not found: compdef" errors
@@ -48,7 +47,17 @@ main() {
 		printf "Error: git clone of pi repo failed\n"
 		exit 1
 	}
-	
+
+	# Use /usr/local as default installation path if not set
+	dest="$1"
+	install_path="${dest=/usr/local}"
+	PI_ROOT="${0%/*}"
+
+	install -v -d -m 755 "$install_path"/{bin,libexec/pi,share/man/man1}
+	install -m 755 "$PI_ROOT/bin"/* "$install_path/bin"
+	install -m 755 "$PI_ROOT/libexec/pi"* "$install_path/libexec/pi"
+	# install -m 644 "$PI_ROOT/man/pi.1" "$install_path/share/man/man1"
+
 	printf "${GREEN}"
 	echo '            #     '
 	echo '           ###    '
@@ -68,7 +77,7 @@ main() {
 	echo '##                '
 	echo '##                '
 	echo '##	'
-    echo '   ....is now installed!'	
+	echo '   ....is now installed!'
 	echo 'Please look over pi help to access options.'
 	echo ''
 	echo 'p.s. If you like this work star it at https://github.com/hernanmd/pi'
