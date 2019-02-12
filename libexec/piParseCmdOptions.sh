@@ -3,12 +3,12 @@
 # pi - Pharo Install - A MIT-pip-like library for Pharo Smalltalk
 #
 
-source piHelp.sh
-source piSmalltalkHub.sh
-source piGitHub.sh
-source piSearch.sh
-source piInstallPkg.sh
-source piPharo.sh
+source ./piHelp.sh
+source ./piSmalltalkHub.sh
+source ./piGitHub.sh
+source ./piSearch.sh
+source ./piInstallPkg.sh
+source ./piPharo.sh
 
 parseCmdLine () {
 	options="$1"
