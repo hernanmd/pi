@@ -50,9 +50,11 @@ main() {
 
 	# Use /usr/local as default installation path if not set
 	install_path="${1:-/usr/local}"
-	mkdir -vp -m 755 "$install_path"/{bin,libexec/pi,share/man/man1}
-	install -m 755 "pi/bin"/* "$install_path/bin"
-	install -m 755 "pi/libexec/pi"* "$install_path/libexec/pi"
+	install -vd -m 755 "$install_path"/bin
+	install -vd -m 755 "$install_path"/libexec/pi
+	# install -vd "$install_path"/share/man/man1
+	install -v -m 755 "pi/bin"/* "$install_path/bin"
+	install -v -m 755 "pi/libexec/pi"* "$install_path/libexec/pi"
 	# install -m 644 "pi/man/pi.1" "$install_path/share/man/man1"
 
 	printf "${GREEN}"
