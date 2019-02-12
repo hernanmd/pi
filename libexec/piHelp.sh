@@ -3,7 +3,7 @@
 # pi - Pharo Install - A MIT-pip-like library for Pharo Smalltalk
 #
 
-source piEnvVars.sh
+# source piEnvVars.sh
 
 #########################################
 # PI Options

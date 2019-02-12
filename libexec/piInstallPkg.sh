@@ -7,7 +7,7 @@
 ## Packages Installation Functions
 ##################################
 
-source piCatalog.sh
+source "${BASH_SOURCE%/*}"/piCatalog.sh
 
 # Detect which Configuration version to install.
 # This setting is global: Applied to all Configuration names passed as parameters.

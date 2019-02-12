@@ -3,12 +3,13 @@
 # pi - Pharo Install - A MIT-pip-like library for Pharo Smalltalk
 #
 
-#set -x
+# set -x
 # Fail fast and be aware of exit codes
 set -eo pipefail
 
-source "${BASH_SOURCE%/*}"/../libexec/pi/piParseCmdOptions.sh
+source "${BASH_SOURCE%/*}"/../libexec/pi/piEnvVars.sh
 source "${BASH_SOURCE%/*}"/../libexec/pi/piUtils.sh
+source "${BASH_SOURCE%/*}"/../libexec/pi/piParseCmdOptions.sh
 
 #################################
 ## Main Section

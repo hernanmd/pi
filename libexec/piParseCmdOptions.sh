@@ -3,12 +3,12 @@
 # pi - Pharo Install - A MIT-pip-like library for Pharo Smalltalk
 #
 
-source ./piHelp.sh
-source ./piSmalltalkHub.sh
-source ./piGitHub.sh
-source ./piSearch.sh
-source ./piInstallPkg.sh
-source ./piPharo.sh
+source "${BASH_SOURCE%/*}"/piHelp.sh
+source "${BASH_SOURCE%/*}"/piSmalltalkHub.sh
+source "${BASH_SOURCE%/*}"/piGitHub.sh
+source "${BASH_SOURCE%/*}"/piSearch.sh
+source "${BASH_SOURCE%/*}"/piInstallPkg.sh
+source "${BASH_SOURCE%/*}"/piPharo.sh
 
 parseCmdLine () {
 	options="$1"
@@ -51,7 +51,7 @@ parseCmdLine () {
 			;;
 		help | h )
 			printHelp
-			;;			
+			;;
 		version )
 			versionString
 			;;

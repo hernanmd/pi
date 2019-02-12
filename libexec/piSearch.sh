@@ -3,8 +3,8 @@
 # pi - Pharo Install - A MIT-pip-like library for Pharo Smalltalk
 #
 
-source piGitHub.sh
-source piSmalltalkHub.sh
+# source piGitHub.sh
+# source piSmalltalkHub.sh
 
 ###################################
 ## Pharo Searching Packages Section

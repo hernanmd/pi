@@ -3,7 +3,7 @@
 # pi - Pharo Install - A MIT-pip-like library for Pharo Smalltalk
 #
 
-source piUtils.sh
+# source piUtils.sh
 
 #################################################
 # libXML / xmllint functions

@@ -3,8 +3,8 @@
 # pi - Pharo Install - A MIT-pip-like library for Pharo Smalltalk
 #
 
-source piXMLLint.sh
-source piUtils.sh
+source "${BASH_SOURCE%/*}"/piXMLLint.sh
+# source piUtils.sh
 
 dlStHubPkgNames () {
 	$dApp $dListParams "$stHubUrl"list
