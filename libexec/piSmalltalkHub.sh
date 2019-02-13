@@ -11,15 +11,8 @@ dlStHubPkgNames () {
 }
 
 fetchStHubPkgNames () {
-	echo_line "Checking SmalltalkHub package list file..."
-	if [ ! -f $stHubPkgIndexFile ]; then
-		echo_nline "not found"
-		echo_nline "Downloading SmalltalkHub packages list..."
-		dlStHubPkgNames
-	else
-		echo_line "found $stHubPkgIndexFile"
-	fi
-	downloadLibXML
+        [[ -f $stHubPkgIndexFile ]] || { echo "Fetching SmalltalkHub packages list..."; dlStHubPkgNames; }
+        downloadLibXML
 	pkgs=$(xpath "//a[@class=\"project\"]/text()" "$stHubPkgIndexFile")
 }
 

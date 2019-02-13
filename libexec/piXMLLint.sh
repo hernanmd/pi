@@ -134,8 +134,8 @@ xpath() {
 	downloadLibXML
 	# Parse XML
 	if cmdExists xmllint; then
-		xmllint --nonet --html --shell "$2" <<< "cat $1" | sed '/^\/ >/d;/^\ /d'
+		xmllint --nonet --html --shell "$2" <<< "cat $1" | sed '/^\/ >/d;/^\ /d' | less
 	else
-		./xmllint --nonet --html --shell "$2" <<< "cat $1" | sed '/^\/ >/d;/^\ /d'
+		./xmllint --nonet --html --shell "$2" <<< "cat $1" | sed '/^\/ >/d;/^\ /d' | less
 	fi
 }
