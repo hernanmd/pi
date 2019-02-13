@@ -12,7 +12,7 @@ dlStHubPkgNames () {
 
 fetchStHubPkgNames () {
 	echo_line "Checking SmalltalkHub package list file..."
-	if [ ! -f "$stHubPkgIndexFile" ]; then
+	if [ ! -f $stHubPkgIndexFile ]; then
 		echo_nline "not found"
 		echo_nline "Downloading SmalltalkHub packages list..."
 		dlStHubPkgNames

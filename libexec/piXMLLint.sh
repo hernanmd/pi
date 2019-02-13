@@ -3,11 +3,25 @@
 # pi - Pharo Install - A MIT-pip-like library for Pharo Smalltalk
 #
 
-# source piUtils.sh
-
 #################################################
 # libXML / xmllint functions
 #################################################
+
+installLibXMLLinuxDist () {
+	findDistributionID
+	case "$os" in
+		"CentOS*" | "RedHat*" )
+			yum -y install libxml2
+			;;
+		"Ubuntu*")
+			apt-get -y install libxml2 libxml2-utils
+			;;
+		* )
+			echo_nline "Should be implemented"
+			exit 1
+			;;
+	esac
+}
 
 installLibXMLMac () {
 	local libXMLMac1="combo-2007-10-07.dmg.gz"
@@ -83,6 +97,7 @@ installLibXMLMSYS () {
 	fi
 }
 
+
 downloadLibXML () {
 	if ! cmdExists xmllint && [ ! -x ./xmllint ]; then
 		echo_nline "Installing libxml2..."
@@ -94,7 +109,7 @@ downloadLibXML () {
 				installLibXMLMac
 				;;
 			linux*)
-				echo "Should be implemented"
+				installLibXMLLinuxDist
 				;;
 			bsd*)
 				echo_line "BSD seems not supported by libxml2. See http://www.xmlsoft.org for details"
@@ -117,7 +132,7 @@ xpath() {
 		return 1
 	fi
 	downloadLibXML
-	# GitBash doesn't provide /usr/local/bin and cannot copy xmllint.exe to any PATH directory without permission denied
+	# Parse XML
 	if cmdExists xmllint; then
 		xmllint --nonet --html --shell "$2" <<< "cat $1" | sed '/^\/ >/d;/^\ /d'
 	else
