@@ -13,7 +13,7 @@ installLibXMLLinuxDist () {
 		"CentOS*" | "RedHat*" )
 			yum -y install libxml2
 			;;
-		"Ubuntu*")
+		"Ubuntu*" | "Debian*" )
 			apt-get -y install libxml2 libxml2-utils
 			;;
 		* )
