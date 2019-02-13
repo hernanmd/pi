@@ -10,10 +10,10 @@
 installLibXMLLinuxDist () {
 	findDistributionID
 	case "$os" in
-		"CentOS*" | "RedHat*" )
+		"CentOS"* | "RedHat"* )
 			yum -y install libxml2
 			;;
-		"Ubuntu*" | "Debian*" )
+		"Ubuntu"* | "Debian"* )
 			apt-get -y install libxml2 libxml2-utils
 			;;
 		* )
