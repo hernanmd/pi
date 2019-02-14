@@ -41,7 +41,6 @@ yum_install () {
 
 # Prefer provider packages if distribution was found
 install_pharo () {
-	silentMode=1
 	findDistributionID
 	case "$os" in
 		"elementary" )
@@ -54,7 +53,6 @@ install_pharo () {
 			ppa_install
 			;;
 		* )
-			echo_nline "Installing Pharo from get.pharo.org"
 			dlPharo
 			;;
 	esac
@@ -64,19 +62,11 @@ install_pharo () {
 ## Pharo Installation Section
 #################################
 dlPharo () {
-	silentMode=0
-	echo_line "Checking Pharo installation in the current directory..."
-	if [ ! -f "$imageName" ]; then
-		echo_nline "not found"
-		echo_line "Downloading Pharo (stable version)..."
-#		exec $dApp $dPharoParams get.pharo.org/$pharoVersion+vm | bash
+	# echo_line "Checking Pharo installation in the current directory..."
+	[[ ! -f $imageName ]] && { 
+		echo "Downloading Pharo..."
+		#exec $dApp $dPharoParams get.pharo.org/$pharoVersion | bash
 		exec $dApp $dPharoParams $zeroConfUrl | bash
-	else
-		echo_line "found $imageName in the current directory"
-	fi
-
-	if [ ! -f pharo ]; then
-		echo_nline "Try again. Pharo was not downloaded correctly, exiting"
-		exit 1
-	fi
+	}
+	[[ ! -f pharo ]] && { echo "Try again. Pharo was not downloaded correctly, exiting"; exit 1; }
 }

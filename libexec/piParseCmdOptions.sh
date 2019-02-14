@@ -31,7 +31,7 @@ parseCmdLine () {
 			countgh_packages
 			;;
 		install | INSTALL )
-			install_pharo
+
 			install_packages "${@:2}"
 			;;
 		image | IMAGE )

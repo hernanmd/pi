@@ -12,7 +12,7 @@ source "${BASH_SOURCE%/*}"/piCatalog.sh
 # Detect which Configuration version to install.
 # This setting is global: Applied to all Configuration names passed as parameters.
 setPkgVersionSetting () {
-	echo_nline "Setting package version..."
+	echo "Setting package version..."
 	for param in "$@"; do
 		case "$param" in
 			"--dev")
@@ -23,29 +23,30 @@ setPkgVersionSetting () {
 				;;
 		esac
 	done
-	echo_nline "Selected package version: $pkgVersion"
+	echo "Selected package version: $pkgVersion"
 }
 
 # Read argument packages and install from their repositories
 install_packages () {
+	echo "Installing packages..."
 	until [ -z "$1" ]; do
-		echo_line "Trying to install from Pharo Catalog..."
+		echo "Trying to install from Pharo Catalog..."
 		if ! (pkgCatalogInstall "$1"); then
-			echo_nline "not found"
-			echo_line "Trying to install from SmalltalkHub..."
+			echo "not found"
+			echo "Trying to install from SmalltalkHub..."
 			if ! (pkgSHInstall "$1"); then
-				echo_nline "not found"
-				echo_line "Trying to install from GitHub..."
+				echo "not found"
+				echo "Trying to install from GitHub..."
 				if ! (pkgGHInstall "$1"); then
-					echo_nline "not found"
+					echo "not found"
 				else
-					echo_nline "done"
+					echo "done"
 				fi
 			else
-				echo_nline "done"
+				echo "done"
 			fi
 		else
-			echo_nline "done"
+			echo "done"
 		fi
 		shift
 	done

@@ -122,7 +122,7 @@ downloadJQ () {
 
 findDistributionID () {
 	# Find our distribution or OS
-	echo_nline "Current OS is: "
+	# echo_nline "Current OS is: "
 	if [ -f /etc/os-release ]; then
 		# freedesktop.org and systemd
 		. /etc/os-release
@@ -152,5 +152,5 @@ findDistributionID () {
 		os=$(uname -s)
 		ver=$(uname -r)
 	fi
-	echo_nline "Found $os"
+	# echo_nline "$os"
 }
