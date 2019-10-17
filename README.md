@@ -81,49 +81,18 @@ Search both in SmalltalkHub and GitHub repositories:
 
 # Troubleshooting
 
-If you experiment problems with pi, open an issue in the [Issue Tracker](https://github.com/hernanmd/pi/issues)), and provide the versions of the following dependencies by copying & pasting the results. PI is currently being developed in the following environment:
+If you experiment problems with pi, please run the collect environment script: 
 
 ```bash
-$ bash --version
-GNU bash, version 4.4.23(1)-release (x86_64-pc-msys)
-Copyright (C) 2016 Free Software Foundation, Inc.
+./runPiCollectEnv
 ```
 
-```bash
-$ git --version
-git version 2.19.1
-```
+And open an issue with the output in the [Issue Tracker](https://github.com/hernanmd/pi/issues)), and provide the versions of the following dependencies by copying & pasting the results. 
+
+You can obtain the pi version with:
 
 ```bash
-$ wget --version
-GNU Wget 1.19.5 built on msys.
-
--cares +digest +gpgme +https +ipv6 +iri +large-file +metalink +nls
-+ntlm +opie +psl +ssl/openssl
-```
-
-```bash
-$ curl --version
-curl 7.62.0 (x86_64-w64-mingw32) libcurl/7.62.0 OpenSSL/1.1.1a (WinSSL) zlib/1.2.11 brotli/1.0.7 libidn2/2.0.5 libpsl/0.20.2 (+libidn2/2.0.5) nghttp2/1.35.0
-Release-Date: 2018-10-31
-Protocols: dict file ftp ftps gopher http https imap imaps ldap ldaps pop3 pop3s rtsp smtp smtps telnet tftp
-Features: AsynchDNS IDN IPv6 Largefile SSPI Kerberos SPNEGO NTLM SSL libz brotli TLS-SRP HTTP2 HTTPS-proxy MultiSSL PSL Metalink
-```
-
-```bash
-$ openssl version
-OpenSSL 1.1.1a  20 Nov 2018
-```
-
-```bash
-$ ./jq --version
-jq-1.5
-```
-
-```bash
-$ xmllint --version
-C:\msys64\mingw64\bin\xmllint.exe: using libxml version 20909
-   compiled with: Threads Tree Output Push Reader Patterns Writer SAXv1 FTP HTTP DTDValid HTML Legacy C14N Catalog XPath XPointer XInclude Iconv ISO8859X Unicode Regexps Automata Expr Schemas Schematron Modules Debug Zlib Lzma
+pi version
 ```
 
 # Contribute
@@ -143,6 +112,10 @@ If you'd like to make some changes yourself, see the following:
   - This project follows the [all-contributors specification](https://github.com/kentcdodds/all-contributors). Contributions of any kind are welcome!
 
 # ChangeLog
+
+## 0.4.2
+
+  - Add collect environment script
 
 ## 0.4.1
 

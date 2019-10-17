@@ -1,0 +1,78 @@
+#!/bin/bash
+# Copyright 2019 Hernán Morales Durand. All Rights Reserved.
+#
+
+set -u  # Check for undefined variables
+# set -o noclobber  # Avoid overlay files (echo "hi" > foo)
+# set -o errexit    # Used to exit upon error, avoiding cascading errors
+# set -o pipefail   # Unveils hidden failures
+set -o nounset    # Exposes unset variables
+
+source libexec/piUtils.sh
+
+printf "Collecting system information...\n"
+
+output_file=pi_env.txt
+rm -f "$output_file" 
+
+{
+  printf '\n'
+  printf '== are we in docker =============================================\n'
+  num=$(cat /proc/1/cgroup | grep docker | wc -l);
+  if [ $num -ge 1 ]; then
+    echo "Yes"
+  else
+    echo "No"
+  fi
+
+  printf '\n'
+  printf '== uname =====================================================\n'
+  uname -a 2>&1
+
+  printf '\n'
+  printf '== bash =====================================================\n'
+  bash --version 2>&1
+
+  printf '\n'
+  printf '== git =====================================================\n'
+  git --version 2>&1
+
+  printf '\n'
+  printf '== wget =====================================================\n'
+  wget --version 2>&1
+
+  printf '\n'
+  printf '== curl =====================================================\n'
+  curl --version 2>&1
+
+  printf '\n'
+  printf '== openssl =====================================================\n'
+  openssl version 2>&1
+
+  printf '\n'
+  printf '== jq =====================================================\n'
+  cmdExists jq && jq --version 2>&1  
+
+  printf '\n'
+  printf '== xmllint =====================================================\n'
+  cmdExists xmllint && xmllint --version 2>&1
+
+  printf '\n'
+  printf '== env ==========================================================\n'
+  if [ -z ${LD_LIBRARY_PATH+x} ]; then
+    printf "LD_LIBRARY_PATH is unset\n";
+  else
+    printf LD_LIBRARY_PATH ${LD_LIBRARY_PATH} ;
+  fi
+  if [ -z ${DYLD_LIBRARY_PATH+x} ]; then
+    printf "DYLD_LIBRARY_PATH is unset\n";
+  else
+    printf DYLD_LIBRARY_PATH ${DYLD_LIBRARY_PATH} ;
+  fi
+  } >> ${output_file}
+
+printf "Wrote environment to ${output_file}. You can review the contents of that file.\n"
+printf "and use it to populate the fields in the github issue template.\n"
+printf '\n'
+printf "cat ${output_file}\n"
+printf '\n'
