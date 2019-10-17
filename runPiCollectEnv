@@ -35,19 +35,19 @@ rm -f "$output_file"
 
   printf '\n'
   printf '== git =====================================================\n'
-  git --version 2>&1
+  cmdExists git && git --version 2>&1
 
   printf '\n'
   printf '== wget =====================================================\n'
-  wget --version 2>&1
+  cmdExists wget && wget --version 2>&1
 
   printf '\n'
   printf '== curl =====================================================\n'
-  curl --version 2>&1
+  cmdExists curl && curl --version 2>&1
 
   printf '\n'
   printf '== openssl =====================================================\n'
-  openssl version 2>&1
+  cmdExists openssl && openssl version 2>&1    
 
   printf '\n'
   printf '== jq =====================================================\n'
@@ -56,6 +56,10 @@ rm -f "$output_file"
   printf '\n'
   printf '== xmllint =====================================================\n'
   cmdExists xmllint && xmllint --version 2>&1
+
+  printf '\n'
+  printf '== bats =====================================================\n'
+  cmdExists bats && bats --version 2>&1
 
   printf '\n'
   printf '== env ==========================================================\n'

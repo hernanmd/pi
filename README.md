@@ -47,10 +47,10 @@ sh -c "$(curl -fsSL https://raw.githubusercontent.com/hernanmd/pi/master/install
 ## Notes
 
   - The "image" option defaults to the current Pharo "stable" version.
-  - Assume only one image in a directory. Future version will add support for multiple images.
   - PI can query SmalltalkHub or GitHub for package names or usernames.
   - PI can install packages from SmalltalkHub (GitHub repositories is currently work in progress).
   - Package and username search is case-sensitive.
+  - Assume only one image in a directory. Future version will add support for multiple images.  
   - For GitHub repositories:
     - If it has "pharo" as topic, it will be listed.
     - If jq (a command line JSON processor) is not available, it will be downloaded to the directory where pi was executed.
@@ -87,7 +87,7 @@ If you experiment problems with pi, please run the collect environment script:
 ./runPiCollectEnv
 ```
 
-And open an issue with the output in the [Issue Tracker](https://github.com/hernanmd/pi/issues)), and provide the versions of the following dependencies by copying & pasting the results. 
+And open an issue with the output in the [Issue Tracker](https://github.com/hernanmd/pi/issues)).
 
 You can obtain the pi version with:
 
