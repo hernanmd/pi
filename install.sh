@@ -1,4 +1,43 @@
-main() {
+readonly PI_VERSION=""
+
+readonly PI_HOME="$HOME/.pi"
+readonly PI_BIN="$HOME/bin/pi"
+
+readonly ERR_UNSUPPORTED_OS=1
+readonly ERR_INVALID_USAGE=2
+
+die() {
+	local message="$1"
+	local -i exit_code="${2:-1}"
+
+	printf "${RED}Error $exit_code: $message{$NORMAL}\n" >&2
+	exit $exit_code
+}
+
+get_latest_version() {
+	basename "$(curl -s -o /dev/null -I -w "%{redirect_url}" https://github.com/hernanmd/pi/releases/latest)"
+}
+
+assignment() {
+	local variable="${1:-}"
+	local value="${2:-}"
+
+	echo "$variable=\"$value\""
+}
+
+do_install() {
+	mkdir -p "$(dirname "$PI_BIN")"
+	rm -f "$PI_BIN"
+	local self="${BASH_EXECUTION_STRING:-$(curl -sL https://raw.githubusercontent.com/hernanmd/pi/master/install.sh)}"
+	echo "${self/$(assignment PI_VERSION)/$(assignment PI_VERSION "$(get_latest_version)")}" > "$PI_BIN"
+	chmod +x "$PI_BIN"
+}
+
+check_install() {
+	[[ "$(type -t pi)" == "file" ]]
+}
+
+install_pi() {
 	# Use colors, but only if connected to a terminal, and that terminal supports them.
 	if which tput >/dev/null 2>&1; then
 		ncolors=$(tput colors)
@@ -23,40 +62,42 @@ main() {
 	# which may fail on systems lacking tput or terminfo
 	set -e
 
-	# Prevent the cloned repository from having insecure permissions. Failing to do
-	# so causes compinit() calls to fail with "command not found: compdef" errors
-	# for users with insecure umasks (e.g., "002", allowing group writability). Note
-	# that this will be ignored under Cygwin by default, as Windows ACLs take
-	# precedence over umasks except for filesystems mounted with option "noacl".
-	umask g-w,o-w
-
 	printf "${YELLOW}Installing pi...${NORMAL}\n"
-	type git >/dev/null 2>&1 || {
-	  printf "${RED}Error: git is not installed{$NORMAL}\n"
-	  exit 1
-	}
-	# The Windows (MSYS) Git is not compatible with normal use on cygwin
-	if [ "$OSTYPE" = cygwin ]; then
-		if git --version | grep msysgit > /dev/null; then
-		  echo "Error: Windows/MSYS Git is not supported on Cygwin"
-		  echo "Error: Make sure the Cygwin git package is installed and is first on the path"
-		  exit 1
-		fi
-	fi
-	env git clone --depth=1 https://github.com/hernanmd/pi.git || {
-		printf "${RED}Error: git clone of pi repo failed.${NORMAL}\n"
-		exit 1
-	}
+	local os="$(uname)"
+	case "$os" in
+		(Linux | Darwin)
+			[[ "$(whoami)" != "root" ]] || die "Don't install with sudo or as root"
 
-	# Use /usr/local as default installation path if not set
-	install_path="${1:-/usr/local}"
-	install -vd -m 755 "$install_path"/bin
-	install -vd -m 755 "$install_path"/libexec/pi
-	# install -vd "$install_path"/share/man/man1
-	install -v -m 755 "pi/bin"/* "$install_path/bin"
-	install -v -m 755 "pi/libexec/pi"* "$install_path/libexec/pi"
-	# install -m 644 "pi/man/pi.1" "$install_path/share/man/man1"
+			local -i upgrade=0
+			check_install && upgrade=1
 
+			do_install
+
+			if ! check_install; then
+				cat <<-EOF
+					In order to make pi work, you need to add the following
+					to your .bash_profile/.profile file:
+
+					    export PATH="$HOME/bin:$PATH"
+
+				EOF
+			fi
+
+			local version="$(get_latest_version)"
+			if [[ $upgrade -eq 1 ]]; then
+				show_banner "$version" "upgraded"
+			else
+				show_banner "$version" "installed"
+			fi
+
+			;;
+		(*)
+			die "Unsupported OS: $os"
+			;;
+	esac
+}
+
+show_banner () {
 	printf "${GREEN}"
 	echo '            #     '
 	echo '           ###    '
@@ -76,7 +117,7 @@ main() {
 	echo '##                '
 	echo '##                '
 	echo '##	'
-	echo '   ....is now installed!'
+	echo '   ....is now $2!'
 	echo 'Please look over pi help to access options.'
 	echo ''
 	echo 'p.s. If you like this work star it at https://github.com/hernanmd/pi'
@@ -84,4 +125,46 @@ main() {
 	printf "${NORMAL}"
 }
 
-main
+
+
+show_usage() {
+	cat <<-EOF
+		Usage: $(basename $0) COMMAND
+
+		Commands:
+		    -h|--help                   Shows usage
+		    -u|--upgrade|--update       Upgrades pi to the latest version
+		    -v|--version		        Shows version
+	EOF
+}
+
+usage() {
+	show_usage
+	exit $ERR_INVALID_USAGE
+}
+
+main() {
+	[[ $# -gt 0 ]] || usage
+
+	local command="${1:-}"
+	case "$command" in
+		("-h" | "--help")
+			shift
+			show_usage
+			;;
+		("-u" | "--upgrade" | "--update")
+			shift
+			install_pi
+			;;
+		(*)
+			shift
+			show_usage
+			;;
+	esac
+}
+
+if [[ -z "${BASH_SOURCE[0]:-}" ]]; then
+	install_pi
+else
+	main "$@"
+fi
