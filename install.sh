@@ -1,7 +1,7 @@
-readonly PI_VERSION=""
+readonly PI_VERSION="0.4.4"
 
 readonly PI_HOME="$HOME/.pi"
-readonly PI_REL="$HOME/pi/pi-0.4.3.tar.gz"
+readonly PI_REL="$HOME/pi/pi-$PI_VERSION.tar.gz"
 
 readonly ERR_UNSUPPORTED_OS=1
 readonly ERR_INVALID_USAGE=2
@@ -125,8 +125,6 @@ show_banner () {
 	echo ''
 	printf "${NORMAL}"
 }
-
-
 
 show_usage() {
 	cat <<-EOF
