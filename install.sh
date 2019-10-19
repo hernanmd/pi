@@ -1,7 +1,7 @@
 readonly PI_VERSION=""
 
 readonly PI_HOME="$HOME/.pi"
-readonly PI_BIN="$HOME/bin/pi"
+readonly PI_REL="$HOME/pi/pi-0.4.3.tar.gz"
 
 readonly ERR_UNSUPPORTED_OS=1
 readonly ERR_INVALID_USAGE=2
@@ -10,7 +10,7 @@ die() {
 	local message="$1"
 	local -i exit_code="${2:-1}"
 
-	printf "${RED}Error $exit_code: $message{$NORMAL}\n" >&2
+	printf "%sError $exit_code: $message%s\n" "${RED}" "${NORMAL}" >&2
 	exit $exit_code
 }
 
@@ -26,11 +26,12 @@ assignment() {
 }
 
 do_install() {
-	mkdir -p "$(dirname "$PI_BIN")"
-	rm -f "$PI_BIN"
+	mkdir -p "$(dirname "$PI_REL")"
+	rm -f "$PI_REL"
 	local self="${BASH_EXECUTION_STRING:-$(curl -sL https://raw.githubusercontent.com/hernanmd/pi/master/install.sh)}"
-	echo "${self/$(assignment PI_VERSION)/$(assignment PI_VERSION "$(get_latest_version)")}" > "$PI_BIN"
-	chmod +x "$PI_BIN"
+	echo "${self/$(assignment PI_VERSION)/$(assignment PI_VERSION "$(get_latest_version)")}" > "$PI_REL"
+	tar zxvf "$PI_REL"
+	chmod +x "$PI_REL"/pi
 }
 
 check_install() {
@@ -39,7 +40,7 @@ check_install() {
 
 install_pi() {
 	# Use colors, but only if connected to a terminal, and that terminal supports them.
-	if which tput >/dev/null 2>&1; then
+	if command -v tput >/dev/null 2>&1; then
 		ncolors=$(tput colors)
 	fi
 	if [ -t 1 ] && [ -n "$ncolors" ] && [ "$ncolors" -ge 8 ]; then
@@ -62,7 +63,7 @@ install_pi() {
 	# which may fail on systems lacking tput or terminfo
 	set -e
 
-	printf "${YELLOW}Installing pi...${NORMAL}\n"
+	printf "%sInstalling pi...%s\n" "${YELLOW}" "${NORMAL}"
 	local os="$(uname)"
 	case "$os" in
 		(Linux | Darwin)
