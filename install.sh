@@ -1,10 +1,19 @@
-readonly PI_VERSION="0.4.4"
+{ # Prevent execution if this script was only partially downloaded
 
-readonly PI_HOME="$HOME/.pi"
-readonly PI_REL="$HOME/pi/pi-$PI_VERSION.tar.gz"
+oops() {
+    echo "$0:" "$@" >&2
+    exit 1
+}
 
 readonly ERR_UNSUPPORTED_OS=1
 readonly ERR_INVALID_USAGE=2
+readonly tmpDir="$(mktemp -d -t pi-tarball-unpack.XXXXXXXXXX || \
+          oops "Can't create temporary directory for downloading the Pi tarball")"
+
+require_util() {
+    command -v "$1" > /dev/null 2>&1 ||
+        oops "you do not have '$1' installed, which I need to $2"
+}
 
 die() {
 	local message="$1"
@@ -18,24 +27,31 @@ get_latest_version() {
 	basename "$(curl -s -o /dev/null -I -w "%{redirect_url}" https://github.com/hernanmd/pi/releases/latest)"
 }
 
-assignment() {
-	local variable="${1:-}"
-	local value="${2:-}"
-
-	echo "$variable=\"$value\""
+cleanup() {
+    rm -rf "$tmpDir"
 }
 
+trap cleanup EXIT INT QUIT TERM
+
 do_install() {
-	mkdir -p "$(dirname "$PI_REL")"
-	rm -f "$PI_REL"
-	local self="${BASH_EXECUTION_STRING:-$(curl -sL https://raw.githubusercontent.com/hernanmd/pi/master/install.sh)}"
-	echo "${self/$(assignment PI_VERSION)/$(assignment PI_VERSION "$(get_latest_version)")}" > "$PI_REL"
-	tar zxvf "$PI_REL"
-	chmod +x "$PI_REL"/pi
+	require_util curl "download the binary tarball"
+	require_util tar "unpack the binary tarball"
+	local latest="$(get_latest_version)"
+	local url="https://github.com/hernanmd/pi/archive/$latest.tar.gz"
+	local tarball="$tmpDir/$(basename "$tmpDir/pi-$latest.tar.gz")"	
+	curl -L "$url" -o "$tarball" || oops "failed to download '$url'"
+	local unpack="$HOME/.pi"
+	tar zxvf "$tarball" || oops "failed to unpack '$url'"
+	script=$(echo "$unpack"/bin/pi)
+	[ -e "$script" ] || oops "pi script is missing from the tarball!"
 }
 
 check_install() {
 	[[ "$(type -t pi)" == "file" ]]
+}
+
+check_noroot() {
+	[[ "$(whoami)" != "root" ]] || die "Don't install with sudo or as root"	
 }
 
 install_pi() {
@@ -67,7 +83,7 @@ install_pi() {
 	local os="$(uname)"
 	case "$os" in
 		(Linux | Darwin)
-			[[ "$(whoami)" != "root" ]] || die "Don't install with sudo or as root"
+			check_noroot
 
 			local -i upgrade=0
 			check_install && upgrade=1
@@ -167,3 +183,5 @@ if [[ -z "${BASH_SOURCE[0]:-}" ]]; then
 else
 	main "$@"
 fi
+
+} # End of wrapping
