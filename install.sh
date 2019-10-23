@@ -43,7 +43,7 @@ do_install() {
 	local unpack="$HOME/.pi"
 	tar zxvf "$tarball" || oops "failed to unpack '$url'"
 	script=$(echo "$unpack"/bin/pi)
-	[ -e "$script" ] || oops "pi script is missing from the tarball!"
+	[ -e "$script" ] || oops "main script is missing from the tarball!"
 }
 
 check_install() {
