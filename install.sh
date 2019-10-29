@@ -38,11 +38,17 @@ do_install() {
 	require_util tar "unpack the binary tarball"
 	local latest="$(get_latest_version)"
 	local url="https://github.com/hernanmd/pi/archive/$latest.tar.gz"
-	local tarball="$tmpDir/$(basename "$tmpDir/pi-$latest.tar.gz")"	
-	curl -L "$url" -o "$tarball" || oops "failed to download '$url'"
+	local tarball="$tmpDir/pi.tar.gz"
+	curl -sSL "$url" -o "$tarball" || oops "failed to download '$url'"
 	local unpack="$HOME/.pi"
-	tar zxvf "$tarball" || oops "failed to unpack '$url'"
-	script=$(echo "$unpack"/bin/pi)
+	# Create a user local directory for pi
+	mkdir -pv "$unpack"
+	# Check previous installation and remove it to prevent Directory not empty on rename "
+	[ -e "$unpack/pi-$latest" ] && rm -rf "$unpack/pi"
+	# Uncompress, untar and move to a non-versioned persistent user directory
+	( cd "$unpack" && tar zxvf "$tarball" && mv -fv "pi-$latest" pi ) || oops "failed to unpack '$url'"
+	# Check if main script was uncompressed succesfully
+	script=$(echo "$unpack"/pi/bin/pi)
 	[ -e "$script" ] || oops "main script is missing from the tarball!"
 }
 
@@ -92,11 +98,12 @@ install_pi() {
 
 			if ! check_install; then
 				cat <<-EOF
+					${YELLOW}
 					In order to make pi work, you need to add the following
 					to your .bash_profile/.profile file:
 
-					    export PATH="$HOME/bin:$PATH"
-
+					    export PATH="$HOME/.pi/pi/bin:$PATH
+					${NORMAL}"
 				EOF
 			fi
 
