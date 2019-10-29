@@ -57,7 +57,7 @@ check_install() {
 }
 
 check_noroot() {
-	[[ "$(whoami)" != "root" ]] || die "Don't install with sudo or as root"	
+	[[ "$(whoami)" != "root" ]] || die "Don't install with sudo or as root"
 }
 
 install_pi() {

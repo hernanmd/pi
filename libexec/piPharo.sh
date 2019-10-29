@@ -61,12 +61,12 @@ install_pharo () {
 #################################
 ## Pharo Installation Section
 #################################
+
 dlPharo () {
 	# echo_line "Checking Pharo installation in the current directory..."
-	[[ ! -f $imageName ]] && { 
-		echo "Downloading Pharo..."
-		#exec $dApp $dPharoParams get.pharo.org/$pharoVersion | bash
+	[[ ! -f $imageName ]] && {
+		printf "Downloading Pharo...\n"
 		exec $dApp $dPharoParams $zeroConfUrl | bash
 	}
-	[[ ! -f pharo ]] && { echo "Try again. Pharo was not downloaded correctly, exiting"; exit 1; }
+	[[ ! -f pharo ]] && { printf "Could not download Pharo, exiting\n"; exit 1; }
 }

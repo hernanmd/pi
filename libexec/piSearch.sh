@@ -28,7 +28,7 @@ searchgh_packages () {
 search_packages () {
 	silentMode=1
 	pkg_name="$1"
-	[[ ! -z $pkg_name ]] || { echo "Missing package name. Exiting"; exit 1; }
+	[[ ! -z $pkg_name ]] || { printf "Missing package name. Exiting\n"; exit 1; }
 	searchsh_packages $pkg_name
 	searchgh_packages $pkg_name
 }

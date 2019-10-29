@@ -7,9 +7,9 @@
 # Fail fast and be aware of exit codes
 set -eo pipefail
 
-source "${BASH_SOURCE%/*}"/../libexec/pi/piEnvVars.sh
-source "${BASH_SOURCE%/*}"/../libexec/pi/piUtils.sh
-source "${BASH_SOURCE%/*}"/../libexec/pi/piParseCmdOptions.sh
+source "${BASH_SOURCE%/*}"/../libexec/piEnvVars.sh
+source "${BASH_SOURCE%/*}"/../libexec/piUtils.sh
+source "${BASH_SOURCE%/*}"/../libexec/piParseCmdOptions.sh
 
 #################################
 ## Main Section
