@@ -75,7 +75,8 @@ countgh_packages () {
 	silentMode=1
 	downloadGitHubPkgNames "$pageIndex" "$perPage"
 	parseGitHubPkgCount ${cacheDir}/"$pageIndex.js"
-	echo "# Packages found in GitHub: $ghPkgCount"
+	printf "Number of packages in GitHub: %s: " "$ghPkgCount"
+	printf
 }
 
 # Install from GitHub
@@ -86,13 +87,13 @@ pkgGHInstall () {
 	pkgFound=$(echo $pkgs | grep -w "$pkgName")
 	pkgCount=$(echo "$pkgFound" | wc -l)
 
-	echo "Found $pkgCount package(s) with the name $pkgName."
+	printf "Found %s package(s) with the name %s" "$pkgCount" "$pkgName"
 	if [ "$pkgCount" -gt 1 ]; then
-		echo "Listing follows..."
+		printf "Listing follows...\n"
 		cat -n <<< "$pkgFound"
 		return 1
 	else
-		echo "Selected package: $pkgFound"
+		printf "Selected package: %s" "$pkgFound"
 		# Parse GitHub user name
 		IFS=/ read p user <<< "$pkgFound"
 
@@ -100,18 +101,17 @@ pkgGHInstall () {
 		echo "User = $user"
 		echo "Pkg = $pkgFound"
 		# Download README.md file
-#		$dApp -d -O README.md "https://raw.githubusercontent.com/$user/$pkgName/master/README.md"
+		$dApp -d -O README.md "https://raw.githubusercontent.com/$user/$pkgName/master/README.md"
 #		[ -f "README.md" ] || exit 1
 		# Extract installation expression from tag
-#		local installExpr=$(grep "^\[//]\:\ #\ (pist)" -A 8 README.md \
-#			| sed '/\#/d;/^\[/d;/^[[:space:]]*$/d;/.*smalltalk/d;/```/d')
+		local installExpr=$(grep "^\[//]\:\ #\ (pist)" -A 8 README.md | sed '/\#/d;/^\[/d;/^[[:space:]]*$/d;/.*smalltalk/d;/```/d')
 		# local instDevExpr=$(grep "^\[//]\:\ #\ (pidev)" README.md | sed 's/.*smalltalk//;s/\(.*\).../\1/')
 		if [ -z "$installExpr" ]; then
 			echo "Installation expression not found."
 			return $?
 		fi
 	fi
-	echo "Install command: ./pharo $imageName eval $installExpr"
-#	./pharo "$imageName" eval "$installExpr"
+	printf "Install command: ./pharo %s eval %s" "$imageName" "$installExpr"
+	./pharo "$imageName" eval "$installExpr"
 	return $?
 }

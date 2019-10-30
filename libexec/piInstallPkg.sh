@@ -23,23 +23,28 @@ setPkgVersionSetting () {
 				;;
 		esac
 	done
-	printf "Selected package version: \n" "$pkgVersion"
+	printf "Selected package version: %s\n" "$pkgVersion"
 }
 
 install_from_catalog () {
 	printf "Trying to install from Pharo Catalog...\n"
 	if ! (pkgCatalogInstall "$1"); then
 		printf "not found\n"
+		return 1
 	else
 		printf "done\n"
+		return 0
+	fi
 }
 
 install_from_smalltalkhub () {
 	printf "Trying to install from SmalltalkHub...\n"
 	if ! (pkgSHInstall "$1"); then
 		printf "not found\n"
+		return 1
 	else
 		printf "done\n"
+		return 0
 	fi
 }
 
@@ -47,8 +52,10 @@ install_from_github () {
 	printf "Trying to install from GitHub...\n"
 	if ! (pkgGHInstall "$1"); then
 		printf "not found\n"
+		return 1
 	else
 		printf "done\n"
+		return 0
 	fi
 }
 
@@ -56,9 +63,7 @@ install_from_github () {
 install_packages () {
 	printf "Installing packages...\n"
 	until [ -z "$1" ]; do
-		install_from_catalog "$1"
-		install_from_smalltalkhub "$1"
-		install_from_github "$1"
+		install_from_github "$1" || install_from_catalog "$1" || install_from_smalltalkhub "$1"
 		shift
 	done
 }
