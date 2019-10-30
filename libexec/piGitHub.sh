@@ -7,20 +7,12 @@
 
 # Parse and store package names from GitHub API
 parseGitHubPkgNames () {
-    if type jq &> /dev/null; then
-        pkgs=$(jq '.items[].full_name' $1)
-    else
-        pkgs=$(./jq '.items[].full_name' $1)
-    fi
+	pkgs=$(jq '.items[].full_name' $1)
 }
 
 # Parse package count from GitHub API
 parseGitHubPkgCount () {
-    if type jq &> /dev/null; then
-        ghPkgCount=$(jq '.total_count' $1)
-    else
-        ghPkgCount=$(./jq '.total_count' $1)
-    fi
+	ghPkgCount=$(jq '.total_count' $1)
 }
 
 downloadGitHubPkgNames () {
@@ -49,7 +41,6 @@ fetchGitHubPkgNames () {
 	local pageIndex=1
 	local perPage=100
 	local printPkgs="$1"
-	downloadJQ
 
  	# Download JSON file if not present
 	downloadGitHubPkgNames "$pageIndex" "$perPage"

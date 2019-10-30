@@ -7,9 +7,9 @@
 ## Pharo Installer Settings
 #################################
 
-piVersion="0.4.2"
-piDate="17/10/2019"
-cacheDir=$HOME/.pi-cache
+piVersion="0.4.9"
+piDate="30/10/2019"
+cacheDir=$HOME/.pi/.pi-cache
 imageName="Pharo.image"
 zeroConfUrl="https://get.pharo.org"
 stHubUrl="http://smalltalkhub.com/"

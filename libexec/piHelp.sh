@@ -3,8 +3,6 @@
 # pi - Pharo Install - A MIT-pip-like library for Pharo Smalltalk
 #
 
-# source piEnvVars.sh
-
 #########################################
 # PI Options
 #########################################
@@ -16,7 +14,6 @@ versionString () {
 
 printBasicHelp () {
 	program_name="$0"
-#	echo "Usage: $(basename $program_name) {list[GH,SH] | count[GH,SH] | help | image | examples | [--dev | --bleedingEdge] install <pkgname>}"
 	echo "Usage: $(basename $program_name) {list[GH,SH] | count[GH,SH] | clean | help | image | examples | install <pkgname>}"
 }
 
