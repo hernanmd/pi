@@ -88,7 +88,7 @@ install_pi() {
 	printf "%sInstalling pi...%s\n" "${YELLOW}" "${NORMAL}"
 	local os="$(uname)"
 	case "$os" in
-		(Linux | Darwin)
+		(Linux | Darwin | MINGW*)
 			check_noroot
 
 			local -i upgrade=0
@@ -102,7 +102,7 @@ install_pi() {
 					In order to make pi work, you need to add the following
 					to your .bash_profile/.profile file:
 
-					    export PATH="$HOME/.pi/pi/bin:$PATH
+					    export PATH="\$HOME/.pi/pi/bin:\$PATH
 					${NORMAL}"
 				EOF
 			fi
@@ -141,7 +141,7 @@ show_banner () {
 	echo '##                '
 	echo '##                '
 	echo '##	'
-	echo '   ....is now $2!'
+	echo '   ....is now installed!'
 	echo 'Please look over pi help to access options.'
 	echo ''
 	echo 'p.s. If you like this work star it at https://github.com/hernanmd/pi'
