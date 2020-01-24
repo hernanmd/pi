@@ -31,7 +31,6 @@ parseCmdLine () {
 			countgh_packages
 			;;
 		install | INSTALL )
-
 			install_packages "${@:2}"
 			;;
 		image | IMAGE )
@@ -64,7 +63,7 @@ parseCmdLine () {
 			#install_packages "${@:3}"
 			;;
 		* )
-		printHelp
-		exit 1
+			printHelp
+			exit 1
 	esac
 }

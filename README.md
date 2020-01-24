@@ -26,6 +26,13 @@ PI turns copy & paste Smalltalk (Metacello Configurations) install scripts into 
 MacOS and Windows (MinGW64/MSYS). PI automatically tries to download necessary dependencies for parsing both
 [SmalltalkHub](https://www.smalltalkhub.com) and GitHub repositories lists, and also downloads the latest stable Pharo image and virtual machine if none is found in the current directory. It also supports installing multiple packages at once.
 
+# Requirements
+
+  - bash or zsh
+  - curl or wget
+  - jq (a command line JSON processor)
+  - xmllint (for parsing SmalltalkHub repositories)
+
 # Installation
 
 ```bash
@@ -51,11 +58,7 @@ sh -c "$(curl -fsSL https://raw.githubusercontent.com/hernanmd/pi/master/install
   - PI can install packages from SmalltalkHub (GitHub repositories is currently work in progress).
   - Package and username search is case-sensitive.
   - Assume only one image in a directory. Future version will add support for multiple images.  
-  - For GitHub repositories:
-    - If it has "pharo" as topic, it will be listed.
-    - If jq (a command line JSON processor) is not available, it will be downloaded to the directory where pi was executed.
-  - For SmalltalkHub repositories:
-    - If xmllint is not available, it will be downloaded to the directory where pi was executed.
+  - For GitHub repositories: If it has "pharo" as topic, it will be listed.
 
 ## Examples
 

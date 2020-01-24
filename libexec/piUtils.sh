@@ -34,7 +34,12 @@ trim_both () {
 
 # Remove cache directory contents
 removeCacheDir () {
-	[[ -d ${cacheDir} ]] && cacheNotEmpty && rm ${cacheDir}/*
+	if ! cacheNotEmpty; then
+		 printf "Cache is empty\n"
+		 exit 1
+	else
+		[[ -d ${cacheDir} ]] && cacheNotEmpty && rm ${cacheDir}/* && printf "Cache successfully cleaned\n"
+	fi
 }
 
 initApp () {

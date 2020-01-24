@@ -53,20 +53,5 @@ EOF
 }
 
 examples () {
-	program_name="$0"
-	echo "
-List GitHub packages:
-$(basename $program_name) listgh
-
-List SmalltalkHub packages:
-$(basename $program_name) listsh
-
-Search Both SmalltalkHub and GitHub packages:
-$(basename $program_name) search pillar
-
-Download latest stable Pharo image and VM:
-$(basename $program_name) image
-
-Install multiple packages:
-$(basename $program_name) install Diacritics ISO3166 StringExtensions"
+	echo $(<../EXAMPLES)
 }

@@ -1,0 +1,14 @@
+List GitHub packages:
+pi listgh
+
+List SmalltalkHub packages:
+pi listsh
+
+Search Both SmalltalkHub and GitHub packages:
+pi search pillar
+
+Download latest stable Pharo image and VM:
+pi image
+
+Install multiple packages:
+pi install Diacritics ISO3166 StringExtensions

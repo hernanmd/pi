@@ -1,5 +1,10 @@
 #!/usr/bin/env bats
 
+@test "testing if pi is installed" {
+	run pi
+	[ "$status" -eq 1 ]
+}
+
 @test "parsing version string" {
 	run pi version
 	[ "$status" -eq 0 ]
@@ -14,19 +19,7 @@
 
 @test "parsing command line examples" {
 	run pi examples
+	examples=$(<EXAMPLES)
 	[ "$output" = "
-List GitHub packages:
-pi listgh
-
-List SmalltalkHub packages:
-pi listsh
-
-Search Both SmalltalkHub and GitHub packages:
-pi search pillar
-
-Download latest stable Pharo image and VM:
-pi image
-
-Install multiple packages:
-pi install Diacritics ISO3166 StringExtensions" ]
+$examples" ]
 }
