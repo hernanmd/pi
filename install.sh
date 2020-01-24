@@ -23,7 +23,7 @@ die() {
 	exit $exit_code
 }
 
-" Return the latest version URL in the form: https://github.com/hernanmd/pi/releases/tag/0.4.8 "
+# Return the latest version URL in the form: https://github.com/hernanmd/pi/releases/tag/0.4.8
 get_latest_version() {
 	basename "$(curl -s -o /dev/null -I -w "%{redirect_url}" https://github.com/hernanmd/pi/releases/latest)"
 }
