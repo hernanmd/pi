@@ -1,14 +1,14 @@
 #!/bin/bash
 
 setup_env_vars () {
-if [[ -z "$TMPDIR" ]]; then
-  PI_TMPDIR='/tmp'
-else
-  PI_TMPDIR="${TMPDIR%/}"
-fi
-PI_TEST_FILENAME="$1"
-PI_TEST_DIRNAME="${PI_TEST_FILENAME%/*}"
-PI_TEST_NAMES=()
+  if [[ -z "$TMPDIR" ]]; then
+    PI_TMPDIR='/tmp'
+  else
+    PI_TMPDIR="${TMPDIR%/}"
+  fi
+  PI_TEST_FILENAME="$1"
+  PI_TEST_DIRNAME="${PI_TEST_FILENAME%/*}"
+  PI_TEST_NAMES=()
 }
 
 fixtures() {
@@ -25,13 +25,6 @@ filter_control_sequences() {
   "$@" | sed $'s,\x1b\\[[0-9;]*[a-zA-Z],,g'
 }
 
-if ! command -v tput >/dev/null; then
-  tput() {
-    printf '1000\n'
-  }
-  export -f tput
-fi
-
 emit_debug_output() {
   printf '%s\n' 'output:' "$output" >&2
 }
@@ -41,3 +34,10 @@ teardown() {
     rm -rf "$PI_TEST_SUITE_TMPDIR"
   fi
 }
+
+if ! command -v tput >/dev/null; then
+  tput() {
+    printf '1000\n'
+  }
+  export -f tput
+fi

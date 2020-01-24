@@ -6,6 +6,7 @@ INSTALL_DIR=
 PI_ROOT=
 
 setup() {
+  setup_env_vars
   make_pi_test_suite_tmpdir
   INSTALL_DIR="$PI_TEST_SUITE_TMPDIR/pi"
   PI_ROOT="${PI_TEST_DIRNAME%/*}"

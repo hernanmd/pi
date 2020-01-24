@@ -66,8 +66,7 @@ countgh_packages () {
 	silentMode=1
 	downloadGitHubPkgNames "$pageIndex" "$perPage"
 	parseGitHubPkgCount ${cacheDir}/"$pageIndex.js"
-	printf "Number of packages in GitHub: %s: " "$ghPkgCount"
-	printf "\n"
+	printf "Number of packages in GitHub: %s: \n" "$ghPkgCount"
 }
 
 # Install from GitHub
