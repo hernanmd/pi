@@ -51,6 +51,7 @@
 		# Check previous installation and remove it to prevent Directory not empty on rename "
 		printf "Checking previous installation on %s ..." "$unpack"
 		[ -e "$unpack/pi-$latest" ] && { printf "\nRemoving previous installation..."; rm -rf "$unpack/pi-$latest"; }
+		[ -e "$unpack/pi" ] && { printf "\nRemoving previous installation..."; rm -rf "$unpack/pi"; }
 		printf "done\n"
 		# Uncompress, untar and move to a non-versioned persistent user directory
 		( cd "$unpack" && tar zxvf "$tarball" && mv -fv "pi-$latest" pi ) || oops "failed to unpack '$url'"
