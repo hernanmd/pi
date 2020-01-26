@@ -4,6 +4,7 @@
 #
 
 # source piUtils.sh
+source "${BASH_SOURCE%/*}"/piEnvVars.sh
 
 # Parse and store package names from GitHub API
 parseGitHubPkgNames () {
@@ -20,8 +21,7 @@ downloadGitHubPkgNames () {
     local perPage="$2"
     # echo "Download JSON file"
     local ghPharoTopics="https://api.github.com/search/repositories?per_page=$perPage&page=$pIndex&q=topic:pharo"
-	[[ -f ${cacheDir}/"$pIndex".js ]] || $dApp "$ghPharoTopics" -O ${cacheDir}/"$pIndex".js
-    # echo "Done"
+	[[ -s ${cacheDir}/"$pIndex".js ]] || $dApp "$ghPharoTopics" -O ${cacheDir}/"$pIndex".js
 }
 
 readGitHubPkgNames () {
@@ -31,10 +31,14 @@ readGitHubPkgNames () {
     # Split package names into array
     while read -rd" "; do fetchedPkgNames+=("$pkg"); done <<< $cpkgs
     fetchedPkgNames=($(echo $cpkgs | tr ' ' "\n" ))
+	#[[ ${#fetchedPkgNames[@]} -eq 0 ]] && return 1
 	ghPkgNames=( "${ghPkgNames[@]}" "${fetchedPkgNames[@]}" )
 	# Update package count
     ghCurPkgsCount=${#ghPkgNames[@]}
+	# echo "# of fetchedPkgNames found : "${#fetchedPkgNames[@]}
+	# echo "# of ghCurPkgsCount found : "${#ghCurPkgsCount[@]}
     # echo "# of packages found : "${#ghPkgNames[@]}
+	# echo " --- "
 }
 
 fetchGitHubPkgNames () {
@@ -50,7 +54,7 @@ fetchGitHubPkgNames () {
 	parseGitHubPkgCount ${cacheDir}/"$pageIndex.js"
 	while [ "$ghCurPkgsCount" -lt "$ghPkgCount" ]; do
 		# Set new download page URL
-		pageIndex=$(("$pageIndex"+1))
+		pageIndex=$(($pageIndex+1))
 		# Download new results
 		downloadGitHubPkgNames "$pageIndex" "$perPage"
 		# Parse JSON result into String
@@ -66,7 +70,7 @@ countgh_packages () {
 	silentMode=1
 	downloadGitHubPkgNames "$pageIndex" "$perPage"
 	parseGitHubPkgCount ${cacheDir}/"$pageIndex.js"
-	printf "Number of packages in GitHub: %s: \n" "$ghPkgCount"
+	printf "Number of packages in GitHub: %s\n" "$ghPkgCount"
 }
 
 # Install from GitHub

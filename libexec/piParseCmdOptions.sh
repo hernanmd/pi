@@ -16,7 +16,7 @@ parseCmdLine () {
 		listgh | listGH | LISTGH )
 			silentMode=0
 			fetchGitHubPkgNames "true"
-			printf '%s\n' "${ghPkgNames[@]}"
+			printf "%s\n" "${ghPkgNames[@]}"
 			;;
 		listsh | listSH | LISTSH )
 			silentMode=0
