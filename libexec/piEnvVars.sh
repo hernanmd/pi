@@ -4,6 +4,15 @@
 #
 
 #################################
+## GitHub Settings
+#################################
+
+declare -a ghPkgNames
+declare -a pkgs
+ghPkgCount=0
+ghCurPkgsCount=0
+
+#################################
 ## Pharo Installer Settings
 #################################
 
@@ -25,12 +34,3 @@ os="Unknown"
 
 stHubUrl="http://smalltalkhub.com/"
 stHubPkgIndexFile="index.html"
-
-#################################
-## GitHub Settings
-#################################
-
-declare -a ghPkgNames
-declare -a pkgs
-ghPkgCount=0
-ghCurPkgsCount=0

@@ -53,5 +53,5 @@ EOF
 }
 
 examples () {
-	echo $(<../EXAMPLES)
+	echo "$(<EXAMPLES)"
 }

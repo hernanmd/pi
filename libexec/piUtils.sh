@@ -7,6 +7,12 @@
 ## Helper Functions
 #################################
 
+#function finish {
+  # Your cleanup code here
+  # printf "Finished\n"
+#}
+#trap finish EXIT
+
 # Echo parameter text without carriage return/new line
 echo_line () {
 	[ "$silentMode" == 0 ] && echo -n "$1"
