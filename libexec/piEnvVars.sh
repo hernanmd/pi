@@ -4,19 +4,10 @@
 #
 
 #################################
-## GitHub Settings
-#################################
-
-declare -a ghPkgNames
-declare -a pkgs
-ghPkgCount=0
-ghCurPkgsCount=0
-
-#################################
 ## Pharo Installer Settings
 #################################
 
-piVersion=$(<VERSION)
+piVersion="$(<VERSION)"
 piDate="$(<DATE)"
 cacheDir=$HOME/.pi/.pi-cache
 imageName="Pharo.image"
@@ -34,3 +25,12 @@ os="Unknown"
 
 stHubUrl="http://smalltalkhub.com/"
 stHubPkgIndexFile="index.html"
+
+#################################
+## GitHub Settings
+#################################
+
+declare -a ghPkgNames
+declare -a pkgs
+ghPkgCount=0
+ghCurPkgsCount=0
