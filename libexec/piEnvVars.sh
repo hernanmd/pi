@@ -7,8 +7,9 @@
 ## Pharo Installer Settings
 #################################
 
-piVersion="$(<VERSION)"
-piDate="$(<DATE)"
+piDate="$(<${BASH_SOURCE%/*}/../DATE)"
+piVersion="$(<${BASH_SOURCE%/*}/../VERSION)"
+
 cacheDir=$HOME/.pi/.pi-cache
 imageName="Pharo.image"
 zeroConfUrl="https://get.pharo.org"
