@@ -20,7 +20,7 @@ searchsh_packages () {
 # Search for package passed as argument in the GitHub repository
 searchgh_packages () {
 	silentMode=1
-	fetchGitHubPkgNames "false"
+	fetchGitHubPkgNames
 	printf -- '%s\n' "${ghPkgNames[@]}" | grep -i "$1" | sed 's/^/GitHub\: /'
 }
 

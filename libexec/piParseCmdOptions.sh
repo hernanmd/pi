@@ -15,7 +15,7 @@ parseCmdLine () {
 	case "$1" in
 		listgh | listGH | LISTGH )
 			silentMode=0
-			fetchGitHubPkgNames "true"
+			fetchGitHubPkgNames
 			printf "%s\n" "${ghPkgNames[@]}" | sort | column -s/ -t
 			;;
 		listsh | listSH | LISTSH )

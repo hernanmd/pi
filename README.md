@@ -22,9 +22,7 @@ Pharo Install - A command-line tool for installing [Pharo Smalltalk](https://www
 PI is a MIT-pip-like application installer for Pharo Smalltalk. Copy & pasting install scripts found in forums or the web is an easy method, but it’s also time consuming because of the manual interaction, and hard to make the process
 reproducible.
 
-PI turns copy & paste Smalltalk (Metacello Configurations) install scripts into bash one-liners which works on Unix/Linux, 
-MacOS and Windows (MinGW64/MSYS). PI automatically tries to download necessary dependencies for parsing both
-[SmalltalkHub](https://www.smalltalkhub.com) and GitHub repositories lists, and also downloads the latest stable Pharo image and virtual machine if none is found in the current directory. It also supports installing multiple packages at once.
+PI turns copy & paste Smalltalk (Metacello Configurations) install scripts into bash one-liners which works on Unix/Linux, MacOS and Windows (MinGW64/MSYS). PI automatically tries to download necessary dependencies for parsing both [SmalltalkHub](https://www.smalltalkhub.com) and GitHub repositories lists, and also downloads the latest stable Pharo image and virtual machine if none is found in the current directory. It also supports installing multiple packages at once.
 
 # Requirements
 
@@ -100,8 +98,7 @@ pi version
 
 # Contribute
 
-**Working on your first Pull Request?** You can learn how from this *free* series [How to Contribute to an Open Source Project on 
-GitHub](https://egghead.io/series/how-to-contribute-to-an-open-source-project-on-github)
+**Working on your first Pull Request?** You can learn how from this *free* series [How to Contribute to an Open Source Project on GitHub](https://egghead.io/series/how-to-contribute-to-an-open-source-project-on-github)
 
 If you have discovered a bug or have a feature suggestion, feel free to create an issue on Github.
 
@@ -184,7 +181,7 @@ If you'd like to make some changes yourself, see the following:
 
 This software is licensed under the MIT License.
 
-Copyright Hernán Morales, 2018-2019
+Copyright Hernán Morales, 2018-2020
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 
