@@ -17,7 +17,7 @@ installLibXMLLinuxDist () {
 			apt-get -y install libxml2 libxml2-utils
 			;;
 		* )
-			echo_nline "Should be implemented"
+			printf "Should be implemented\n"
 			exit 1
 			;;
 	esac
@@ -71,7 +71,7 @@ installLibXMLMSYS () {
 	local libXMLWin64="libxml2-2.9.3-win32-x86_64.7z"
 	local libXMLWin64URL="ftp://ftp.zlatkovic.com/libxml/64bit/"
 
-	echo_nline "Checking LibXML..."
+	printf "Checking LibXML..."
 	# Remove any previous download of ZIP file
 	if is64Bit; then
 		# Check if library installer already was downloaded
@@ -82,7 +82,7 @@ installLibXMLMSYS () {
 		if [ ! -f "/c/Program\ Files\ \(x86\)/7-Zip" ]; then
 			downloadWin7z
 		fi
-		echo_nline "Uncompressing libXML"
+		printf "Uncompressing libXML\n"
 		/c/Program\ Files\ \(x86\)/7-Zip/7z.exe x "$libXMLWin64"
 		# Copy to current directory
 		cp -v "$libXMLWin64"/bin/* .
@@ -100,7 +100,7 @@ installLibXMLMSYS () {
 
 downloadLibXML () {
 	if ! cmdExists xmllint && [ ! -x ./xmllint ]; then
-		echo_nline "Installing libxml2..."
+		printf "Installing libxml2..."
 		case "$OSTYPE" in
 			solaris*)
 				installLibXMLSolaris
@@ -112,7 +112,7 @@ downloadLibXML () {
 				installLibXMLLinuxDist
 				;;
 			bsd*)
-				echo_line "BSD seems not supported by libxml2. See http://www.xmlsoft.org for details"
+				printf "BSD seems not supported by libxml2. See http://www.xmlsoft.org for details\n"
 				;;
 			msys*)
 				installLibXMLMSYS
@@ -121,14 +121,14 @@ downloadLibXML () {
 				echo "unknown: $OSTYPE"
 				;;
 		esac
-		echo_nline "done"
+		printf "done\n"
 	fi
 }
 
 # Search argument XPATH expression in HTML file
 xpath() {
 	if [ $# -ne 2 ]; then
-		echo "Usage: xpath xpath file"
+		printf "Usage: xpath xpath file\n"
 		return 1
 	fi
 	downloadLibXML

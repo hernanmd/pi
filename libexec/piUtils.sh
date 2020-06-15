@@ -13,16 +13,6 @@
 #}
 #trap finish EXIT
 
-# Echo parameter text without carriage return/new line
-echo_line () {
-	[ "$silentMode" == 0 ] && echo -n "$1"
-}
-
-# Echo parameter text with carriage return/new line
-echo_nline () {
-	[ "$silentMode" == 0 ] && echo "$1"
-}
-
 # Returns 0 if command was found in the current system, 1 otherwise
 cmdExists () {
 	type "$1" &> /dev/null || [ -f "$1" ];
@@ -30,7 +20,7 @@ cmdExists () {
 }
 
 cacheNotEmpty () {
-	[[ ! -n "$(find "${cacheDir}" -maxdepth 0 -type d -empty 2>/dev/null)" ]]
+	[[ -z "$(find "${cacheDir}" -maxdepth 0 -type d -empty 2>/dev/null)" ]]
 	return $?
 }
 
@@ -78,7 +68,7 @@ downloadWin7z () {
 	local zip7Win32Exec="7z1801.exe"
 	local zip7Win32URL="https://www.7-zip.org/a/$zip7Win32Exec"
 
-	echo_nline "Downloading 7-Zip..."
+	printf "Downloading 7-Zip...\n"
 	if is64Bit; then
 		if [ ! -f "$zip7Win64Exec" ]; then
 			$dApp "$zip7Win64URL"
@@ -98,7 +88,7 @@ downloadWin7z () {
 
 findDistributionID () {
 	# Find our distribution or OS
-	# echo_nline "Current OS is: "
+	# printf "Current OS is: "
 	if [ -f /etc/os-release ]; then
 		# freedesktop.org and systemd
 		. /etc/os-release
@@ -128,5 +118,5 @@ findDistributionID () {
 		os=$(uname -s)
 		ver=$(uname -r)
 	fi
-	# echo_nline "$os"
+	# printf "$os\n"
 }

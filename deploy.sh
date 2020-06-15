@@ -9,7 +9,7 @@ main () {
     local version
 
     echo $(date "+%d-%m-%Y") > DATE
-    [[ -f DATE ]] || { echo "Couldn't write DATE file for release"; exit 1; }
+    [[ -f DATE ]] || { printf "Couldn't write DATE file for release\n"; exit 1; }
 
     if [ $# -eq 0 ]; then
         release-it

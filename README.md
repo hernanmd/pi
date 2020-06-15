@@ -13,23 +13,22 @@
 - [Troubleshooting](#troubleshooting)
 - [Contribute](#contribute)
 - [Change Log](#change-log)
-- [License](#license)
+- [License](./LICENSE)
 
 # Description
 
 Pharo Install - A command-line tool for installing [Pharo Smalltalk](https://www.pharo.org) packages.
 
-PI is a MIT-pip-like application installer for Pharo Smalltalk. Copy & pasting install scripts found in forums or the web is an easy method, but it’s also time consuming because of the manual interaction, and hard to make the process
-reproducible.
+PI is a MIT-pip-like application installer for Pharo Smalltalk. Copy & pasting install scripts found in forums or the web is an easy method, but it’s also time consuming because of the manual interaction, and hard to make the process reproducible.
 
-PI turns copy & paste Smalltalk (Metacello Configurations) install scripts into bash one-liners which works on Unix/Linux, MacOS and Windows (MinGW64/MSYS). PI automatically tries to download necessary dependencies for parsing both [SmalltalkHub](https://www.smalltalkhub.com) and GitHub repositories lists, and also downloads the latest stable Pharo image and virtual machine if none is found in the current directory. It also supports installing multiple packages at once.
+PI turns copy & paste Smalltalk (Metacello Configurations) install scripts into bash one-liners which works on Unix/Linux, 
+MacOS and Windows (MinGW64/MSYS). PI automatically tries to download necessary dependencies for parsing  GitHub repositories lists, and also downloads the latest stable Pharo image and virtual machine if none is found in the current directory. It also supports installing multiple packages at once.
 
 # Requirements
 
   - bash or zsh
   - curl or wget
   - jq (a command line JSON processor)
-  - xmllint (for parsing SmalltalkHub repositories)
 
 # Installation
 
@@ -42,7 +41,6 @@ sh -c "$(curl -fsSL https://raw.githubusercontent.com/hernanmd/pi/master/install
   - Listing packages supports GitHub and SmalltalkHub repositories.
   - Installing packages is supported for:
     - Metacello Configurations from Catalog (command line handler: get)
-    - SmalltalkHub (command line handler: config)
     - GitHub (experimental)
   - It works with curl or wget.
   - Supports case-insensitive searching for package names or developer user name.
@@ -52,8 +50,8 @@ sh -c "$(curl -fsSL https://raw.githubusercontent.com/hernanmd/pi/master/install
 ## Notes
 
   - The "image" option defaults to the current Pharo "stable" version.
-  - PI can query SmalltalkHub or GitHub for package names or usernames.
-  - PI can install packages from SmalltalkHub (GitHub repositories is currently work in progress).
+  - PI can query GitHub for package names or usernames.
+  - PI can install packages from GitHub repositories (work in progress).
   - Package and username search is case-sensitive.
   - Assume only one image in a directory. Future version will add support for multiple images.  
   - For GitHub repositories: If it has "pharo" as topic, it will be listed.
@@ -70,15 +68,13 @@ sh -c "$(curl -fsSL https://raw.githubusercontent.com/hernanmd/pi/master/install
 
 ### Searching
 
-Search both in SmalltalkHub and GitHub repositories:
+Search both in GitHub repositories:
 
 ![Search examples](images/ex_search.png)
 
 ## Sample outputs
 
 ![Listing output from GitHub](images/list_1.png)
-
-![Listing output from SmalltalkHub](images/list_2.png)
 
 # Troubleshooting
 
@@ -98,7 +94,8 @@ pi version
 
 # Contribute
 
-**Working on your first Pull Request?** You can learn how from this *free* series [How to Contribute to an Open Source Project on GitHub](https://egghead.io/series/how-to-contribute-to-an-open-source-project-on-github)
+**Working on your first Pull Request?** You can learn how from this *free* series [How to Contribute to an Open Source Project on 
+GitHub](https://egghead.io/series/how-to-contribute-to-an-open-source-project-on-github)
 
 If you have discovered a bug or have a feature suggestion, feel free to create an issue on Github.
 
@@ -177,14 +174,3 @@ If you'd like to make some changes yourself, see the following:
   - Uninstall packages(?)
   - i18n
 
-# License
-
-This software is licensed under the MIT License.
-
-Copyright Hernán Morales, 2018-2020
-
-Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.

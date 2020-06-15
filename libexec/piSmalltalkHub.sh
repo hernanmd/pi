@@ -18,7 +18,6 @@ fetchStHubPkgNames () {
 
 # Report how many packages were found in SmalltalkHub
 countsh_packages () {
-	silentMode=1
 	fetchStHubPkgNames
 	echo -ne "$pkgs" | wc -l
 }

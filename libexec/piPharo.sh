@@ -63,7 +63,7 @@ install_pharo () {
 #################################
 
 dlPharo () {
-	# echo_line "Checking Pharo installation in the current directory..."
+	# printf "Checking Pharo installation in the current directory...\n"
 	[[ ! -f $imageName ]] && {
 		printf "Downloading Pharo...\n"
 		exec $dApp $dPharoParams $zeroConfUrl | bash

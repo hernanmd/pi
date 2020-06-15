@@ -8,20 +8,18 @@
 #########################################
 
 versionString () {
-	silentMode=0
-	echo_nline "pi - Pharo Install [version $piVersion - $piDate]"
+	printf "pi - Pharo Install [version %s - %s]\n" "$piVersion" "$piDate"
 }
 
 printBasicHelp () {
-	program_name="$0"
-	echo "Usage: $(basename $program_name) {list[GH,SH] | count[GH,SH] | clean | help | image | examples | install <pkgname>}"
+	program_name=$(basename "$0")
+	printf "Usage: %s {list | count | clean | help | image | examples | install <pkgname>}\n" "$program_name"
 }
 
 # Future version
 #		--dev			Set Configuration/Baseline to install development versions.
 #		--bleedingEdge		Set Configuration/Baseline to install bleedingEdge version.
 printHelp () {
-	silentMode=0
 	versionString
 cat << EOF
 
@@ -34,16 +32,12 @@ EOF
 cat << EOF
 The options include:
 	clean 			Clean cache package directory
-	countgh			Report how many packages were found in GitHub
-	countsh			Report how many packages were found in SmalltalkHub
+	count			Report how many packages were found in GitHub
 	examples		Show usage examples
 	image			Fetch the latest stable Pharo (VM + Image).
 	install <pkgname>	Install pkgname to the Image found in the current directory. Download Image if not found.
-	listgh			List packages found in GitHub
-	listsh			List packages found in SmalltalkHub
+	list			List Pharo packages found in GitHub
 	search <pgname>		Search for pkgname in SmalltalkHub and GitHub repositories
-	searchgh <pkgname>	Search for pkgname in GitHub repository
-	searchsh <pkgname>	Search for pkgname in SmalltalkHub repository
 	version 		Show program version
 
 Pharo Install project home page: https://github.com/hernanmd/pi
@@ -53,5 +47,5 @@ EOF
 }
 
 examples () {
-	echo "$(<EXAMPLES)"
+	echo "$(<${BASH_SOURCE%/*}/../EXAMPLES)"
 }

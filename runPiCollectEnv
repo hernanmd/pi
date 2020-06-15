@@ -54,10 +54,6 @@ rm -f "$output_file"
   cmdExists jq && jq --version 2>&1  
 
   printf '\n'
-  printf '== xmllint =====================================================\n'
-  cmdExists xmllint && xmllint --version 2>&1
-
-  printf '\n'
   printf '== bats =====================================================\n'
   cmdExists bats && bats --version 2>&1
 

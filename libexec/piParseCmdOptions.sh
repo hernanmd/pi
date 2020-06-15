@@ -13,21 +13,11 @@ source "${BASH_SOURCE%/*}"/piPharo.sh
 parseCmdLine () {
 	options="$1"
 	case "$1" in
-		listgh | listGH | LISTGH )
-			silentMode=0
-			fetchGitHubPkgNames
+		list )
+			fetchGitHubPkgNames "true"
 			printf "%s\n" "${ghPkgNames[@]}" | sort | column -s/ -t
 			;;
-		listsh | listSH | LISTSH )
-			silentMode=0
-			fetchStHubPkgNames
-			echo "$pkgs"
-			;;
-		countsh | countSH | COUNTSH )
-			silentMode=1
-			countsh_packages
-			;;
-		countgh | countGH | COUNTGH )
+		count )
 			countgh_packages
 			;;
 		install | INSTALL )
@@ -35,9 +25,6 @@ parseCmdLine () {
 			;;
 		image | IMAGE )
 			install_pharo
-			;;
-		searchsh )
-			searchsh_packages "${@:2}"
 			;;
 		searchgh )
 			searchgh_packages "${@:2}"
@@ -56,11 +43,6 @@ parseCmdLine () {
 			;;
 		examples | EXAMPLES )
 			examples && exit 0
-			;;
-		"--dev" | "--bleedingEdge")
-			setPkgVersionSetting "${@}"
-			#install_pharo
-			#install_packages "${@:3}"
 			;;
 		* )
 			printHelp

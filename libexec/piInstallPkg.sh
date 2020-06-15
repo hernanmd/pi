@@ -63,7 +63,8 @@ install_from_github () {
 install_packages () {
 	printf "Installing packages...\n"
 	until [ -z "$1" ]; do
-		install_from_github "$1" || install_from_catalog "$1" || install_from_smalltalkhub "$1"
+		install_from_github "$1" 
+		# || install_from_catalog "$1"
 		shift
 	done
 }

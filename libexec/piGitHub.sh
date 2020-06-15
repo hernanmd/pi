@@ -44,6 +44,7 @@ readGitHubPkgNames () {
 fetchGitHubPkgNames () {
 	local pageIndex=1
 	local perPage=100
+	local printPkgs="$1"
 
  	# Download JSON file if not present
 	downloadGitHubPkgNames "$pageIndex" "$perPage"
@@ -66,27 +67,26 @@ fetchGitHubPkgNames () {
 countgh_packages () {
 	local pageIndex=1
 	local perPage=1
-	silentMode=1
 	downloadGitHubPkgNames "$pageIndex" "$perPage"
 	parseGitHubPkgCount ${cacheDir}/"$pageIndex.js"
-	printf "Number of packages in GitHub: %s\n" "$ghPkgCount"
+	printf "Number of Pharo packages in GitHub: %s\n" "$ghPkgCount"
 }
 
 # Install from GitHub
 # Currently uses exact match for package names
 pkgGHInstall () {
 	pkgName="$1"
-	fetchGitHubPkgNames
+	fetchGitHubPkgNames "false"
 	pkgFound=$(echo $pkgs | grep -w "$pkgName")
 	pkgCount=$(echo "$pkgFound" | wc -l)
 
-	printf "Found %s package(s) with the name %s\n" "$pkgCount" "$pkgName"
+	printf "Found %s package(s) with the name %s" "$pkgCount" "$pkgName"
 	if [ "$pkgCount" -gt 1 ]; then
 		printf "Listing follows...\n"
 		cat -n <<< "$pkgFound"
 		return 1
 	else
-		printf "Selected package: %s\n" "$pkgFound"
+		printf "Selected package: %s" "$pkgFound"
 		# Parse GitHub user name
 		IFS=/ read p user <<< "$pkgFound"
 
