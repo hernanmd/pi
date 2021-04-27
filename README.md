@@ -36,9 +36,21 @@ MacOS and Windows (MinGW64/MSYS). PI automatically tries to download necessary d
 sh -c "$(curl -fsSL https://raw.githubusercontent.com/hernanmd/pi/master/install.sh)"
 ```
 
+## bash users
+
+```bash
+echo "export PATH=\"\$HOME/.pi/pi/bin:\$PATH\" >> $HOME/.profile 
+```
+
+## zsh users
+
+```bash
+path+=$HOME/.pi/pi/bin
+```
+
 # Features
 
-  - Listing packages supports GitHub and SmalltalkHub repositories.
+  - Listing Pharo packages from GitHub.
   - Installing packages is supported for:
     - Metacello Configurations from Catalog (command line handler: get)
     - GitHub (experimental)
