@@ -5,6 +5,7 @@
 
 # source piUtils.sh
 source "${BASH_SOURCE%/*}"/piEnvVars.sh
+source "${BASH_SOURCE%/*}"/piPharo.sh
 
 # Parse and store package names from GitHub API
 parseGitHubPkgNames () {
@@ -35,10 +36,10 @@ readGitHubPkgNames () {
 	ghPkgNames=( "${ghPkgNames[@]}" "${fetchedPkgNames[@]}" )
 	# Update package count
     ghCurPkgsCount=${#ghPkgNames[@]}
-	# echo "# of fetchedPkgNames found : "${#fetchedPkgNames[@]}
-	# echo "# of ghCurPkgsCount found : "${#ghCurPkgsCount[@]}
-    # echo "# of packages found : "${#ghPkgNames[@]}
-	# echo " --- "
+	#echo "# of fetchedPkgNames found : "${#fetchedPkgNames[@]}
+	#echo "# of ghCurPkgsCount found : "${#ghCurPkgsCount[@]}
+    #echo "# of packages found : "${#ghPkgNames[@]}
+	#echo " --- "
 }
 
 fetchGitHubPkgNames () {
@@ -77,34 +78,40 @@ countgh_packages () {
 pkgGHInstall () {
 	pkgName="$1"
 	fetchGitHubPkgNames "false"
-	pkgFound=$(echo $pkgs | grep -w "$pkgName")
-	pkgCount=$(echo "$pkgFound" | wc -l)
+	declare -a matchingPackages
 
-	printf "Found %s package(s) with the name %s" "$pkgCount" "$pkgName"
+	for pharoPackage in "${ghPkgNames[@]}"; do
+		[[ ${pharoPackage,,} == *${pkgName,,} ]] || [[ ${pharoPackage,,} == ${pkgName,,} ]] && matchingPackages+=("$pharoPackage")
+	done
+	# How many packages with that name?
+	pkgCount=${#matchingPackages[@]}
+
 	if [ "$pkgCount" -gt 1 ]; then
+		printf "Found %s repositories with the package name \"%s\"\n" "$pkgCount" "$pkgName"
 		printf "Listing follows...\n"
-		cat -n <<< "$pkgFound"
+		cat -n <<< "${matchingPackages[@]}"
+		printf "Please provide the full name for the package you want to install <repository>/<package name>\n"
+		printf "%s\n" "${matchingPackages[@]}"
 		return 1
 	else
-		printf "Selected package: %s" "$pkgFound"
-		# Parse GitHub user name
-		IFS=/ read p user <<< "$pkgFound"
+		fullPackageName=${matchingPackages[0]}
+		printf "Selected package: %s\n" "$fullPackageName"
+		# Parse GitHub repository name with package name
+		IFS=/ read user p <<< "$fullPackageName"
 
-		# echo "Packages = $pkgs"
-		echo "User = $user"
-		echo "Pkg = $pkgFound"
 		# Download README.md file
-		$dApp -d -O README.md "https://raw.githubusercontent.com/$user/$pkgName/master/README.md"
-#		[ -f "README.md" ] || exit 1
+		$dApp -O README.md "https://raw.githubusercontent.com/$user/$p/master/README.md"
+		[ -f "README.md" ] || { printf "Could not find any README.md in the repository\n"; exit 1; }
 		# Extract installation expression from tag
-		local installExpr=$(grep "^\[//]\:\ #\ (pist)" -A 8 README.md | sed '/\#/d;/^\[/d;/^[[:space:]]*$/d;/.*smalltalk/d;/```/d')
-		# local instDevExpr=$(grep "^\[//]\:\ #\ (pidev)" README.md | sed 's/.*smalltalk//;s/\(.*\).../\1/')
+		local installExpr=$(grep "^\[//]\:\ #\ (pi)" -A 15 README.md | sed '/\#/d;/^\[\/\//d;/^[[:space:]]*$/d;/.*smalltalk/d;/```/d')
 		if [ -z "$installExpr" ]; then
-			echo "Installation expression not found."
+			printf "PI-compatible installation expression not found\n"
 			return $?
 		fi
 	fi
-	printf "Install command: ./pharo %s eval %s" "$imageName" "$installExpr"
+	# Download and install Pharo image if not present
+	install_pharo
+	printf "Install command: ./pharo %s eval \"%s\"" "$imageName" "$installExpr"
 	./pharo "$imageName" eval "$installExpr"
 	return $?
 }

@@ -49,12 +49,12 @@ install_from_smalltalkhub () {
 }
 
 install_from_github () {
-	printf "Trying to install from GitHub...\n"
+	printf "Scanning GitHub repositories...\n"
 	if ! (pkgGHInstall "$1"); then
-		printf "not found\n"
+		printf "exit with error.\n"
 		return 1
 	else
-		printf "done\n"
+		printf "done.\n"
 		return 0
 	fi
 }
