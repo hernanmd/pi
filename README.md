@@ -33,7 +33,7 @@ MacOS and Windows (MinGW64/MSYS). PI automatically tries to download necessary d
 # Installation
 
 ```bash
-sh -c "$(curl -fsSL https://raw.githubusercontent.com/hernanmd/pi/master/install.sh)"
+bash -c "$(curl -fsSL https://raw.githubusercontent.com/hernanmd/pi/master/install.sh)"
 ```
 
 ## bash users
