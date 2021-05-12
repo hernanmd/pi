@@ -26,8 +26,9 @@ downloadGitHubPkgNames () {
 }
 
 readGitHubPkgNames () {
+	local cpkgs
     # Remove quotes from pkgs string
-    local cpkgs=$(sed -e 's/^"//' -e 's/"$//' <<< "$pkgs")
+    cpkgs=$(sed -e 's/^"//' -e 's/"$//' <<< "$pkgs")
 	declare -a fetchedPkgNames
     # Split package names into array
     while read -rd" "; do fetchedPkgNames+=("$pkg"); done <<< $cpkgs
@@ -45,7 +46,6 @@ readGitHubPkgNames () {
 fetchGitHubPkgNames () {
 	local pageIndex=1
 	local perPage=100
-	local printPkgs="$1"
 
  	# Download JSON file if not present
 	downloadGitHubPkgNames "$pageIndex" "$perPage"
@@ -76,18 +76,25 @@ countgh_packages () {
 # Install from GitHub
 # Currently uses exact match for package names
 pkgGHInstall () {
-	pkgName="$1"
+	pkgNameToInstall="$1"
 	fetchGitHubPkgNames "false"
 	declare -a matchingPackages
+	local lcPharoPkgName installExpr fullInstallExpr saveImageExp fullInstallExpr
 
 	for pharoPackage in "${ghPkgNames[@]}"; do
-		[[ ${pharoPackage,,} == *${pkgName,,} ]] || [[ ${pharoPackage,,} == ${pkgName,,} ]] && matchingPackages+=("$pharoPackage")
+		# Lowercase strings before comparison
+		# Don't use "${pkgName,,}" because it's not supported in macOS bash
+		lcPharoPkgName=$(echo "$pharoPackage" | tr '[:upper:]' '[:lower:]')
+		lcPkgNameToInstal=$(echo "$pkgNameToInstall" | tr '[:upper:]' '[:lower:]')
+		if [[ "$lcPharoPkgName" == *$lcPkgNameToInstal || "$lcPharoPkgName" == "$lcPkgNameToInstal" ]]; then
+			 matchingPackages+=("$pharoPackage")
+		fi
 	done
-	# How many packages with that name?
+	# How many packages with the package name typed by the user?
 	pkgCount=${#matchingPackages[@]}
 
 	if [ "$pkgCount" -gt 1 ]; then
-		printf "Found %s repositories with the package name \"%s\"\n" "$pkgCount" "$pkgName"
+		printf "Found %s repositories with the package name \"%s\"\n" "$pkgCount" "$pkgNameToInstall"
 		printf "Listing follows...\n"
 		cat -n <<< "${matchingPackages[@]}"
 		printf "Please provide the full name for the package you want to install <repository>/<package name>\n"
@@ -103,15 +110,26 @@ pkgGHInstall () {
 		$dApp -O README.md "https://raw.githubusercontent.com/$user/$p/master/README.md"
 		[ -f "README.md" ] || { printf "Could not find any README.md in the repository\n"; exit 1; }
 		# Extract installation expression from tag
-		local installExpr=$(grep "^\[//]\:\ #\ (pi)" -A 15 README.md | sed '/\#/d;/^\[\/\//d;/^[[:space:]]*$/d;/.*smalltalk/d;/```/d')
+		installExpr=$(grep "^\[//]\:\ #\ (pi)" -A 15 README.md | sed '/\#/d;/^\[\/\//d;/^[[:space:]]*$/d;/.*smalltalk/d;/```/d')
 		if [ -z "$installExpr" ]; then
 			printf "PI-compatible installation expression not found\n"
 			return $?
 		fi
+		saveImageExp=".Smalltalk snapshot: true andQuit: true."
+		fullInstallExpr="${installExpr} ${saveImageExp}"
+		# Download and install Pharo image if not present
+		install_pharo
+		printf "Install command: ./pharo --headless %s eval \"%s\"" "$imageName" "$fullInstallExpr"
+		./pharo --headless "$imageName" eval "$fullInstallExpr"
 	fi
-	# Download and install Pharo image if not present
-	install_pharo
-	printf "Install command: ./pharo %s eval \"%s\"" "$imageName" "$installExpr"
-	./pharo "$imageName" eval "$installExpr"
 	return $?
+}
+
+# List packages in cache
+listgh_packages () {
+	# Parse JSON file
+	jq -jr '.items[]|.name,"|",.owner.login,"|",.description,"\n"' \
+		${cacheDir}/*.js \
+		| column -s'|' -t -c 500 \
+		| sort -t'\t' -i -b -k1,2 -f 
 }

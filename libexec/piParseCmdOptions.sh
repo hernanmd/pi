@@ -11,11 +11,9 @@ source "${BASH_SOURCE%/*}"/piInstallPkg.sh
 source "${BASH_SOURCE%/*}"/piPharo.sh
 
 parseCmdLine () {
-	options="$1"
 	case "$1" in
 		list )
-			fetchGitHubPkgNames "true"
-			printf "%s\n" "${ghPkgNames[@]}" | sort | column -s/ -t
+			listgh_packages
 			;;
 		count )
 			countgh_packages
