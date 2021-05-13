@@ -131,5 +131,5 @@ listgh_packages () {
 	jq -jr '.items[]|.name,"|",.owner.login,"|",.description,"\n"' \
 		${cacheDir}/*.js \
 		| column -s'|' -t -c 500 \
-		| sort -t'\t' -i -b -k1,2 -f 
+		| LC_ALL='C' sort -t$'\t' -i -b -k1,2 -f 
 }
