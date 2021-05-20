@@ -40,9 +40,13 @@ yum_install () {
 }
 
 # Prefer provider packages if distribution was found
-install_pharo () {
+installPharo () {
 	findDistributionID
 	case "$os" in
+		"arm64")
+			zeroConfUrl="http://files.pharo.org/vm/pharo-spur64-headless/Darwin-arm64/latest.zip"
+			dlPharoAppleSilicon
+			;;
 		"elementary" )
 			ppa_install
 			;;
@@ -62,11 +66,33 @@ install_pharo () {
 ## Pharo Installation Section
 #################################
 
+# Returns true if Pharo is detected in the current working directory
+isPharoInstalled () {
+	if [[ -d Pharo.app ]] || [[ -d "pharo-vm" ]] && [[ -f Pharo.image ]] && [[ -f Pharo.changes ]]; then
+		printf "Pharo found in current directory\n"
+		return 0
+	else
+		printf "Pharo not found in current directory\n"
+		return 1
+	fi
+}
+
 dlPharo () {
-	# printf "Checking Pharo installation in the current directory...\n"
-	[[ ! -f $imageName ]] && {
+	printf "Checking Pharo installation in the current directory...\n"
+	if ! isPharoInstalled; then
 		printf "Downloading Pharo...\n"
 		exec $dApp $dPharoParams $zeroConfUrl | bash
-	}
-	[[ ! -f pharo ]] && { printf "Could not download Pharo, exiting\n"; exit 1; }
+	fi
+	[[ ! isPharoInstalled ]] && { printf "Could not download Pharo, exiting\n"; exit 1; }
+}
+
+dlPharoAppleSilicon () {
+	printf "Checking Pharo installation in the current directory...\n"
+	if ! isPharoInstalled; then
+		printf "Downloading Pharo...\n"
+		exec $dApp $zeroConfUrl
+		unzip latest.zip
+		exec $dApp $dPharoParams get.pharo.org/64/90 | bash -
+	fi
+	[[ ! isPharoInstalled ]] && { printf "Could not download Pharo, exiting\n"; exit 1; }	
 }

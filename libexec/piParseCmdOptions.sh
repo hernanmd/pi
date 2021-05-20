@@ -22,7 +22,7 @@ parseCmdLine () {
 			install_packages "${@:2}"
 			;;
 		image | IMAGE )
-			install_pharo
+			installPharo
 			;;
 		searchgh )
 			searchgh_packages "${@:2}"

@@ -118,7 +118,7 @@ pkgGHInstall () {
 		saveImageExp=".Smalltalk snapshot: true andQuit: true."
 		fullInstallExpr="${installExpr} ${saveImageExp}"
 		# Download and install Pharo image if not present
-		install_pharo
+		installPharo
 		printf "Install command: ./pharo --headless %s eval \"%s\"" "$imageName" "$fullInstallExpr"
 		./pharo --headless "$imageName" eval "$fullInstallExpr"
 	fi
