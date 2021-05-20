@@ -39,7 +39,7 @@ bash -c "$(curl -fsSL https://raw.githubusercontent.com/hernanmd/pi/master/insta
 ## bash users
 
 ```bash
-echo "export PATH=\"\$HOME/.pi/pi/bin:\$PATH\" >> $HOME/.profile 
+echo "export PATH=$HOME/.pi/pi/bin:$PATH" >> $HOME/.profile 
 ```
 
 ## zsh users
@@ -50,23 +50,15 @@ path+=$HOME/.pi/pi/bin
 
 # Features
 
-  - Listing Pharo packages from GitHub.
-  - Installing packages is supported for:
-    - Metacello Configurations from Catalog (command line handler: get)
-    - GitHub (experimental)
+  - PI can install packages from GitHub repositories.
+  - Listing Pharo packages from GitHub: If it has "pharo" as topic, it will be listed.
+  - Installing Metacello packages from GitHub
   - It works with curl or wget.
   - Supports case-insensitive searching for package names or developer user name.
+  - The "image" option defaults to the current Pharo "stable" version.
+  - Assume only one image in a directory. Future version will add support for multiple images.  
 
 # Usage
-
-## Notes
-
-  - The "image" option defaults to the current Pharo "stable" version.
-  - PI can query GitHub for package names or usernames.
-  - PI can install packages from GitHub repositories (work in progress).
-  - Package and username search is case-sensitive.
-  - Assume only one image in a directory. Future version will add support for multiple images.  
-  - For GitHub repositories: If it has "pharo" as topic, it will be listed.
 
 ## Examples
 
