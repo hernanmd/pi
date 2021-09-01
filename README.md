@@ -59,13 +59,12 @@ path+=$HOME/.pi/pi/bin
 
 # Features
 
-  - PI can install packages from GitHub repositories.
-  - Listing Pharo packages from GitHub: If it has "pharo" as topic, it will be listed.
-  - Installing Metacello packages from GitHub
+  - PI can install and list packages from GitHub repositories.
+  - If the Github repository has "pharo" as topic, it will be listed.
   - It works with curl or wget.
   - Supports case-insensitive searching for package names or developer user name.
   - The "image" option defaults to the current Pharo "stable" version.
-  - Assume only one image in a directory. Future version will add support for multiple images.  
+  - PI assume only one image in a directory.  
 
 # Usage
 
