@@ -30,6 +30,7 @@ PI automatically retrieve and parse Pharo GitHub repository information, and als
   - bash or zsh
   - curl or wget
   - jq (a command line JSON processor)
+  - gsed
 
 # Installation
 
@@ -43,6 +44,12 @@ The next step is to configure your PATH variable to find the pi command. To find
 
 ```bash
 echo $0
+```
+
+To check the contents of the PATH variable:
+
+```bash
+env | grep -i path
 ```
 
 ## bash users
@@ -63,30 +70,40 @@ path+=$HOME/.pi/pi/bin
   - If the Github repository has "pharo" as topic, it will be listed.
   - It works with curl or wget.
   - Supports case-insensitive searching for package names or developer user name.
-  - The "image" option defaults to the current Pharo "stable" version.
-  - PI assume only one image in a directory.  
+  - The "image" option download the current Pharo "stable" version to the current working directory.
 
 # Usage
+
+GitHub repositories must contain a README.md file and have "pharo" specified as topic. Pi parses the README.md file and stops on the first smalltalk expression enclosed with backticks. This expression must contain an installation script in a Pharo image, i.e. that starts with Metacello. If the current directory already contains a Pharo image, PI will use that image.
 
 ## Examples
 
 ### Installing
 
-![Installing examples](images/ex_install.png)
+Installing NeoCSV package:
+```smalltalk
+pi install NeoCSV
+```
+
+Installing multiple packages:
+```smalltalk
+pi install Diacritics ISO3166 StringExtensions
+```
 
 ### Listing
 
-![Listing examples](images/ex_list.png)
+List packages from GitHub
+```smalltalk
+pi list
+```
 
 ### Searching
 
-Search both in GitHub repositories:
+Search in GitHub repositories:
 
-![Search examples](images/ex_search.png)
-
-## Sample outputs
-
-![Listing output from GitHub](images/list_1.png)
+```smalltalk
+pi search pillar
+```
 
 # Troubleshooting
 
@@ -122,66 +139,11 @@ If you'd like to make some changes yourself, see the following:
 
 # ChangeLog
 
-## 0.4.2
-
-  - Add collect environment script
-
-## 0.4.1
-
-  - Added run tests script
-  - Use one-liner curl install.sh script
-  - Code re-organization
-
-## 0.4.0
-
-  - Added initial bats tests
-  - Minor corrections and enhacements
-
-## 0.3.9
-
-  - downloadApp -> initApp 
-  - Added package cache directory feature for GitHub repositories.
-  - Logical reorganization of functions into an appropriate .sh file to be sourced.
-
-## 0.3.8
-
-  - Fixed minor bug while downloading JQ on MSYS
-
-## 0.3.7
-
-  - Refactorings and style corrections
-
-## 0.3.6
-
-  - Remove the caching "feature" for Pharo GihHub packages.
-  - For obtaining the count of GitHub packages download just one item which is enough.
-  - Set download application once.
-  - Make download applications silent.
-  - Remove temprary JSON files from GitHub
-  - Added help usage details
-
-## 0.3.5
-
-  - List Pharo GitHub package names.
-
-## 0.3.4
-
-  - Download GitHub package list paginating results (still needs fix & testing)
-  - Minor enhacements
-
-## 0.3.3
-
-  - Removed unnecessary function checkLibXML()
-  - Removed --no-check-certificate for the Pharo zeroconf website
-  - Added specific platform function for installing libXML
-  - Added function installLibXMLMSYS to install 32-bit and 64-bit versions depending on platform architecture 
-  - All variable names now are lowercased
-  - Started to implement function to install packages from GitHub
+See CHANGELOG.md
 
 # ToDo
 
   - Add log4sh logging feature.
-  - Test GitHub package installation
   - Install individual packages instead of only Metacello Configurations.
   - Uninstall packages(?)
   - i18n

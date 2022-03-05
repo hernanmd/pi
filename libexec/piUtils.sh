@@ -103,7 +103,7 @@ findDistributionID () {
 		. /etc/lsb-release
 		os="$DISTRIB_ID"
 		ver="$DISTRIB_RELEASE"
-	elif $(uname -p) == "arm64"; then
+	elif [ "$(uname -p)" = "arm64" ]; then
 		os=$(uname -p)
 		ver=$(uname -r)
 	elif [ -f /etc/debian_version ]; then

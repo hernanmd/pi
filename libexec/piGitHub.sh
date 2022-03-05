@@ -112,8 +112,13 @@ pkgGHInstall () {
 		# Extract installation expression from tag
 		installExpr=$(grep "^\[//]\:\ #\ (pi)" -A 15 README.md | sed '/\#/d;/^\[\/\//d;/^[[:space:]]*$/d;/.*smalltalk/d;/```/d')
 		if [ -z "$installExpr" ]; then
-			printf "PI-compatible installation expression not found\n"
-			return $?
+			# Use gsed to overcome BSD sed ignore-case limitations
+			# Ignore following Smalltalk expressions, we only match until first dot is found
+			installExpr=$(gsed -n '/^```smalltalk/I,/\.$/ p; /\]\./q' < README.md | gsed '/^```/ d;/^spec/I d')
+			if [ -z "$installExpr" ]; then
+				printf "PI-compatible Smalltalk install expression not found\n"
+				return $?
+			fi
 		fi
 		saveImageExp=".Smalltalk snapshot: true andQuit: true."
 		fullInstallExpr="${installExpr} ${saveImageExp}"
