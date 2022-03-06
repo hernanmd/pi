@@ -124,7 +124,7 @@ pi version
 # Contribute
 
 **Working on your first Pull Request?** You can learn how from this *free* series [How to Contribute to an Open Source Project on 
-GitHub](https://egghead.io/series/how-to-contribute-to-an-open-source-project-on-github)
+GitHub](https://app.egghead.io/playlists/how-to-contribute-to-an-open-source-project-on-github)
 
 If you have discovered a bug or have a feature suggestion, feel free to create an issue on Github.
 
