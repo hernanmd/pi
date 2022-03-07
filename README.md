@@ -21,7 +21,7 @@ Pharo Install - A command-line tool for installing [Pharo Smalltalk](https://www
 
 PI is a MIT-pip-like application installer for Pharo Smalltalk. Copy & pasting install scripts found in forums or the web is an easy method, but it’s also time consuming because of the manual interaction, and hard to make the process reproducible.
 
-PI turns copy & paste Smalltalk (Metacello Configurations) install scripts into shell one-liners which works on Unix/Linux, MacOS and Windows (MinGW64/MSYS). 
+PI turns copy & paste Smalltalk ([Metacello](https://github.com/pharo-open-documentation/pharo-wiki/blob/master/General/Baselines.md)) install scripts into shell one-liners which works on Unix/Linux, MacOS and Windows (MinGW64/MSYS). 
 
 PI automatically retrieve and parse Pharo GitHub repository information, and also downloads the latest stable Pharo image and virtual machine if none is found in the current directory. It also supports installing multiple packages at once.
 
@@ -29,8 +29,8 @@ PI automatically retrieve and parse Pharo GitHub repository information, and als
 
   - bash or zsh
   - curl or wget
-  - jq (a command line JSON processor)
-  - gsed
+  - [jq](https://stedolan.github.io/jq/) (a command line JSON processor)
+  - [gsed](https://www.gnu.org/software/sed/)
 
 # Installation
 

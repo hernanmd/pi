@@ -24,9 +24,6 @@ parseCmdLine () {
 		image | IMAGE )
 			installPharo
 			;;
-		searchgh )
-			searchgh_packages "${@:2}"
-			;;
 		search )
 			search_packages "${@:2}"
 			;;

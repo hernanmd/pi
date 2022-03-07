@@ -132,6 +132,7 @@ pkgGHInstall () {
 
 # List packages in cache
 listgh_packages () {
+	fetchGitHubPkgNames
 	# Parse JSON file
 	jq -jr '.items[]|.name,"|",.owner.login,"|",.description,"\n"' \
 		${cacheDir}/*.js \

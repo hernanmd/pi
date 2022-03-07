@@ -15,6 +15,7 @@ main () {
         release-it
     else
         version="$1"
+        echo $version > VERSION
         release-it "$version"
     fi
 }
