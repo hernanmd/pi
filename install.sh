@@ -107,11 +107,11 @@
 						${YELLOW}
 						In order to make Pharo Install (pi) work, if you are using bash, you need to execute the following to add pi to your .bash_profile/.profile file:
 
-							echo "export PATH=$HOME/.pi/pi/bin:$PATH" >> $HOME/.profile
+							echo "export PATH=\$HOME/.pi/pi/bin:\$PATH" >> \$HOME/.profile
 
 						If you are using zsh, execute the following to add pi to your path:
 
-							path+=$HOME/.pi/pi/bin
+							path+=\$HOME/.pi/pi/bin
 						${NORMAL}"
 					EOF
 				fi
@@ -154,9 +154,9 @@
 		echo '   ....is now installed!'
 		echo 'Please look over "pi help" command to access options.'
 		echo ''
+		printf "${NORMAL}"
 		echo 'p.s. If you like this work star it at Pharo Install repository https://github.com/hernanmd/pi'
 		echo ''
-		printf "${NORMAL}"
 	}
 
 	show_usage() {

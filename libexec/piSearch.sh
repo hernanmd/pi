@@ -11,7 +11,6 @@
 ###################################
 
 # Search for package passed as argument in the SmalltalkHub repository
-# "smalltalkhub.com/list" not supported anymore
 searchsh_packages () {
 	fetchStHubPkgNames
 	printf -- '%s\n' "$pkgs[@]" | grep -i "$1" | sed 's/^/SmalltalkHub\: /'
@@ -19,7 +18,7 @@ searchsh_packages () {
 
 # Search for package passed as argument in the GitHub repository
 searchgh_packages () {
-	fetchGitHubPkgNames "false"
+	fetchGitHubPkgNames
 	printf -- '%s\n' "${ghPkgNames[@]}" | grep -i "$1" | sed 's/^/GitHub\: /'
 }
 
@@ -27,7 +26,6 @@ searchgh_packages () {
 search_packages () {
 	pkg_name="$1"
 	[[ -n $pkg_name ]] || { printf "Missing package name. Exiting\n"; exit 1; }
-	# "smalltalkhub.com/list" not supported anymore
 	# searchsh_packages $pkg_name
 	searchgh_packages $pkg_name
 }

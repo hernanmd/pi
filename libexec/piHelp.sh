@@ -13,7 +13,7 @@ versionString () {
 
 printBasicHelp () {
 	program_name=$(basename "$0")
-	printf "Usage: %s {list | count | clean | help | image | examples | install <pkgname>}\n" "$program_name"
+	printf "Usage: %s {list | count | init | clean | help | image | examples | install <pkgname>}\n" "$program_name"
 }
 
 # Future version
@@ -35,6 +35,7 @@ The options include:
 	count			Report how many packages were found in GitHub
 	examples		Show usage examples
 	image			Fetch the latest stable Pharo (VM + Image).
+	init			Initialize and fetch PI Pharo package cache
 	install <pkgname>	Install pkgname to the Image found in the current directory. Download Image if not found.
 	list			List Pharo packages found in GitHub
 	search <pgname>		Search for pkgname in SmalltalkHub and GitHub repositories

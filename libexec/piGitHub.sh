@@ -6,6 +6,20 @@
 # source piUtils.sh
 source "${BASH_SOURCE%/*}"/piEnvVars.sh
 source "${BASH_SOURCE%/*}"/piPharo.sh
+# Load in the functions and animations
+source "${BASH_SOURCE%/*}"/bash_loading_animations.sh
+# Run BLA::stop_loading_animation if the script is interrupted
+trap BLA::stop_loading_animation SIGINT
+
+# Download package list
+init_db () {
+	printf "Please wait while the package list is downloaded... "
+	BLA::start_loading_animation "${BLA_clock[@]}"
+	fetchGitHubPkgNames
+	parseGitHubPkgCount ${cacheDir}/"1.js"
+	BLA::stop_loading_animation 2> /dev/null
+	printf "Detected Pharo packages in GitHub: %s\n" "$ghPkgCount"
+}
 
 # Parse and store package names from GitHub API
 parseGitHubPkgNames () {
@@ -37,10 +51,10 @@ readGitHubPkgNames () {
 	ghPkgNames=( "${ghPkgNames[@]}" "${fetchedPkgNames[@]}" )
 	# Update package count
     ghCurPkgsCount=${#ghPkgNames[@]}
-	#echo "# of fetchedPkgNames found : "${#fetchedPkgNames[@]}
-	#echo "# of ghCurPkgsCount found : "${#ghCurPkgsCount[@]}
-    #echo "# of packages found : "${#ghPkgNames[@]}
-	#echo " --- "
+	# echo "# of fetchedPkgNames found : "${#fetchedPkgNames[@]}
+	# echo "# of ghCurPkgsCount found : "$ghCurPkgsCount
+    # echo "# of packages found : "${#ghPkgNames[@]}
+	# echo " --- "
 }
 
 fetchGitHubPkgNames () {
@@ -70,7 +84,7 @@ countgh_packages () {
 	local perPage=1
 	downloadGitHubPkgNames "$pageIndex" "$perPage"
 	parseGitHubPkgCount ${cacheDir}/"$pageIndex.js"
-	printf "Number of Pharo packages in GitHub: %s\n" "$ghPkgCount"
+	printf "Detected Pharo packages in GitHub: %s\n" "$ghPkgCount"
 }
 
 # Install from GitHub
@@ -134,7 +148,7 @@ pkgGHInstall () {
 listgh_packages () {
 	fetchGitHubPkgNames
 	# Parse JSON file
-	jq -jr '.items[]|.name,"|",.owner.login,"|",.description,"\n"' \
+	jq -jr $jqListOptions \
 		${cacheDir}/*.js \
 		| column -s'|' -t -c 500 \
 		| LC_ALL='C' sort -t$'\t' -i -b -k1,2 -f 

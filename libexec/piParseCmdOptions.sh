@@ -15,6 +15,9 @@ parseCmdLine () {
 		list )
 			listgh_packages
 			;;
+		init )
+			init_db
+			;;
 		count )
 			countgh_packages
 			;;

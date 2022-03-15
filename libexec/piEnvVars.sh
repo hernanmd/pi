@@ -41,3 +41,4 @@ declare -a ghPkgNames
 declare -a pkgs
 ghPkgCount=0
 ghCurPkgsCount=0
+jqListOptions='.items[]|.name,"|",.owner.login,"|",.description,"\n"'
