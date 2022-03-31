@@ -175,5 +175,5 @@ If you'd like to make some changes yourself, see the following:
   
   - Install [release-it](https://www.npmjs.com/package/release-it)
   - Copy or setup a [GitHub token](https://github.com/settings/tokens)
-  - Evaluate `export GITHUB_TOKEN=...` with the
+  - Evaluate `export GITHUB_TOKEN=...` with the coped token as value. Alternatively, log-in to your GitHub account with your web browser and release-it will authenticate.
 
