@@ -12,7 +12,8 @@
   - [Examples](#examples)
 - [Troubleshooting](#troubleshooting)
 - [Contribute](#contribute)
-- [Change Log](#change-log)
+- [Change Log](./CHANGELOG)
+- [Develop](#develop)
 - [License](./LICENSE)
 
 # Description
@@ -163,13 +164,16 @@ If you'd like to make some changes yourself, see the following:
   - Finally, submit a pull request with your changes!
   - This project follows the [all-contributors specification](https://github.com/kentcdodds/all-contributors). Contributions of any kind are welcome!
 
-# ChangeLog
+# Develop
 
-See CHANGELOG.md
-
-# ToDo
-
-  - Add log4sh logging feature.
-  - Uninstall packages(?)
-  - i18n
+## To add tests
+  
+  - Have a look at [bats](https://github.com/bats-core/bats-core).
+  - Check the .bats files in the tests directory
+  
+## To deploy a new release
+  
+  - Install [release-it](https://www.npmjs.com/package/release-it)
+  - Copy or setup a [GitHub token](https://github.com/settings/tokens)
+  - Evaluate `export GITHUB_TOKEN=...` with the
 
