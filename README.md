@@ -12,7 +12,7 @@
   - [Examples](#examples)
 - [Troubleshooting](#troubleshooting)
 - [Contribute](#contribute)
-- [Change Log](./CHANGELOG)
+- [Change Log](./CHANGELOG.md)
 - [Develop](#develop)
 - [License](./LICENSE)
 
