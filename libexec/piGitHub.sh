@@ -13,7 +13,7 @@ trap BLA::stop_loading_animation SIGINT
 
 # Download package list
 init_db () {
-	printf "Please wait while the package list is downloaded... "
+	printf "   Please wait while the package list is downloaded... "
 	BLA::start_loading_animation "${BLA_clock[@]}"
 	fetchGitHubPkgNames
 	parseGitHubPkgCount ${cacheDir}/"1.js"
@@ -146,15 +146,6 @@ pkgGHInstall () {
 
 # List packages in cache
 listGitHubPackages () {
-	# Check package cache directory exists
-	if [ -d ${cacheDir} ]; then
-    	if [ -z "$(ls -A ${cacheDir})" ]; then
-			initApp
-		fi
-	else
-		err "Package cache is broken. Repairing.\n"
-		initApp
-	fi
 	# Parse JSON file
 	jq -jr ${jqListOptions} \
 		${cacheDir}/*.js \

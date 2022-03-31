@@ -3,6 +3,44 @@
 # pi - Pharo Install - A MIT-pip-like library for Pharo Smalltalk
 #
 
+findDistributionID () {
+	# Find our distribution or OS
+	# printf "Current OS is: "
+	if [ -f /etc/os-release ]; then
+		# freedesktop.org and systemd
+		. /etc/os-release
+		os="$NAME"
+		ver="$VERSION_ID"
+	elif type lsb_release >/dev/null 2>&1; then
+		# linuxbase.org
+		os=$(lsb_release -si)
+		ver=$(lsb_release -sr)
+	elif [ -f /etc/lsb-release ]; then
+		# For some versions of Debian/Ubuntu without lsb_release command
+		. /etc/lsb-release
+		os="$DISTRIB_ID"
+		ver="$DISTRIB_RELEASE"
+	elif [ "$(uname -p)" = "arm64" ]; then
+		os=$(uname -p)
+		ver=$(uname -r)
+	elif [ -f /etc/debian_version ]; then
+		# Older Debian/Ubuntu/etc.
+		os="Debian"
+		ver=$(cat /etc/debian_version)
+	elif [ -f /etc/SuSe-release ]; then
+		# Older SuSE/etc.
+		os="SuSE"
+	elif [ -f /etc/redhat-release ]; then
+		# Older Red Hat, CentOS, etc.
+		os="RedHat"
+	else
+		# Fall back to uname, e.g. "Linux <version>", also works for BSD, etc.
+		os=$(uname -s)
+		ver=$(uname -r)
+	fi
+	# printf "$os\n"
+}
+
 #################################
 ## Pharo Installation Functions
 #################################
