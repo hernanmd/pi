@@ -13,6 +13,10 @@
 #}
 #trap finish EXIT
 
+err(){
+    echo "E: $*" >>/dev/stderr
+}
+
 # Returns 0 if command was found in the current system, 1 otherwise
 cmdExists () {
 	type "$1" &> /dev/null || [ -f "$1" ];
@@ -22,10 +26,6 @@ cmdExists () {
 cacheNotEmpty () {
 	[[ -z "$(find "${cacheDir}" -maxdepth 0 -type d -empty 2>/dev/null)" ]]
 	return $?
-}
-
-trim_both () {
-	echo -e "${1}" | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//'
 }
 
 # Remove cache directory contents
@@ -44,16 +44,16 @@ initApp () {
 	# Set download application (wget or curl)
 	if cmdExists wget ; then
 		dApp="wget --progress=bar:force:noscroll -q --no-check-certificate "
-		dListParams="-O $stHubPkgIndexFile"
 		dPharoParams="-O-"
 	elif cmdExists curl ; then
 			dApp="curl -s "
-			dListParams="-o $stHubPkgIndexFile"
 			dPharoParams=""
 		else
 			printf "I require wget or curl, but it's not installed. Aborting.\n"
 			exit 1
 	fi
+	# Initialize package cache
+	init_db
 }
 
 is64Bit () {

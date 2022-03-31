@@ -19,19 +19,13 @@ piDate="$(<${BASH_SOURCE%/*}/../DATE)"
 piVersion="$(<${BASH_SOURCE%/*}/../VERSION)"
 
 cacheDir=$HOME/.pi/.pi-cache
+# Default image name
 imageName="Pharo.image"
 setZeroConfURL
 # Default Configuration/Baseline version (stable, development, bleedingEdge)
 pkgVersion="stable"
 # Detected Operating System
 os="Unknown"
-
-#################################
-## SmalltalkHub Settings
-#################################
-
-stHubUrl="http://smalltalkhub.com/"
-stHubPkgIndexFile="index.html"
 
 #################################
 ## GitHub Settings

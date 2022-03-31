@@ -4,7 +4,6 @@
 #
 
 source "${BASH_SOURCE%/*}"/piHelp.sh
-source "${BASH_SOURCE%/*}"/piSmalltalkHub.sh
 source "${BASH_SOURCE%/*}"/piGitHub.sh
 source "${BASH_SOURCE%/*}"/piSearch.sh
 source "${BASH_SOURCE%/*}"/piInstallPkg.sh
@@ -13,22 +12,22 @@ source "${BASH_SOURCE%/*}"/piPharo.sh
 parseCmdLine () {
 	case "$1" in
 		list )
-			listgh_packages
+			listGitHubPackages
 			;;
 		init )
 			init_db
 			;;
 		count )
-			countgh_packages
+			countGitHubPackages
 			;;
 		install | INSTALL )
-			install_packages "${@:2}"
+			installPackages "${@:2}"
 			;;
 		image | IMAGE )
 			installPharo
 			;;
 		search )
-			search_packages "${@:2}"
+			searchPackages "${@:2}"
 			;;
 		clean )
 			removeCacheDir

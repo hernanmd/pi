@@ -79,7 +79,7 @@ fetchGitHubPkgNames () {
 }
 
 # Report how many packages were found in GitHub
-countgh_packages () {
+countGitHubPackages () {
 	local pageIndex=1
 	local perPage=1
 	downloadGitHubPkgNames "$pageIndex" "$perPage"
@@ -91,7 +91,7 @@ countgh_packages () {
 # Currently uses exact match for package names
 pkgGHInstall () {
 	pkgNameToInstall="$1"
-	fetchGitHubPkgNames "false"
+	fetchGitHubPkgNames
 	declare -a matchingPackages
 	local lcPharoPkgName installExpr fullInstallExpr saveImageExp fullInstallExpr
 
@@ -124,31 +124,39 @@ pkgGHInstall () {
 		$dApp -O README.md "https://raw.githubusercontent.com/$user/$p/master/README.md"
 		[ -f "README.md" ] || { printf "Could not find any README.md in the repository\n"; exit 1; }
 		# Extract installation expression from tag
-		installExpr=$(grep "^\[//]\:\ #\ (pi)" -A 15 README.md | sed '/\#/d;/^\[\/\//d;/^[[:space:]]*$/d;/.*smalltalk/d;/```/d')
+		# Use gsed to overcome BSD sed ignore-case limitations
+		# Ignore Smalltalk expressions past the first dot
+		installExpr=$(gsed -n '/^```smalltalk/I,/\.$/ p; /\]\./q' < README.md | gsed '/^```/ d;/^spec/I d')
 		if [ -z "$installExpr" ]; then
-			# Use gsed to overcome BSD sed ignore-case limitations
-			# Ignore following Smalltalk expressions, we only match until first dot is found
-			installExpr=$(gsed -n '/^```smalltalk/I,/\.$/ p; /\]\./q' < README.md | gsed '/^```/ d;/^spec/I d')
-			if [ -z "$installExpr" ]; then
-				printf "PI-compatible Smalltalk install expression not found\n"
-				return $?
-			fi
+			printf "PI-compatible Smalltalk install expression not found\n"
+			return $?
 		fi
+		# Save image after each Metacello package installation
 		saveImageExp=".Smalltalk snapshot: true andQuit: true."
 		fullInstallExpr="${installExpr} ${saveImageExp}"
 		# Download and install Pharo image if not present
 		installPharo
 		printf "Install command: ./pharo --headless %s eval \"%s\"" "$imageName" "$fullInstallExpr"
 		./pharo --headless "$imageName" eval "$fullInstallExpr"
+		# Remove README.md file
+		[ ! -e "README.md" ] || rm -f "README.md"
 	fi
 	return $?
-}
+}            
 
 # List packages in cache
-listgh_packages () {
-	fetchGitHubPkgNames
+listGitHubPackages () {
+	# Check package cache directory exists
+	if [ -d ${cacheDir} ]; then
+    	if [ -z "$(ls -A ${cacheDir})" ]; then
+			initApp
+		fi
+	else
+		err "Package cache is broken. Repairing.\n"
+		initApp
+	fi
 	# Parse JSON file
-	jq -jr $jqListOptions \
+	jq -jr ${jqListOptions} \
 		${cacheDir}/*.js \
 		| column -s'|' -t -c 500 \
 		| LC_ALL='C' sort -t$'\t' -i -b -k1,2 -f 
