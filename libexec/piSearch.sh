@@ -11,12 +11,12 @@
 
 # Search for package passed as argument in the GitHub repository
 searchGitHubPackages () {
-	fetchGitHubPkgNames
+	fetch_github_pkg_names
 	printf -- '%s\n' "${ghPkgNames[@]}" | grep -i "$1" | sed 's/^/GitHub\: /'
 }
 
 # Search for package passed as argument in all supported repositories
-searchPackages () {
+search_packages () {
 	pkg_name="$1"
 	[[ -n $pkg_name ]] || { printf "Missing package name. Exiting\n"; exit 1; }
 	# searchsh_packages $pkg_name

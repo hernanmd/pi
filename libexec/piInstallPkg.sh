@@ -7,9 +7,9 @@
 ## Packages Installation Functions
 ##################################
 
-installFromGitHub () {
+install_from_github () {
 	printf "Scanning GitHub repositories...\n"
-	if ! (pkgGHInstall "$1"); then
+	if ! (install_pkg_from_github "$1"); then
 		printf "exit with error.\n"
 		return 1
 	else
@@ -19,10 +19,10 @@ installFromGitHub () {
 }
 
 # Read argument packages and install from their repositories
-installPackages () {
+install_packages () {
 	printf "Installing packages...\n"
 	until [ -z "$1" ]; do
-		installFromGitHub "$1" 
+		install_from_github "$1" 
 		shift
 	done
 }

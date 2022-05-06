@@ -35,27 +35,27 @@ rm -f "$output_file"
 
   printf '\n'
   printf '== git =====================================================\n'
-  cmdExists git && git --version 2>&1
+  cmd_exists git && git --version 2>&1
 
   printf '\n'
   printf '== wget =====================================================\n'
-  cmdExists wget && wget --version 2>&1
+  cmd_exists wget && wget --version 2>&1
 
   printf '\n'
   printf '== curl =====================================================\n'
-  cmdExists curl && curl --version 2>&1
+  cmd_exists curl && curl --version 2>&1
 
   printf '\n'
   printf '== openssl =====================================================\n'
-  cmdExists openssl && openssl version 2>&1    
+  cmd_exists openssl && openssl version 2>&1    
 
   printf '\n'
   printf '== jq =====================================================\n'
-  cmdExists jq && jq --version 2>&1  
+  cmd_exists jq && jq --version 2>&1  
 
   printf '\n'
   printf '== bats =====================================================\n'
-  cmdExists bats && bats --version 2>&1
+  cmd_exists bats && bats --version 2>&1
 
   printf '\n'
   printf '== env ==========================================================\n'

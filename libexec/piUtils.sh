@@ -13,58 +13,60 @@
 #}
 #trap finish EXIT
 
+# Load in the functions and animations
+source "${BASH_SOURCE%/*}"/bash_loading_animations.sh
+
 err(){
     echo "E: $*" >>/dev/stderr
 }
 
 # Returns 0 if command was found in the current system, 1 otherwise
-cmdExists () {
+cmd_exists () {
 	type "$1" &> /dev/null || [ -f "$1" ];
 	return $?
 }
 
-cacheNotEmpty () {
+cache_not_empty () {
 	[[ -z "$(find "${cacheDir}" -maxdepth 0 -type d -empty 2>/dev/null)" ]]
 	return $?
 }
 
 # Remove cache directory contents
-removeCacheDir () {
-	if ! cacheNotEmpty; then
-		 printf "Cache is empty\n"
+remove_cache_directory () {
+	if ! cache_not_empty; then
+		 err "Cache is empty\n"
 		 exit 1
 	else
-		[[ -d ${cacheDir} ]] && cacheNotEmpty && rm ${cacheDir}/* && printf "Cache successfully cleaned\n"
+		[[ -d ${cacheDir} ]] && cache_not_empty && rm ${cacheDir}/* && printf "Cache successfully cleaned\n"
 	fi
 }
 
-checkCache () {
-	# Check package cache directory exists
+# Check package cache directory exists
+check_pkg_cache () {
+	init_downloaders	
 	if [ -d ${cacheDir} ]; then
 		# Check if cache directory is populated
     	if [ -z "$(ls -A ${cacheDir})" ]; then
-			initApp
+			init_db
 		fi
 	else
-		err "Package cache is broken. Repairing.\n"
-		initApp
+		err "Package cache is empty or broken. Repairing.\n"
+		init_db
 	fi
 }
 
-initApp () {
-	# Create cache directory if does not exist
+# Initialize downloaders
+init_downloaders () {
 	[[ -d ${cacheDir} ]] || mkdir ${cacheDir}
 	# Set download application (wget or curl)
-	if cmdExists wget ; then
-		dApp="wget --progress=bar:force:noscroll -q --no-check-certificate "
+	if cmd_exists wget ; then
+		dApp="wget --progress=bar:force:noscroll -nv --no-check-certificate "
 		dPharoParams="-O-"
-	elif cmdExists curl ; then
+	elif cmd_exists curl ; then
 			dApp="curl -s "
 			dPharoParams=""
 		else
-			printf "I require wget or curl, but it's not installed. Aborting.\n"
+			err "I require wget or curl, but it's not installed. Aborting.\n"
 			exit 1
 	fi
-	init_db
 }
-

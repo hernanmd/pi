@@ -9,40 +9,43 @@ source "${BASH_SOURCE%/*}"/piSearch.sh
 source "${BASH_SOURCE%/*}"/piInstallPkg.sh
 source "${BASH_SOURCE%/*}"/piPharo.sh
 
-parseCmdLine () {
+parse_cmd_line () {
 	case "$1" in
 		list )
-			listGitHubPackages
+			list_github_packages
 			;;
 		init )
 			init_db
 			;;
 		count )
-			countGitHubPackages
+			count_github_packages
 			;;
 		install | INSTALL )
-			installPackages "${@:2}"
+			install_packages "${@:2}"
 			;;
 		image | IMAGE )
-			installPharo
+			install_pharo
+			;;
+		run | RUN )
+			run_pharo
 			;;
 		search )
-			searchPackages "${@:2}"
+			search_packages "${@:2}"
 			;;
 		clean )
-			removeCacheDir
+			remove_cache_directory
 			;;
 		help | h )
-			printHelp
+			print_help
 			;;
 		version )
-			versionString
+			print_version
 			;;
 		examples | EXAMPLES )
 			examples && exit 0
 			;;
 		* )
-			printHelp
+			print_help
 			exit 1
 	esac
 }

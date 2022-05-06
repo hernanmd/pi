@@ -3,11 +3,8 @@
 # pi - Pharo Install - A MIT-pip-like library for Pharo Smalltalk
 #
 
-# source piUtils.sh
-source "${BASH_SOURCE%/*}"/piEnvVars.sh
+source "${BASH_SOURCE%/*}"/piUtils.sh
 source "${BASH_SOURCE%/*}"/piPharo.sh
-# Load in the functions and animations
-source "${BASH_SOURCE%/*}"/bash_loading_animations.sh
 # Run BLA::stop_loading_animation if the script is interrupted
 trap BLA::stop_loading_animation SIGINT
 
@@ -15,23 +12,23 @@ trap BLA::stop_loading_animation SIGINT
 init_db () {
 	printf "   Please wait while the package list is downloaded... "
 	BLA::start_loading_animation "${BLA_clock[@]}"
-	fetchGitHubPkgNames
-	parseGitHubPkgCount ${cacheDir}/"1.js"
+	fetch_github_pkg_names
+	parse_github_pkg_count ${cacheDir}/"1.js"
 	BLA::stop_loading_animation 2> /dev/null
 	printf "Detected Pharo packages in GitHub: %s\n" "$ghPkgCount"
 }
 
 # Parse and store package names from GitHub API
-parseGitHubPkgNames () {
+parse_github_pkg_names () {
 	pkgs=$(jq '.items[].full_name' $1)
 }
 
 # Parse package count from GitHub API
-parseGitHubPkgCount () {
+parse_github_pkg_count () {
 	ghPkgCount=$(jq '.total_count' $1)
 }
 
-downloadGitHubPkgNames () {
+download_github_pkg_names () {
     local pIndex="$1"
     local perPage="$2"
     # echo "Download JSON file"
@@ -39,7 +36,7 @@ downloadGitHubPkgNames () {
 	[[ -s ${cacheDir}/"$pIndex".js ]] || $dApp "$ghPharoTopics" -O ${cacheDir}/"$pIndex".js
 }
 
-readGitHubPkgNames () {
+read_github_pkg_names () {
 	local cpkgs
     # Remove quotes from pkgs string
     cpkgs=$(sed -e 's/^"//' -e 's/"$//' <<< "$pkgs")
@@ -57,41 +54,41 @@ readGitHubPkgNames () {
 	# echo " --- "
 }
 
-fetchGitHubPkgNames () {
+fetch_github_pkg_names () {
 	local pageIndex=1
 	local perPage=100
 
  	# Download JSON file if not present
-	downloadGitHubPkgNames "$pageIndex" "$perPage"
+	download_github_pkg_names "$pageIndex" "$perPage"
 	# Parse JSON file
-	parseGitHubPkgNames ${cacheDir}/"$pageIndex.js"
-	readGitHubPkgNames
-	parseGitHubPkgCount ${cacheDir}/"$pageIndex.js"
+	parse_github_pkg_names ${cacheDir}/"$pageIndex.js"
+	read_github_pkg_names
+	parse_github_pkg_count ${cacheDir}/"$pageIndex.js"
 	while [ "$ghCurPkgsCount" -lt "$ghPkgCount" ]; do
 		# Set new download page URL
 		pageIndex=$(($pageIndex+1))
 		# Download new results
-		downloadGitHubPkgNames "$pageIndex" "$perPage"
+		download_github_pkg_names "$pageIndex" "$perPage"
 		# Parse JSON result into String
-		parseGitHubPkgNames ${cacheDir}/"$pageIndex.js"
-		readGitHubPkgNames
+		parse_github_pkg_names ${cacheDir}/"$pageIndex.js"
+		read_github_pkg_names
 	done
 }
 
 # Report how many packages were found in GitHub
-countGitHubPackages () {
+count_github_packages () {
 	local pageIndex=1
 	local perPage=1
-	downloadGitHubPkgNames "$pageIndex" "$perPage"
-	parseGitHubPkgCount ${cacheDir}/"$pageIndex.js"
+	download_github_pkg_names "$pageIndex" "$perPage"
+	parse_github_pkg_count ${cacheDir}/"$pageIndex.js"
 	printf "Detected Pharo packages in GitHub: %s\n" "$ghPkgCount"
 }
 
 # Install from GitHub
 # Currently uses exact match for package names
-pkgGHInstall () {
+install_pkg_from_github () {
 	pkgNameToInstall="$1"
-	fetchGitHubPkgNames
+	fetch_github_pkg_names
 	declare -a matchingPackages
 	local lcPharoPkgName installExpr fullInstallExpr saveImageExp fullInstallExpr
 
@@ -128,14 +125,14 @@ pkgGHInstall () {
 		# Ignore Smalltalk expressions past the first dot
 		installExpr=$(gsed -n '/^```smalltalk/I,/\.$/ p; /\]\./q' < README.md | gsed '/^```/ d;/^spec/I d')
 		if [ -z "$installExpr" ]; then
-			printf "PI-compatible Smalltalk install expression not found\n"
+			err "PI-compatible Smalltalk install expression not found\n"
 			return $?
 		fi
 		# Save image after each Metacello package installation
 		saveImageExp=".Smalltalk snapshot: true andQuit: true."
 		fullInstallExpr="${installExpr} ${saveImageExp}"
 		# Download and install Pharo image if not present
-		installPharo
+		install_pharo
 		printf "Install command: ./pharo --headless %s eval \"%s\"" "$imageName" "$fullInstallExpr"
 		./pharo --headless "$imageName" eval "$fullInstallExpr"
 		# Remove README.md file
@@ -145,7 +142,7 @@ pkgGHInstall () {
 }            
 
 # List packages in cache
-listGitHubPackages () {
+list_github_packages () {
 	# Parse JSON file
 	jq -jr ${jqListOptions} \
 		${cacheDir}/*.js \

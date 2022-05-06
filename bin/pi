@@ -16,5 +16,5 @@ source "${BASH_SOURCE%/*}"/../libexec/piParseCmdOptions.sh
 #################################
 
 # Check package cache and repair if necessary
-checkCache
-parseCmdLine ${@}
+check_pkg_cache
+parse_cmd_line ${@}

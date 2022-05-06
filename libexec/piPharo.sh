@@ -3,7 +3,9 @@
 # pi - Pharo Install - A MIT-pip-like library for Pharo Smalltalk
 #
 
-findDistributionID () {
+source "${BASH_SOURCE%/*}"/piUtils.sh
+
+find_os_id () {
 	# Find our distribution or OS
 	# printf "Current OS is: "
 	if [ -f /etc/os-release ]; then
@@ -78,15 +80,12 @@ yum_install () {
 }
 
 # Prefer provider packages if distribution was found
-installPharo () {
-	findDistributionID
+install_pharo () {
+	find_os_id
 	case "$os" in
 		"arm64")
 			zeroConfUrl="http://files.pharo.org/vm/pharo-spur64-headless/Darwin-arm64/latest.zip"
-			dlPharoAppleSilicon
-			;;
-		"elementary" )
-			ppa_install
+			download_pharo_m1
 			;;
 		"CentOS*" | "RedHat*" )
 			yum_install
@@ -95,7 +94,7 @@ installPharo () {
 			ppa_install
 			;;
 		* )
-			dlPharo
+			download_pharo
 			;;
 	esac
 }
@@ -105,32 +104,38 @@ installPharo () {
 #################################
 
 # Returns true if Pharo is detected in the current working directory
-isPharoInstalled () {
+is_pharo_installed () {
 	if [[ -d Pharo.app ]] || [[ -d "pharo-vm" ]] && [[ -f Pharo.image ]] && [[ -f Pharo.changes ]]; then
 		printf "Pharo found in current directory\n"
 		return 0
 	else
-		printf "Pharo not found in current directory\n"
+		printf "Pharo not found\n"
 		return 1
 	fi
 }
 
-dlPharo () {
+run_pharo () {
+	if is_pharo_installed; then
+		sh './pharo-ui' &
+	fi
+}
+
+download_pharo () {
 	printf "Checking Pharo installation in the current directory...\n"
-	if ! isPharoInstalled; then
+	if ! is_pharo_installed; then
 		printf "Downloading Pharo...\n"
 		exec $dApp $dPharoParams $zeroConfUrl | bash
 	fi
-	[[ ! isPharoInstalled ]] && { printf "Could not download Pharo, exiting\n"; exit 1; }
+	[[ ! is_pharo_installed ]] && { err "Could not download Pharo, exiting\n"; exit 1; }
 }
 
-dlPharoAppleSilicon () {
+download_pharo_m1 () {
 	printf "Checking Pharo installation in the current directory...\n"
-	if ! isPharoInstalled; then
+	if ! is_pharo_installed; then
 		printf "Downloading Pharo...\n"
 		exec $dApp $zeroConfUrl
 		unzip latest.zip
-		exec $dApp $dPharoParams get.pharo.org/64/90 | bash -
+		exec $dApp $dPharoParams get.pharo.org/64 | bash -
 	fi
-	[[ ! isPharoInstalled ]] && { printf "Could not download Pharo, exiting\n"; exit 1; }	
+	[[ ! is_pharo_installed ]] && { err "Could not download Pharo, exiting\n"; exit 1; }	
 }
