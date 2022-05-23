@@ -63,7 +63,7 @@ and you're done.
 
 To persist usage between multiple shell sessions:
 ```bash
-echo "export PATH=$HOME/.pi/pi/bin:$PATH" >> ~/.profile 
+echo "export PATH=\$HOME/.pi/pi/bin:\$PATH" >> ~/.profile 
 ```
 
 To see the effect, do:
@@ -82,7 +82,7 @@ and you're done.
 
 To persist usage between multiple shell sessions:
 ```bash
-echo -n 'export PATH=$HOME/.pi/pi/bin:$PATH' >> ~/.zshrc
+echo -n 'export PATH=\$HOME/.pi/pi/bin:\$PATH' >> ~/.zshrc
 ```
 
 To see the effect, do:
