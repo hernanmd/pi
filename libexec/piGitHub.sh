@@ -15,7 +15,7 @@ init_db () {
 	fetch_github_pkg_names
 	parse_github_pkg_count ${cacheDir}/"1.js"
 	BLA::stop_loading_animation 2> /dev/null
-	printf "Detected Pharo packages in GitHub: %s\n" "$ghPkgCount"
+	pi_log "Detected Pharo packages in GitHub: %s\n" "$ghPkgCount"
 }
 
 # Parse and store package names from GitHub API
@@ -81,7 +81,7 @@ count_github_packages () {
 	local perPage=1
 	download_github_pkg_names "$pageIndex" "$perPage"
 	parse_github_pkg_count ${cacheDir}/"$pageIndex.js"
-	printf "Detected Pharo packages in GitHub: %s\n" "$ghPkgCount"
+	pi_log "Detected Pharo packages in GitHub: %s\n" "$ghPkgCount"
 }
 
 # Install from GitHub
@@ -105,27 +105,27 @@ install_pkg_from_github () {
 	pkgCount=${#matchingPackages[@]}
 
 	if [ "$pkgCount" -gt 1 ]; then
-		printf "Found %s repositories with the package name \"%s\"\n" "$pkgCount" "$pkgNameToInstall"
-		printf "Listing follows...\n"
+		pi_log "Found %s repositories with the package name \"%s\"\n" "$pkgCount" "$pkgNameToInstall"
+		pi_log "Listing follows...\n"
 		cat -n <<< "${matchingPackages[@]}"
-		printf "Please provide the full name for the package you want to install <repository>/<package name>\n"
-		printf "%s\n" "${matchingPackages[@]}"
+		pi_log "Please provide the full name for the package you want to install <repository>/<package name>\n"
+		pi_log "%s\n" "${matchingPackages[@]}"
 		return 1
 	else
 		fullPackageName=${matchingPackages[0]}
-		printf "Selected package: %s\n" "$fullPackageName"
+		pi_log "Selected package: %s\n" "$fullPackageName"
 		# Parse GitHub repository name with package name
 		IFS=/ read user p <<< "$fullPackageName"
 
 		# Download README.md file
 		$dApp -O README.md "https://raw.githubusercontent.com/$user/$p/master/README.md"
-		[ -f "README.md" ] || { printf "Could not find any README.md in the repository\n"; exit 1; }
+		[ -f "README.md" ] || { pi_err "Could not find any README.md in the repository\n"; exit 1; }
 		# Extract installation expression from tag
 		# Use gsed to overcome BSD sed ignore-case limitations
 		# Ignore Smalltalk expressions past the first dot
 		installExpr=$(gsed -n '/^```smalltalk/I,/\.$/ p; /\]\./q' < README.md | gsed '/^```/ d;/^spec/I d')
 		if [ -z "$installExpr" ]; then
-			err "PI-compatible Smalltalk install expression not found\n"
+			pi_err "PI-compatible Smalltalk install expression not found\n"
 			return $?
 		fi
 		# Save image after each Metacello package installation
@@ -133,7 +133,7 @@ install_pkg_from_github () {
 		fullInstallExpr="${installExpr} ${saveImageExp}"
 		# Download and install Pharo image if not present
 		install_pharo
-		printf "Install command: ./pharo --headless %s eval \"%s\"" "$imageName" "$fullInstallExpr"
+		pi_log "Install command: ./pharo --headless %s eval \"%s\"" "$imageName" "$fullInstallExpr"
 		./pharo --headless "$imageName" eval "$fullInstallExpr"
 		# Remove README.md file
 		[ ! -e "README.md" ] || rm -f "README.md"

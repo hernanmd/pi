@@ -106,10 +106,10 @@ install_pharo () {
 # Returns true if Pharo is detected in the current working directory
 is_pharo_installed () {
 	if [[ -d Pharo.app ]] || [[ -d "pharo-vm" ]] && [[ -f Pharo.image ]] && [[ -f Pharo.changes ]]; then
-		printf "Pharo found in current directory\n"
+		pi_log "Pharo found in current directory\n"
 		return 0
 	else
-		printf "Pharo not found\n"
+		pi_log "Pharo not found\n"
 		return 1
 	fi
 }
@@ -121,21 +121,21 @@ run_pharo () {
 }
 
 download_pharo () {
-	printf "Checking Pharo installation in the current directory...\n"
+	pi_log "Checking Pharo installation in the current directory...\n"
 	if ! is_pharo_installed; then
-		printf "Downloading Pharo...\n"
+		pi_log "Downloading Pharo...\n"
 		exec $dApp $dPharoParams $zeroConfUrl | bash
 	fi
-	[[ ! is_pharo_installed ]] && { err "Could not download Pharo, exiting\n"; exit 1; }
+	[[ ! is_pharo_installed ]] && { pi_err "Could not download Pharo, exiting\n"; exit 1; }
 }
 
 download_pharo_m1 () {
-	printf "Checking Pharo installation in the current directory...\n"
+	pi_log "Checking Pharo installation in the current directory...\n"
 	if ! is_pharo_installed; then
-		printf "Downloading Pharo...\n"
+		pi_log "Downloading Pharo...\n"
 		exec $dApp $zeroConfUrl
 		unzip latest.zip
 		exec $dApp $dPharoParams get.pharo.org/64 | bash -
 	fi
-	[[ ! is_pharo_installed ]] && { err "Could not download Pharo, exiting\n"; exit 1; }	
+	[[ ! is_pharo_installed ]] && { pi_err "Could not download Pharo, exiting\n"; exit 1; }	
 }

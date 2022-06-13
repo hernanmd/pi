@@ -16,7 +16,11 @@
 # Load in the functions and animations
 source "${BASH_SOURCE%/*}"/bash_loading_animations.sh
 
-err(){
+pi_log() {
+	printf "PI: $*"
+}
+
+pi_err(){
     echo "E: $*" >>/dev/stderr
 }
 
@@ -34,10 +38,10 @@ cache_not_empty () {
 # Remove cache directory contents
 remove_cache_directory () {
 	if ! cache_not_empty; then
-		 err "Cache is empty\n"
+		 pi_err "Cache is empty\n"
 		 exit 1
 	else
-		[[ -d ${cacheDir} ]] && cache_not_empty && rm ${cacheDir}/* && printf "Cache successfully cleaned\n"
+		[[ -d ${cacheDir} ]] && cache_not_empty && rm ${cacheDir}/* && pi_log "Cache successfully cleaned\n"
 	fi
 }
 
@@ -50,7 +54,7 @@ check_pkg_cache () {
 			init_db
 		fi
 	else
-		err "Package cache is empty or broken. Repairing.\n"
+		pi_err "Package cache is empty or broken. Repairing.\n"
 		init_db
 	fi
 }
@@ -66,7 +70,14 @@ init_downloaders () {
 			dApp="curl -s "
 			dPharoParams=""
 		else
-			err "I require wget or curl, but it's not installed. Aborting.\n"
+			pi_err "I require wget or curl, but it's not installed. Aborting.\n"
 			exit 1
 	fi
+}
+
+# Update package cache directory
+update_packages () {
+	remove_cache_directory
+	check_pkg_cache
+	pi_log "Done updating package cache\n"
 }

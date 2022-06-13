@@ -5,10 +5,12 @@
 # Table of Contents
 
 - [Description](#description)
+- [Requirements](#requirements)
 - [Installation](#installation)
+  - [Bash users](#bash-users)
+  - [Zsh users](#zsh-users)
 - [Features](#features)
 - [Usage](#usage)
-  - [Notes](#notes)
   - [Examples](#examples)
 - [Troubleshooting](#troubleshooting)
 - [Contribute](#contribute)
@@ -20,18 +22,24 @@
 
 Pharo Install - A command-line tool for installing [Pharo Smalltalk](https://www.pharo.org) packages.
 
-PI is a MIT-pip-like application installer for Pharo Smalltalk. Copy & pasting install scripts found in forums or the web is an easy method, but it’s also time consuming because of the manual interaction, and hard to make the process reproducible.
+PI is a MIT-pip-like application installer for Pharo Smalltalk. Copy & pasting Pharo install scripts found in forums or the web is an easy method, but it’s also time consuming because of the manual interaction, and hard to make the process reproducible.
 
-PI turns copy & paste Smalltalk (Metacello Configurations) install scripts into shell one-liners which works on Unix/Linux, MacOS and Windows (MinGW64/MSYS). 
+PI turns copy & paste [Metacello](https://github.com/Metacello/metacello) install scripts into shell one-liners which works on Unix/Linux, MacOS and Windows (MinGW64/MSYS). 
 
-PI automatically retrieve and parse Pharo GitHub repository information, and also downloads the latest stable Pharo image and virtual machine if none is found in the current directory. It also supports installing multiple packages at once.
+PI automatically retrieves and parses Pharo GitHub repository information, and also downloads the latest stable Pharo image and virtual machine if none is found in the current directory. It also supports installing multiple packages at once.
 
 # Requirements
 
   - bash or zsh
   - curl or wget
   - jq (a command line JSON processor)
-  - gsed
+    - Install for MSYS users: `pacman -Suy jq`
+    - Install for Linux users: `apt install jq` or `yum install jq` or `dnf install jq` etc.
+    - Install for macOS users: `brew install jq`
+  - gsed 
+    - Install for MSYS users: `ln /usr/bin/sed.exe /usr/local/bin/gsed`
+    - Install for Linux users: `ln /usr/bin/sed /usr/local/bin/gsed`
+    - Install for macOS users: `brew install gsed`
 
 # Installation
 
@@ -63,12 +71,12 @@ and you're done.
 
 To persist usage between multiple shell sessions:
 ```bash
-echo "export PATH=\$HOME/.pi/pi/bin:\$PATH" >> ~/.profile 
+echo "export PATH=\$HOME/.pi/pi/bin:\$PATH" >> ~/.bash_profile 
 ```
 
 To see the effect, do:
 ```bash
-source ~/.profile
+source ~/.bash_profile
 ```
 in the same tab or open a new tab.
 
@@ -101,7 +109,13 @@ in the same tab or open a new tab.
 
 # Usage
 
-GitHub repositories must contain a README.md file and have "pharo" specified as topic. Pi parses the README.md file and stops on the first smalltalk expression enclosed with backticks. This expression must contain an installation script in a Pharo image, i.e. that starts with Metacello. If the current directory already contains a Pharo image, PI will use that image.
+Installable packages must contain:
+
+  - A Github README.md file
+  - "pharo" specified as topic. 
+  - A Metacello installation script ending with a dot ".".
+  
+If the current directory already contains a Pharo image, PI will use that image, otherwise it will download a new stable image.
 
 ## Examples
 
@@ -129,7 +143,25 @@ pi list
 Search in GitHub repositories:
 
 ```bash
-pi search pillar
+pi search microdown
+```
+
+Output may contain multiple repositories
+
+```bash
+pi search magritte
+GitHub: peteruhnak/xml-magritte-generator
+GitHub: philippeback/Magritte3Doc
+GitHub: grype/Magritte-Swift
+GitHub: hernanmd/Seaside-Magritte-Voyage
+GitHub: hernanmd/Seaside-Bootstrap-Magritte-Voyage
+GitHub: udoschneider/BootstrapMagritte
+```
+
+in that case, disambiguate specifying <owner>/<repository_name>, ex:
+
+```bash
+pi install <grype/Magritte-Swift>
 ```
 
 # Troubleshooting
@@ -176,4 +208,5 @@ If you'd like to make some changes yourself, see the following:
   - Install [release-it](https://www.npmjs.com/package/release-it)
   - Copy or setup a [GitHub token](https://github.com/settings/tokens)
   - Evaluate `export GITHUB_TOKEN=...` with the coped token as value. Alternatively, log-in to your GitHub account with your web browser and release-it will authenticate.
-
+  - Ensure NVM is installed and accessible running: `source ~/.nvm/nvm.sh`
+  - To interactively deploy  run `./deploy.sh`

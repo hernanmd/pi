@@ -11,20 +11,26 @@ source "${BASH_SOURCE%/*}"/piPharo.sh
 
 parse_cmd_line () {
 	case "$1" in
-		list )
-			list_github_packages
-			;;
-		init )
-			init_db
-			;;
+		clean )
+			remove_cache_directory
+			;;	
 		count )
 			count_github_packages
+			;;
+		examples | EXAMPLES )
+			examples && exit 0
+			;;
+		image | IMAGE )
+			install_pharo
+			;;
+		init | INIT)
+			init_db
 			;;
 		install | INSTALL )
 			install_packages "${@:2}"
 			;;
-		image | IMAGE )
-			install_pharo
+		list )
+			list_github_packages
 			;;
 		run | RUN )
 			run_pharo
@@ -32,17 +38,11 @@ parse_cmd_line () {
 		search )
 			search_packages "${@:2}"
 			;;
-		clean )
-			remove_cache_directory
-			;;
-		help | h )
-			print_help
+		update )
+			update_packages
 			;;
 		version )
 			print_version
-			;;
-		examples | EXAMPLES )
-			examples && exit 0
 			;;
 		* )
 			print_help

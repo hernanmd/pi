@@ -2,10 +2,16 @@ List Pharo packages found in GitHub:
 pi list
 
 Search Pharo GitHub packages:
-pi search pillar
+pi search microdown
 
 Download latest stable Pharo image and VM:
 pi image
 
 Install multiple packages:
 pi install Diacriticals ISO3166 StringExtensions
+
+Run the image in the current directory
+pi run
+
+Update the repository cache
+pi update

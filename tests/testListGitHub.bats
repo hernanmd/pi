@@ -20,11 +20,6 @@ setup() {
   [ -x "$INSTALL_DIR/bin/pi" ]
   [ -x "$INSTALL_DIR/libexec/pi/pi" ]
   [ -x "$INSTALL_DIR/libexec/pi/bats-exec-suite" ]
-  [ -x "$INSTALL_DIR/libexec/bats-core/bats-exec-test" ]
-  [ -x "$INSTALL_DIR/libexec/bats-core/bats-format-tap-stream" ]
-  [ -x "$INSTALL_DIR/libexec/bats-core/bats-preprocess" ]
-  [ -f "$INSTALL_DIR/share/man/man1/bats.1" ]
-  [ -f "$INSTALL_DIR/share/man/man7/bats.7" ]
 
   run "$INSTALL_DIR/bin/bats" -v
   [ "$status" -eq 0 ]
