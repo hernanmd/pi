@@ -36,7 +36,7 @@ The options include:
 	init			Initialize and fetch PI Pharo package cache
 	install <pkgname>	Install pkgname to the Image found in the current directory.\n\t\tDownload image if not found.
 	list			List Pharo packages found in GitHub.
-	run				Run a Pharo Image.	
+	run			Run a Pharo Image.	
 	search <pkgname>	Search for pkgname in GitHub.
 	update			Update package directory.
 	version 		Show program version.

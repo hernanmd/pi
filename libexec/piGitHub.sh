@@ -81,7 +81,7 @@ count_github_packages () {
 	local perPage=1
 	download_github_pkg_names "$pageIndex" "$perPage"
 	parse_github_pkg_count ${cacheDir}/"$pageIndex.js"
-	pi_log "Detected Pharo packages in GitHub: %s\n" "$ghPkgCount"
+	printf "PI: Detected Pharo packages in GitHub: %s\n" "$ghPkgCount"
 }
 
 # Install from GitHub
@@ -105,11 +105,11 @@ install_pkg_from_github () {
 	pkgCount=${#matchingPackages[@]}
 
 	if [ "$pkgCount" -gt 1 ]; then
-		pi_log "Found %s repositories with the package name \"%s\"\n" "$pkgCount" "$pkgNameToInstall"
+		printf "Found %s repositories with the package name \"%s\"\n" "$pkgCount" "$pkgNameToInstall"
 		pi_log "Listing follows...\n"
 		cat -n <<< "${matchingPackages[@]}"
 		pi_log "Please provide the full name for the package you want to install <repository>/<package name>\n"
-		pi_log "%s\n" "${matchingPackages[@]}"
+		printf "%s\n" "${matchingPackages[@]}"
 		return 1
 	else
 		fullPackageName=${matchingPackages[0]}
@@ -128,13 +128,12 @@ install_pkg_from_github () {
 			pi_err "PI-compatible Smalltalk install expression not found\n"
 			return $?
 		fi
-		# Save image after each Metacello package installation
-		saveImageExp=".Smalltalk snapshot: true andQuit: true."
-		fullInstallExpr="${installExpr} ${saveImageExp}"
+		fullInstallExpr="${installExpr}"
 		# Download and install Pharo image if not present
 		install_pharo
-		pi_log "Install command: ./pharo --headless %s eval \"%s\"" "$imageName" "$fullInstallExpr"
-		./pharo --headless "$imageName" eval "$fullInstallExpr"
+		# Save image after each Metacello package installation		
+		printf "PI: Install command: ./pharo --headless %s eval --save \"%s\"" "$imageName" "$fullInstallExpr"
+		./pharo --headless "$imageName" eval --save "$fullInstallExpr"
 		# Remove README.md file
 		[ ! -e "README.md" ] || rm -f "README.md"
 	fi
