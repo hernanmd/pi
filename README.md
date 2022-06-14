@@ -55,49 +55,21 @@ The next step is to configure your PATH variable to find the pi command. To find
 echo $0
 ```
 
-To check the contents of the PATH variable:
-
-```bash
-env | grep -i path
-```
-
 ## bash users
-
-For one shell session:
-```bash
-export PATH=$HOME/.pi/pi/bin:$PATH
-```
-and you're done.
 
 To persist usage between multiple shell sessions:
 ```bash
 echo "export PATH=\$HOME/.pi/pi/bin:\$PATH" >> ~/.bash_profile 
-```
-
-To see the effect, do:
-```bash
 source ~/.bash_profile
 ```
-in the same tab or open a new tab.
 
 ## zsh users
-
-For one shell session:
-```bash
-path+=$HOME/.pi/pi/bin
-```
-and you're done.
 
 To persist usage between multiple shell sessions:
 ```bash
 echo -n 'export PATH=\$HOME/.pi/pi/bin:\$PATH' >> ~/.zshrc
-```
-
-To see the effect, do:
-```bash
 source ~/.zshrc
 ```
-in the same tab or open a new tab.
 
 # Features
 
@@ -161,7 +133,7 @@ GitHub: udoschneider/BootstrapMagritte
 in that case, disambiguate specifying <owner>/<repository_name>, ex:
 
 ```bash
-pi install <grype/Magritte-Swift>
+pi install grype/Magritte-Swift
 ```
 
 # Troubleshooting
