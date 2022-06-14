@@ -5,6 +5,7 @@
 # Table of Contents
 
 - [Description](#description)
+- [Demo](#demo)
 - [Requirements](#requirements)
 - [Installation](#installation)
   - [Bash users](#bash-users)
@@ -27,6 +28,10 @@ PI is a MIT-pip-like application installer for Pharo Smalltalk. Copy & pasting P
 PI turns copy & paste [Metacello](https://github.com/Metacello/metacello) install scripts into shell one-liners which works on Unix/Linux, MacOS and Windows (MinGW64/MSYS). 
 
 PI automatically retrieves and parses Pharo GitHub repository information, and also downloads the latest stable Pharo image and virtual machine if none is found in the current directory. It also supports installing multiple packages at once.
+
+# Demo
+
+![pi-session](https://user-images.githubusercontent.com/4825959/173497407-e99cad9f-38ae-4b34-8615-92dbbad7a225.gif)
 
 # Requirements
 
