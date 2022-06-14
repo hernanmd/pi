@@ -8,11 +8,11 @@
 - [Demo](#demo)
 - [Requirements](#requirements)
 - [Installation](#installation)
+  - [Common steps](#common-steps)
   - [Bash users](#bash-users)
   - [Zsh users](#zsh-users)
 - [Features](#features)
-- [Usage](#usage)
-  - [Examples](#examples)
+- [Usage Examples](#usage-examples)
 - [Troubleshooting](#troubleshooting)
 - [Contribute](#contribute)
 - [Change Log](./CHANGELOG.md)
@@ -31,7 +31,7 @@ PI automatically retrieves and parses Pharo GitHub repository information, and a
 
 # Demo
 
-![pi-session](https://user-images.githubusercontent.com/4825959/173497407-e99cad9f-38ae-4b34-8615-92dbbad7a225.gif)
+![pi-session](https://user-images.githubusercontent.com/4825959/173511060-95f1b227-d459-4097-b4e6-fcaa013768a1.gif)
 
 # Requirements
 
@@ -47,6 +47,8 @@ PI automatically retrieves and parses Pharo GitHub repository information, and a
     - Install for macOS users: `brew install gsed`
 
 # Installation
+
+## Common steps
 
 The first step is to download the package from a command line terminal:
 
@@ -84,17 +86,15 @@ source ~/.zshrc
   - Supports case-insensitive searching for package names or developer user name.
   - The "image" option download the current Pharo "stable" version to the current working directory.
 
-# Usage
+# Usage examples
 
 Installable packages must contain:
 
   - A Github README.md file
   - "pharo" specified as topic. 
-  - A Metacello installation script ending with a dot ".".
+  - A Metacello installation script delimited with smalltalk backticks and ending with a dot ".".
   
 If the current directory already contains a Pharo image, PI will use that image, otherwise it will download a new stable image.
-
-## Examples
 
 ### Installing
 
