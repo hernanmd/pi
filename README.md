@@ -59,7 +59,7 @@ echo $0
 
 To persist usage between multiple shell sessions:
 ```bash
-echo "export PATH=\$HOME/.pi/pi/bin:\$PATH" >> ~/.bash_profile 
+echo "export PATH=$HOME/.pi/pi/bin:$PATH" >> ~/.bash_profile 
 source ~/.bash_profile
 ```
 
@@ -67,7 +67,7 @@ source ~/.bash_profile
 
 To persist usage between multiple shell sessions:
 ```bash
-echo -n 'export PATH=\$HOME/.pi/pi/bin:\$PATH' >> ~/.zshrc
+echo -n 'export PATH=$HOME/.pi/pi/bin:$PATH' >> ~/.zshrc
 source ~/.zshrc
 ```
 
