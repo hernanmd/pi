@@ -4,6 +4,7 @@
 #
 
 source "${BASH_SOURCE%/*}"/piUtils.sh
+pharoLatest="110+vm"
 
 find_os_id () {
 	# Find our distribution or OS
@@ -79,6 +80,20 @@ yum_install () {
 		libSM.i686
 }
 
+# Install latest version of Pharo
+linstall_pharo () {
+	find_os_id
+	case "$os" in
+		"arm64")
+			zeroConfUrl="http://files.pharo.org/vm/pharo-spur64-headless/Darwin-arm64/latest.zip"
+			download_pharo_m1_latest
+			;;
+		* )
+			download_pharo_latest
+			;;
+	esac
+}
+
 # Prefer provider packages if distribution was found
 install_pharo () {
 	find_os_id
@@ -120,6 +135,40 @@ run_pharo () {
 	fi
 }
 
+# Install a stable image and run Pharo
+irun_pharo () {
+	install_pharo
+	run_pharo
+}
+
+# Install latest Pharo and run Pharo.image
+lrun_pharo () {
+	linstall_pharo
+	run_pharo
+}
+
+# Trash pharo-local (requires trash utility) and run Pharo.image
+trun_pharo () {
+	if [[ -d "pharo-local" ]]; then
+		trash pharo-local
+	fi
+	run_pharo
+}
+
+# Trash pharo-local (requires trash utility) and run Pharo.image
+nrun_pharo () {
+	dirname=$(date +%Y-%m-%d-%S)
+	mkdir -v "$dirname"; cd "$dirname"
+	irun_pharo
+}
+
+# Install latest Pharo in a new timestamed directory and run Pharo.image
+nlrun_pharo () {
+	dirname=$(date +%Y-%m-%d-%S)
+	mkdir -v "$dirname"; cd "$dirname"
+	lrun_pharo
+}
+
 download_pharo () {
 	pi_log "Checking Pharo installation in the current directory...\n"
 	if ! is_pharo_installed; then
@@ -127,6 +176,15 @@ download_pharo () {
 		exec $dApp $dPharoParams $zeroConfUrl | bash
 	fi
 	[[ ! is_pharo_installed ]] && { pi_err "Could not download Pharo, exiting\n"; exit 1; }
+}
+
+download_pharo_latest () {
+	pi_log "Checking latest Pharo installation in the current directory...\n"
+	if ! is_pharo_installed; then
+		pi_log "Downloading latest Pharo...\n"
+		exec $dApp $dPharoParams $zeroConfUrl/$pharoLatest | bash
+	fi
+	[[ ! is_pharo_installed ]] && { pi_err "Could not download latest Pharo, exiting\n"; exit 1; }
 }
 
 download_pharo_m1 () {
@@ -138,4 +196,16 @@ download_pharo_m1 () {
 		exec $dApp $dPharoParams get.pharo.org/64 | bash -
 	fi
 	[[ ! is_pharo_installed ]] && { pi_err "Could not download Pharo, exiting\n"; exit 1; }	
+}
+
+# Latest version of Pharo for ZeroConf download
+download_pharo_m1_latest () {
+	pi_log "Checking latest Pharo installation in the current directory...\n"
+	if ! is_pharo_installed; then
+		pi_log "Downloading latest Pharo...\n"
+		exec $dApp $zeroConfUrl
+		unzip latest.zip
+		exec $dApp $dPharoParams get.pharo.org/64/$pharoLatest | bash -
+	fi
+	[[ ! is_pharo_installed ]] && { pi_err "Could not download latest Pharo, exiting\n"; exit 1; }	
 }

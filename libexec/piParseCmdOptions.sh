@@ -35,6 +35,21 @@ parse_cmd_line () {
 		run | RUN )
 			run_pharo
 			;;
+		irun | IRUN )
+			irun_pharo
+			;;
+		lrun | LRUN )
+			lrun_pharo
+			;;
+		trun | TRUN )
+			trun_pharo
+			;;
+		nrun | NRUN )
+			nrun_pharo
+			;;
+		nlrun | NLRUN )
+			nlrun_pharo
+			;;
 		search )
 			search_packages "${@:2}"
 			;;
