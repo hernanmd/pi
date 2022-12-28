@@ -158,14 +158,16 @@ trun_pharo () {
 # Trash pharo-local (requires trash utility) and run Pharo.image
 nrun_pharo () {
 	dirname=$(date +%Y-%m-%d-%S)
-	mkdir -v "$dirname"; cd "$dirname"
+	mkdir -v "$dirname"
+	cd "$dirname"
 	irun_pharo
 }
 
 # Install latest Pharo in a new timestamed directory and run Pharo.image
 nlrun_pharo () {
 	dirname=$(date +%Y-%m-%d-%S)
-	mkdir -v "$dirname"; cd "$dirname"
+	mkdir -v "$dirname"
+	cd "$dirname"
 	lrun_pharo
 }
 
