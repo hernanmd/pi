@@ -7,7 +7,7 @@
 
 	readonly ERR_INVALID_USAGE=2
 	readonly tmpDir="$(mktemp -d -t pi-tarball-unpack.XXXXXXXXXX || \
-			oops "Can't create temporary directory for downloading the Pi tarball")"
+			oops "Can't create temporary directory for downloading the PI tarball")"
 
 	require_util() {
 		command -v "$1" > /dev/null 2>&1 ||
