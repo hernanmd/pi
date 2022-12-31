@@ -37,6 +37,7 @@ PI automatically retrieves and parses Pharo GitHub repository information, and a
 
   - bash or zsh
   - curl or wget
+  - unzip
   - jq (a command line JSON processor)
     - Install for MSYS users: `pacman -Suy jq`
     - Install for Linux users: `apt install jq` or `yum install jq` or `dnf install jq` etc.
@@ -97,6 +98,16 @@ Installable packages must contain:
 If the current directory already contains a Pharo image, PI will use that image, otherwise it will download a new stable image.
 
 ### Installing
+
+Installing a stable Pharo image in the current directory:
+```bash
+pi image
+```
+
+Install and run the latest Pharo image in a new timestamped directory:
+```bash
+pi nlrun
+```
 
 Installing NeoCSV package:
 ```bash
