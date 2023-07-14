@@ -4,7 +4,7 @@
 #
 
 source "${BASH_SOURCE%/*}"/piUtils.sh
-pharoLatest="110+vm"
+pharoLatest="120+vm"
 
 find_os_id () {
 	# Find our distribution or OS

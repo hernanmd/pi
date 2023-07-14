@@ -10,7 +10,7 @@ trap BLA::stop_loading_animation SIGINT
 
 # Download package list
 init_db () {
-	printf "   Please wait while the package list is downloaded... "
+	pi_log "   Please wait while the package list is downloaded... "
 	BLA::start_loading_animation "${BLA_clock[@]}"
 	fetch_github_pkg_names
 	parse_github_pkg_count ${cacheDir}/"1.js"
@@ -81,7 +81,7 @@ count_github_packages () {
 	local perPage=1
 	download_github_pkg_names "$pageIndex" "$perPage"
 	parse_github_pkg_count ${cacheDir}/"$pageIndex.js"
-	printf "PI: Detected Pharo packages in GitHub: %s\n" "$ghPkgCount"
+	pi_log "Detected Pharo packages in GitHub: %s\n" "$ghPkgCount"
 }
 
 # Install from GitHub
@@ -105,11 +105,11 @@ install_pkg_from_github () {
 	pkgCount=${#matchingPackages[@]}
 
 	if [ "$pkgCount" -gt 1 ]; then
-		printf "Found %s repositories with the package name \"%s\"\n" "$pkgCount" "$pkgNameToInstall"
+		pi_log "Found %s repositories with the package name \"%s\"\n" "$pkgCount" "$pkgNameToInstall"
 		pi_log "Listing follows...\n"
 		cat -n <<< "${matchingPackages[@]}"
 		pi_log "Please provide the full name for the package you want to install <repository>/<package name>\n"
-		printf "%s\n" "${matchingPackages[@]}"
+		pi_log "%s\n" "${matchingPackages[@]}"
 		return 1
 	else
 		fullPackageName=${matchingPackages[0]}
@@ -132,7 +132,7 @@ install_pkg_from_github () {
 		# Download and install Pharo image if not present
 		install_pharo
 		# Save image after each Metacello package installation		
-		printf "PI: Install command: ./pharo --headless %s eval --save \"%s\"" "$imageName" "$fullInstallExpr"
+		pi_log "Install command: ./pharo --headless %s eval --save \"%s\"" "$imageName" "$fullInstallExpr"
 		./pharo --headless "$imageName" eval --save "$fullInstallExpr"
 		# Remove README.md file
 		[ ! -e "README.md" ] || rm -f "README.md"
