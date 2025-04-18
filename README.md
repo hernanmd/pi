@@ -194,6 +194,9 @@ If you'd like to make some changes yourself, see the following:
 ## To deploy a new release
   
   - Install [release-it](https://www.npmjs.com/package/release-it)
+    - As global
+      - brew: `brew install release-it`
+      - npm: `npm install -g release-it`
   - Copy or setup a [GitHub token](https://github.com/settings/tokens)
   - Evaluate `export GITHUB_TOKEN=...` with the coped token as value. Alternatively, log-in to your GitHub account with your web browser and release-it will authenticate.
   - Ensure NVM is installed and accessible running: `source ~/.nvm/nvm.sh`

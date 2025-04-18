@@ -6,15 +6,15 @@
 source "${BASH_SOURCE%/*}"/piUtils.sh
 source "${BASH_SOURCE%/*}"/piPharo.sh
 # Run BLA::stop_loading_animation if the script is interrupted
-trap BLA::stop_loading_animation SIGINT
+# trap BLA::stop_loading_animation SIGINT
 
 # Download package list
 init_db () {
-	pi_log "   Please wait while the package list is downloaded... "
-	BLA::start_loading_animation "${BLA_clock[@]}"
+	pi_log "Please wait while the package list is downloaded... "
+	# BLA::start_loading_animation "${BLA_clock[@]}"
 	fetch_github_pkg_names
 	parse_github_pkg_count ${cacheDir}/"1.js"
-	BLA::stop_loading_animation 2> /dev/null
+	# BLA::stop_loading_animation 2> /dev/null
 	pi_log "Detected Pharo packages in GitHub: %s\n" "$ghPkgCount"
 }
 
@@ -33,7 +33,7 @@ download_github_pkg_names () {
     local perPage="$2"
     # echo "Download JSON file"
     local ghPharoTopics="https://api.github.com/search/repositories?per_page=$perPage&page=$pIndex&q=topic:pharo"
-	[[ -s ${cacheDir}/"$pIndex".js ]] || $dApp "$ghPharoTopics" -O ${cacheDir}/"$pIndex".js
+	[[ -s ${cacheDir}/"$pIndex".js ]] || $dApp "$ghPharoTopics" -o ${cacheDir}/"$pIndex".js
 }
 
 read_github_pkg_names () {
