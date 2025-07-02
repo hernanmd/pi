@@ -26,6 +26,8 @@ set_zconf_url
 pkgVersion="stable"
 # Detected Operating System
 os="Unknown"
+# Default Pharo version to request if no version is provided
+pharoRequestedVersion="13"
 
 #################################
 ## GitHub Settings

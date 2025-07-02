@@ -20,6 +20,11 @@ install_from_github () {
 
 # Read argument packages and install from their repositories
 install_packages () {
+	if [ $# -eq 0 ]; then
+		pi_log "Please specify at least one package to install\n"
+		printf "exit with error\n"
+		return 1
+	fi
 	printf "Installing packages...\n"
 	until [ -z "$1" ]; do
 		install_from_github "$1" 

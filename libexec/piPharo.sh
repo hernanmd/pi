@@ -4,7 +4,6 @@
 #
 
 source "${BASH_SOURCE%/*}"/piUtils.sh
-pharoLatest="130+vm"
 
 find_os_id () {
 	# Find our distribution or OS
@@ -56,14 +55,6 @@ apt_install () {
 	sudo apt-get install libc6:i386 libssl1.0.0:i386 libfreetype6:i386
 }
 
-# For ElementaryOS
-# This function is currently not used
-ppa_install () {
-	add-apt-repository ppa:pharo/stable
-	apt-get update
-	apt-get install pharo-vm-desktop
-}
-
 # For CentOS/RedHat
 # This function is currently not used
 yum_install () {
@@ -86,10 +77,10 @@ linstall_pharo () {
 	case "$os" in
 		"arm64")
 			zeroConfUrl="http://files.pharo.org/vm/pharo-spur64-headless/Darwin-arm64/latest.zip"
-			download_pharo_m1_latest
+			download_pharo_arm64
 			;;
 		* )
-			download_pharo_latest
+			download_pharo_x86_64
 			;;
 	esac
 }
@@ -100,16 +91,13 @@ install_pharo () {
 	case "$os" in
 		"arm64")
 			zeroConfUrl="http://files.pharo.org/vm/pharo-spur64-headless/Darwin-arm64/latest.zip"
-			download_pharo_m1
+			download_pharo_arm64 $1
 			;;
 		"CentOS*" | "RedHat*" )
 			yum_install
 			;;
-		"Ubuntu*")
-			ppa_install
-			;;
 		* )
-			download_pharo
+			download_pharo_x86_64 $1
 			;;
 	esac
 }
@@ -137,13 +125,7 @@ run_pharo () {
 
 # Install a stable image and run Pharo
 irun_pharo () {
-	install_pharo
-	run_pharo
-}
-
-# Install latest Pharo and run Pharo.image
-lrun_pharo () {
-	linstall_pharo
+	install_pharo $1
 	run_pharo
 }
 
@@ -157,53 +139,36 @@ trun_pharo () {
 
 # Trash pharo-local (requires trash utility) and run Pharo.image
 nrun_pharo () {
-	dirname=$(date +%Y-%m-%d-%S)
-	(mkdir -v "$dirname" && cd "$dirname" && irun_pharo) || pi_log "Cannot run Pharo Image"
+	if [ ! $# -eq 0 ]; then
+		pharoRequestedVersion=$1
+	fi	
+	dirname="pharo-$pharoRequestedVersion-$(date +%Y-%m-%d-%S)"
+	(mkdir -v "$dirname" && cd "$dirname" && irun_pharo $1) || pi_log "Cannot run Pharo Image"
 }
 
-# Install latest Pharo in a new timestamed directory and run Pharo.image
-nlrun_pharo () {
-	dirname=$(date +%Y-%m-%d-%S)
-	(mkdir -v "$dirname" && cd "$dirname" && lrun_pharo) || pi_log "Cannot run Pharo Image"
-}
-
-download_pharo () {
+download_pharo_x86_64 () {
 	pi_log "Checking Pharo installation in the current directory...\n"
 	if ! is_pharo_installed; then
+		if [ ! $# -eq 0 ]; then
+			pharoRequestedVersion=$1
+		fi
+		# Convert to Zeroconf version, i.e. Requesting 13 -> 130
+		urlVersion="${pharoRequestedVersion}0+vm"		
 		pi_log "Downloading Pharo...\n"
-		exec $dApp $dPharoParams $zeroConfUrl | bash
+		exec $dApp $dPharoParams $zeroConfUrl/$urlVersion | bash
 	fi
 	[[ ! is_pharo_installed ]] && { pi_err "Could not download Pharo, exiting\n"; exit 1; }
 }
 
-download_pharo_latest () {
-	pi_log "Checking latest Pharo installation in the current directory...\n"
-	if ! is_pharo_installed; then
-		pi_log "Downloading latest Pharo...\n"
-		exec $dApp $dPharoParams $zeroConfUrl/$pharoLatest | bash
-	fi
-	[[ ! is_pharo_installed ]] && { pi_err "Could not download latest Pharo, exiting\n"; exit 1; }
-}
-
-download_pharo_m1 () {
+download_pharo_arm64 () {
 	pi_log "Checking Pharo installation in the current directory...\n"
 	if ! is_pharo_installed; then
+		# Convert to Zeroconf version, i.e. Requesting 13 -> 130
+		urlVersion="${pharoRequestedVersion}0"	
 		pi_log "Downloading Pharo...\n"
 		exec $dApp $zeroConfUrl
 		unzip latest.zip
-		exec $dApp $dPharoParams get.pharo.org/64 | bash -
-	fi
-	[[ ! is_pharo_installed ]] && { pi_err "Could not download Pharo, exiting\n"; exit 1; }	
-}
-
-# Latest version of Pharo for ZeroConf download
-download_pharo_m1_latest () {
-	pi_log "Checking latest Pharo installation in the current directory...\n"
-	if ! is_pharo_installed; then
-		pi_log "Downloading latest Pharo...\n"
-		exec $dApp $zeroConfUrl
-		unzip latest.zip
-		exec $dApp $dPharoParams get.pharo.org/64/$pharoLatest | bash -
+		exec $dApp $dPharoParams get.pharo.org/64/$urlVersion | bash -
 	fi
 	[[ ! is_pharo_installed ]] && { pi_err "Could not download latest Pharo, exiting\n"; exit 1; }	
 }

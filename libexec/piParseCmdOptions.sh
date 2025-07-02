@@ -21,7 +21,7 @@ parse_cmd_line () {
 			examples && exit 0
 			;;
 		image | IMAGE )
-			install_pharo
+			install_pharo "${@:2}"
 			;;
 		init | INIT)
 			init_db
@@ -36,19 +36,13 @@ parse_cmd_line () {
 			run_pharo
 			;;
 		irun | IRUN )
-			irun_pharo
-			;;
-		lrun | LRUN )
-			lrun_pharo
+			irun_pharo "${@:2}"
 			;;
 		trun | TRUN )
 			trun_pharo
 			;;
 		nrun | NRUN )
-			nrun_pharo
-			;;
-		nlrun | NLRUN )
-			nlrun_pharo
+			nrun_pharo "${@:2}"
 			;;
 		search )
 			search_packages "${@:2}"

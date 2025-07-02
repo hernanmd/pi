@@ -104,11 +104,6 @@ Installing a stable Pharo image in the current directory:
 pi image
 ```
 
-Install and run the latest Pharo image in a new timestamped directory:
-```bash
-pi nlrun
-```
-
 Installing NeoCSV package:
 ```bash
 pi install NeoCSV
