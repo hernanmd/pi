@@ -38,10 +38,6 @@ rm -f "$output_file"
   cmd_exists git && git --version 2>&1
 
   printf '\n'
-  printf '== wget =====================================================\n'
-  cmd_exists wget && wget --version 2>&1
-
-  printf '\n'
   printf '== curl =====================================================\n'
   cmd_exists curl && curl --version 2>&1
 

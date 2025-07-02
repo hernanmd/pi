@@ -62,16 +62,13 @@ check_pkg_cache () {
 # Initialize downloaders
 init_downloaders () {
 	[[ -d ${cacheDir} ]] || mkdir ${cacheDir}
-	# Set download application (wget or curl)
-	if cmd_exists wget ; then
-		dApp="wget --progress=bar:force:noscroll -nv --no-check-certificate "
-		dPharoParams="-O-"
-	elif cmd_exists curl ; then
-			dApp="curl -s "
-			dPharoParams=""
-		else
-			pi_err "I require wget or curl, but it's not installed. Aborting.\n"
-			exit 1
+	# Set download application (curl)
+	if cmd_exists curl ; then
+		dApp="curl -s "
+		dPharoParams=""
+	else
+		pi_err "I require curl, but it's not installed. Aborting.\n"
+		exit 1
 	fi
 }
 

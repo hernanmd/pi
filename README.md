@@ -36,7 +36,7 @@ PI automatically retrieves and parses Pharo GitHub repository information, and a
 # Requirements
 
   - bash or zsh
-  - curl or wget
+  - curl
   - unzip
   - jq (a command line JSON processor)
     - Install for MSYS users: `pacman -Suy jq`
@@ -83,7 +83,6 @@ source ~/.zshrc
 
   - PI can install and list packages from GitHub repositories.
   - If the Github repository has "pharo" as topic, it will be listed.
-  - It works with curl or wget.
   - Supports case-insensitive searching for package names or developer user name.
   - The "image" option download the current Pharo "stable" version to the current working directory.
 
