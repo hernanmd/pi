@@ -1,11 +1,9 @@
-#!/bin/bash
+#!/usr/bin/env bash
 #
 # pi - Pharo Install - A MIT-pip-like library for Pharo Smalltalk
 #
-
-# set -x
-# Fail fast and be aware of exit codes
-set -eo pipefail
+set -u  # Exit on undefined variables
+set -eo pipefail  # Fail fast and be aware of exit codes
 
 source "${BASH_SOURCE%/*}"/../libexec/piEnvVars.sh
 source "${BASH_SOURCE%/*}"/../libexec/piUtils.sh

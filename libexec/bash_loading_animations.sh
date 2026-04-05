@@ -1,4 +1,9 @@
 #!/usr/bin/env bash
+#
+# bash_loading_animations.sh - A collection of loading animations for bash scripts
+#
+set -u  # Exit on undefined variables
+set -o pipefail  # Catch errors in pipes
 
 # shellcheck disable=SC2034 # https://github.com/koalaman/shellcheck/wiki/SC2034
 

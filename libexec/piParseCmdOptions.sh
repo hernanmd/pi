@@ -2,6 +2,8 @@
 #
 # pi - Pharo Install - A MIT-pip-like library for Pharo Smalltalk
 #
+set -u  # Exit on undefined variables
+set -o pipefail  # Catch errors in pipes
 
 source "${BASH_SOURCE%/*}"/piHelp.sh
 source "${BASH_SOURCE%/*}"/piGitHub.sh
@@ -10,10 +12,11 @@ source "${BASH_SOURCE%/*}"/piInstallPkg.sh
 source "${BASH_SOURCE%/*}"/piPharo.sh
 
 parse_cmd_line () {
-	case "$1" in
+	local cmd="${1:-}"
+	case "$cmd" in
 		clean )
 			remove_cache_directory
-			;;	
+			;;
 		count )
 			count_github_packages
 			;;
@@ -36,16 +39,16 @@ parse_cmd_line () {
 			run_pharo
 			;;
 		irun | IRUN )
-			irun_pharo "${@:2}"
+			irun_pharo "${2:-}"
 			;;
 		trun | TRUN )
 			trun_pharo
 			;;
 		nrun | NRUN )
-			nrun_pharo "${@:2}"
+			nrun_pharo "${2:-}"
 			;;
 		search )
-			search_packages "${@:2}"
+			search_packages "${2:-}"
 			;;
 		update )
 			update_packages

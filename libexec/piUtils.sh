@@ -1,7 +1,9 @@
-#!/bin/bash
+#!/usr/bin/env bash
 #
 # pi - Pharo Install - A MIT-pip-like library for Pharo Smalltalk
 #
+set -u  # Exit on undefined variables
+set -o pipefail  # Catch errors in pipes
 
 #################################
 ## Helper Functions
@@ -26,22 +28,29 @@ pi_err(){
 
 # Returns 0 if command was found in the current system, 1 otherwise
 cmd_exists () {
-	type "$1" &> /dev/null || [ -f "$1" ];
+	type -- "$1" &> /dev/null
 	return $?
 }
 
+# Returns 0 if cache directory has contents, 1 if empty or doesn't exist
 cache_not_empty () {
-	[[ -z "$(find "${cacheDir}" -maxdepth 0 -type d -empty 2>/dev/null)" ]]
-	return $?
+	if [ -d "${cacheDir}" ] && [ -n "$(ls -A "${cacheDir}" 2>/dev/null)" ]; then
+		return 0
+	fi
+	return 1
 }
 
 # Remove cache directory contents
 remove_cache_directory () {
-	if ! cache_not_empty; then
-		 pi_err "Cache is empty\n"
-		 exit 1
+	if [ ! -d "${cacheDir}" ]; then
+		pi_err "Cache directory does not exist\n"
+		return 1
+	fi
+	if cache_not_empty; then
+		rm -rf "${cacheDir}"/* && pi_log "Cache successfully cleaned\n"
 	else
-		[[ -d ${cacheDir} ]] && cache_not_empty && rm ${cacheDir}/* && pi_log "Cache successfully cleaned\n"
+		pi_err "Cache is already empty\n"
+		return 1
 	fi
 }
 

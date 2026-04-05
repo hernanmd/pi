@@ -1,13 +1,14 @@
-#!/bin/bash
+#!/usr/bin/env bash
 #
 # pi - Pharo Install - A MIT-pip-like library for Pharo Smalltalk
 #
+set -u  # Exit on undefined variables
+set -o pipefail  # Catch errors in pipes
 
 source "${BASH_SOURCE%/*}"/piUtils.sh
 
 find_os_id () {
 	# Find our distribution or OS
-	# printf "Current OS is: "
 	if [ -f /etc/os-release ]; then
 		# freedesktop.org and systemd
 		. /etc/os-release
@@ -23,8 +24,8 @@ find_os_id () {
 		os="$DISTRIB_ID"
 		ver="$DISTRIB_RELEASE"
 	elif [ "$(uname -p)" = "arm64" ]; then
-		os=$(uname -p)
-		ver=$(uname -r)
+		os="$(uname -p)"
+		ver="$(uname -r)"
 	elif [ -f /etc/debian_version ]; then
 		# Older Debian/Ubuntu/etc.
 		os="Debian"
@@ -40,7 +41,6 @@ find_os_id () {
 		os=$(uname -s)
 		ver=$(uname -r)
 	fi
-	# printf "$os\n"
 }
 
 #################################
@@ -74,7 +74,8 @@ yum_install () {
 # Install latest version of Pharo
 linstall_pharo () {
 	find_os_id
-	case "$os" in
+	local os_name="$os"
+	case "$os_name" in
 		"arm64")
 			zeroConfUrl="http://files.pharo.org/vm/pharo-spur64-headless/Darwin-arm64/latest.zip"
 			download_pharo_arm64
@@ -88,16 +89,17 @@ linstall_pharo () {
 # Prefer provider packages if distribution was found
 install_pharo () {
 	find_os_id
-	case "$os" in
+	local os_name="$os"
+	case "$os_name" in
 		"arm64")
 			zeroConfUrl="http://files.pharo.org/vm/pharo-spur64-headless/Darwin-arm64/latest.zip"
-			download_pharo_arm64 $1
+			download_pharo_arm64 "$1"
 			;;
-		"CentOS*" | "RedHat*" )
+		"CentOS"* | "RedHat"* )
 			yum_install
 			;;
 		* )
-			download_pharo_x86_64 $1
+			download_pharo_x86_64 "$1"
 			;;
 	esac
 }
@@ -108,10 +110,14 @@ install_pharo () {
 
 # Returns true if Pharo is detected in the current working directory
 is_pharo_installed () {
-	if [[ -d Pharo.app ]] || [[ -d "pharo-vm" ]] && [[ -f Pharo.image ]] && [[ -f Pharo.changes ]]; then
+	if [[ -d Pharo.app ]] && [[ -f Pharo.image ]] && [[ -f Pharo.changes ]]; then
 		pi_log "Pharo found in current directory\n"
 		return 0
 	else
+		if [[ -d "pharo-vm" ]] && [[ -f Pharo.image ]] && [[ -f Pharo.changes ]]; then
+			pi_log "Pharo found in current directory\n"
+			return 0
+		fi
 		pi_log "Pharo not found\n"
 		return 1
 	fi
@@ -139,36 +145,36 @@ trun_pharo () {
 
 # Trash pharo-local (requires trash utility) and run Pharo.image
 nrun_pharo () {
-	if [ ! $# -eq 0 ]; then
-		pharoRequestedVersion=$1
-	fi	
-	dirname="pharo-$pharoRequestedVersion-$(date +%Y-%m-%d-%S)"
-	(mkdir -v "$dirname" && cd "$dirname" && irun_pharo $1) || pi_log "Cannot run Pharo Image"
+	if [ $# -ge 1 ]; then
+		pharoRequestedVersion="$1"
+	fi
+	local dirname="pharo-$pharoRequestedVersion-$(date +%Y-%m-%d-%S)"
+	(mkdir -v "$dirname" && cd "$dirname" && irun_pharo "$1") || pi_log "Cannot run Pharo Image"
 }
 
 download_pharo_x86_64 () {
 	pi_log "Checking Pharo installation in the current directory...\n"
 	if ! is_pharo_installed; then
-		if [ ! $# -eq 0 ]; then
-			pharoRequestedVersion=$1
+		if [ $# -ge 1 ]; then
+			pharoRequestedVersion="$1"
 		fi
 		# Convert to Zeroconf version, i.e. Requesting 13 -> 130
-		urlVersion="${pharoRequestedVersion}0+vm"		
+		local urlVersion="${pharoRequestedVersion}0+vm"
 		pi_log "Downloading Pharo...\n"
-		exec $dApp $dPharoParams $zeroConfUrl/$urlVersion | bash
+		$dApp $dPharoParams "$zeroConfUrl/$urlVersion" | bash
+		[[ ! is_pharo_installed ]] && { pi_err "Could not download Pharo, exiting\n"; exit 1; }
 	fi
-	[[ ! is_pharo_installed ]] && { pi_err "Could not download Pharo, exiting\n"; exit 1; }
 }
 
 download_pharo_arm64 () {
 	pi_log "Checking Pharo installation in the current directory...\n"
 	if ! is_pharo_installed; then
 		# Convert to Zeroconf version, i.e. Requesting 13 -> 130
-		urlVersion="${pharoRequestedVersion}0"	
+		local urlVersion="${pharoRequestedVersion}0"
 		pi_log "Downloading Pharo...\n"
-		exec $dApp $zeroConfUrl
-		unzip latest.zip
-		exec $dApp $dPharoParams get.pharo.org/64/$urlVersion | bash -
+		$dApp "$zeroConfUrl" -o latest.zip
+		unzip -o latest.zip
+		$dApp $dPharoParams "get.pharo.org/64/$urlVersion" | bash
+		[[ ! is_pharo_installed ]] && { pi_err "Could not download latest Pharo, exiting\n"; exit 1; }
 	fi
-	[[ ! is_pharo_installed ]] && { pi_err "Could not download latest Pharo, exiting\n"; exit 1; }	
 }

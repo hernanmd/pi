@@ -43,6 +43,10 @@
 
 		latest="$(get_latest_version)"
 		url="https://github.com/hernanmd/pi/archive/$latest.tar.gz"
+if ! curl -s -o /dev/null -w "%{http_code}\n" "$url" | grep -q "200"; then
+  echo "Error: Tarball $url not found."
+  exit 1
+fi
 		tarball="$tmpDir/pi.tar.gz"
 		curl -sSL "$url" -o "$tarball" || oops "failed to download '$url'"
 		unpack="$HOME/.pi"

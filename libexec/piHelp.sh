@@ -1,7 +1,9 @@
-#!/bin/bash
+#!/usr/bin/env bash
 #
 # pi - Pharo Install - A MIT-pip-like library for Pharo Smalltalk
 #
+set -u  # Exit on undefined variables
+set -o pipefail  # Catch errors in pipes
 
 #########################################
 # PI Options

@@ -2,9 +2,11 @@
 #
 # pi - Pharo Install - A MIT-pip-like library for Pharo Smalltalk
 #
+set -u  # Exit on undefined variables
+set -o pipefail  # Catch errors in pipes
 
 set_zconf_url () {
-    if [ $(uname -m) == 'x86_64' ]; then
+    if [ "$(uname -m)" = 'x86_64' ]; then
         zeroConfUrl="https://get.pharo.org/64"
     else
         zeroConfUrl="https://get.pharo.org"
